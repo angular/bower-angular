@@ -1,0 +1,7 @@
+{
+  "name": "AngularJS",
+  "version": "1.0.2",
+  "main": "./angular.js",
+  "dependencies": {
+  }
+}
