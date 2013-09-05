@@ -1,0 +1,1 @@
+Bower package for the stable branch of AngularJS
