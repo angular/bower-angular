@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.6-build.1993+sha.2f91cfd
+ * @license AngularJS v1.2.6-build.1994+sha.4f72433
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.6-build.1993+sha.2f91cfd/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.6-build.1994+sha.4f72433/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1829,7 +1829,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.6-build.1993+sha.2f91cfd',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.6-build.1994+sha.4f72433',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 6,
@@ -18077,9 +18077,6 @@ forEach(
         padding:10px;
       }
 
-      /&#42;
-        The transition styles can also be placed on the CSS base class above
-      &#42;/
       .animate-if.ng-enter, .animate-if.ng-leave {
         -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
         transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
