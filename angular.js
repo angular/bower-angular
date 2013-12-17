@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.6-build.1997+sha.b2e472e
+ * @license AngularJS v1.2.6-build.1998+sha.5c97731
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.6-build.1997+sha.b2e472e/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.6-build.1998+sha.5c97731/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1829,7 +1829,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.6-build.1997+sha.b2e472e',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.6-build.1998+sha.5c97731',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 6,
@@ -19941,18 +19941,10 @@ var selectDirective = ['$compile', '$parse', function($compile,   $parse) {
       selectCtrl.init(ngModelCtrl, nullOption, unknownOption);
 
       // required validator
-      if (multiple && (attr.required || attr.ngRequired)) {
-        var requiredValidator = function(value) {
-          ngModelCtrl.$setValidity('required', !attr.required || (value && value.length));
-          return value;
+      if (multiple) {
+        ngModelCtrl.$isEmpty = function(value) {
+          return !value || value.length === 0;
         };
-
-        ngModelCtrl.$parsers.push(requiredValidator);
-        ngModelCtrl.$formatters.unshift(requiredValidator);
-
-        attr.$observe('required', function() {
-          requiredValidator(ngModelCtrl.$viewValue);
-        });
       }
 
       if (optionsExp) setupAsOptions(scope, element, ngModelCtrl);
