@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.6-build.1992+sha.d5c5e2b
+ * @license AngularJS v1.2.6-build.1993+sha.2f91cfd
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.6-build.1992+sha.d5c5e2b/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.6-build.1993+sha.2f91cfd/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1829,7 +1829,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.6-build.1992+sha.d5c5e2b',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.6-build.1993+sha.2f91cfd',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 6,
@@ -2600,7 +2600,10 @@ function createEventHandler(element, events) {
       return event.defaultPrevented || event.returnValue === false;
     };
 
-    forEach(events[type || event.type], function(fn) {
+    // Copy event handlers in case event handlers array is modified during execution.
+    var eventHandlersCopy = shallowCopy(events[type || event.type] || []);
+
+    forEach(eventHandlersCopy, function(fn) {
       fn.call(element, event);
     });
 
