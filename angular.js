@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.6-build.2000+sha.73c6671
+ * @license AngularJS v1.2.6-build.2001+sha.3dc1803
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.6-build.2000+sha.73c6671/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.6-build.2001+sha.3dc1803/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1829,7 +1829,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.6-build.2000+sha.73c6671',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.6-build.2001+sha.3dc1803',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 6,
@@ -13370,6 +13370,7 @@ function $SnifferProvider() {
       vendorPrefix: vendorPrefix,
       transitions : transitions,
       animations : animations,
+      android: android,
       msie : msie,
       msieDocumentMode: documentMode
     };
@@ -15854,15 +15855,17 @@ function textInputType(scope, element, attr, ctrl, $sniffer, $browser) {
   // In composition mode, users are still inputing intermediate text buffer,
   // hold the listener until composition is done.
   // More about composition events: https://developer.mozilla.org/en-US/docs/Web/API/CompositionEvent
-  var composing = false;
+  if (!$sniffer.android) {
+    var composing = false;
 
-  element.on('compositionstart', function() {
-    composing = true;
-  });
+    element.on('compositionstart', function(data) {
+      composing = true;
+    });
 
-  element.on('compositionend', function() {
-    composing = false;
-  });
+    element.on('compositionend', function() {
+      composing = false;
+    });
+  }
 
   var listener = function() {
     if (composing) return;
