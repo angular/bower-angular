@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.6-build.2001+sha.3dc1803
+ * @license AngularJS v1.2.6-build.2002+sha.09f8962
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.6-build.2001+sha.3dc1803/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.6-build.2002+sha.09f8962/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1829,7 +1829,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.6-build.2001+sha.3dc1803',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.6-build.2002+sha.09f8962',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 6,
@@ -5114,14 +5114,14 @@ function $TemplateCacheProvider() {
  *   example would not point to the clone, but rather to the original template that was cloned. In
  *   this case, you can access the clone via the cloneAttachFn:
  *   <pre>
- *     var templateHTML = angular.element('<p>{{total}}</p>'),
+ *     var templateElement = angular.element('<p>{{total}}</p>'),
  *         scope = ....;
  *
- *     var clonedElement = $compile(templateHTML)(scope, function(clonedElement, scope) {
+ *     var clonedElement = $compile(templateElement)(scope, function(clonedElement, scope) {
  *       //attach the clone to DOM document at the right place
  *     });
  *
- *     //now we have reference to the cloned DOM via `clone`
+ *     //now we have reference to the cloned DOM via `clonedElement`
  *   </pre>
  *
  *
@@ -5510,7 +5510,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
      * @param {DOMElement=} $rootElement If the nodeList is the root of the compilation tree then
      *        the rootElement must be set the jqLite collection of the compile root. This is
      *        needed so that the jqLite collection items can be replaced with widgets.
-     * @param {number=} max directive priority
+     * @param {number=} maxPriority Max directive priority.
      * @returns {?function} A composite linking function of all of the matched directives or null.
      */
     function compileNodes(nodeList, transcludeFn, $rootElement, maxPriority, ignoreDirective,
@@ -18382,7 +18382,7 @@ var ngIncludeFillContentDirective = ['$compile',
  * current scope.
  *
  * <div class="alert alert-error">
- * The only appropriate use of `ngInit` for aliasing special properties of
+ * The only appropriate use of `ngInit` is for aliasing special properties of
  * {@link api/ng.directive:ngRepeat `ngRepeat`}, as seen in the demo below. Besides this case, you
  * should use {@link guide/controller controllers} rather than `ngInit`
  * to initialize values on a scope.
