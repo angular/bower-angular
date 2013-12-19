@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.6-build.2011+sha.3d156a7
+ * @license AngularJS v1.2.6-build.2012+sha.14d3e55
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.6-build.2011+sha.3d156a7/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.6-build.2012+sha.14d3e55/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1831,7 +1831,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.6-build.2011+sha.3d156a7',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.6-build.2012+sha.14d3e55',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 6,
@@ -3394,15 +3394,15 @@ function annotate(fn) {
  * {@link AUTO.$provide#methods_service $provide.service(class)} that is defined as a CoffeeScript class.
  * <pre>
  *   class Ping
- *     constructor: (@$http)->
- *     send: ()=>
+ *     constructor: (@$http) ->
+ *     send: () =>
  *       @$http.get('/ping')
  *
  *   $provide.service('ping', ['$http', Ping])
  * </pre>
  * You would then inject and use this service like this:
  * <pre>
- *   someModule.controller 'Ctrl', ['ping', (ping)->
+ *   someModule.controller 'Ctrl', ['ping', (ping) ->
  *     ping.send()
  *   ]
  * </pre>
