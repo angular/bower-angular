@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.6-build.2005+sha.8f329ff
+ * @license AngularJS v1.2.6-build.2006+sha.bc3ff2c
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.6-build.2005+sha.8f329ff/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.6-build.2006+sha.bc3ff2c/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1829,7 +1829,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.6-build.2005+sha.8f329ff',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.6-build.2006+sha.bc3ff2c',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 6,
@@ -9099,6 +9099,13 @@ function $LocationProvider(){
       }
 
       var absHref = elm.prop('href');
+
+      if (isObject(absHref) && absHref.toString() === '[object SVGAnimatedString]') {
+        // SVGAnimatedString.animVal should be identical to SVGAnimatedString.baseVal, unless during
+        // an animation.
+        absHref = urlResolve(absHref.animVal).href;
+      }
+
       var rewrittenUrl = $location.$$rewrite(absHref);
 
       if (absHref && !elm.attr('target') && rewrittenUrl && !event.isDefaultPrevented()) {
