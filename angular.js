@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.6-build.2016+sha.937caab
+ * @license AngularJS v1.2.6-build.2017+sha.cef084a
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.6-build.2016+sha.937caab/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.6-build.2017+sha.cef084a/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1831,7 +1831,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.6-build.2016+sha.937caab',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.6-build.2017+sha.cef084a',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 6,
@@ -3881,6 +3881,28 @@ var $AnimateProvider = ['$provide', function($provide) {
         "Expecting class selector starting with '.' got '{0}'.", name);
     this.$$selectors[name.substr(1)] = key;
     $provide.factory(key, factory);
+  };
+
+  /**
+   * @ngdoc function
+   * @name ng.$animateProvider#classNameFilter
+   * @methodOf ng.$animateProvider
+   *
+   * @description
+   * Sets and/or returns the CSS class regular expression that is checked when performing
+   * an animation. Upon bootstrap the classNameFilter value is not set at all and will
+   * therefore enable $animate to attempt to perform an animation on any element.
+   * When setting the classNameFilter value, animations will only be performed on elements
+   * that successfully match the filter expression. This in turn can boost performance
+   * for low-powered devices as well as applications containing a lot of structural operations.
+   * @param {RegExp=} expression The className expression which will be checked against all animations
+   * @return {RegExp} The current CSS className expression value. If null then there is no expression value
+   */
+  this.classNameFilter = function(expression) {
+    if(arguments.length === 1) {
+      this.$$classNameFilter = (expression instanceof RegExp) ? expression : null;
+    }
+    return this.$$classNameFilter;
   };
 
   this.$get = ['$timeout', function($timeout) {
