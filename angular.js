@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.8-build.2063+sha.9569778
+ * @license AngularJS v1.2.8-build.2064+sha.3b1a4fe
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.8-build.2063+sha.9569778/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.8-build.2064+sha.3b1a4fe/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1833,7 +1833,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.8-build.2063+sha.9569778',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.8-build.2064+sha.3b1a4fe',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 8,
@@ -10306,16 +10306,20 @@ function cspSafeGetterFn(key0, key1, key2, key3, key4, fullExp, options) {
           if (pathVal == null) return pathVal;
           pathVal = pathVal[key0];
 
-          if (pathVal == null) return key1 ? undefined : pathVal;
+          if (!key1) return pathVal;
+          if (pathVal == null) return undefined;
           pathVal = pathVal[key1];
 
-          if (pathVal == null) return key2 ? undefined : pathVal;
+          if (!key2) return pathVal;
+          if (pathVal == null) return undefined;
           pathVal = pathVal[key2];
 
-          if (pathVal == null) return key3 ? undefined : pathVal;
+          if (!key3) return pathVal;
+          if (pathVal == null) return undefined;
           pathVal = pathVal[key3];
 
-          if (pathVal == null) return key4 ? undefined : pathVal;
+          if (!key4) return pathVal;
+          if (pathVal == null) return undefined;
           pathVal = pathVal[key4];
 
           return pathVal;
@@ -10336,8 +10340,9 @@ function cspSafeGetterFn(key0, key1, key2, key3, key4, fullExp, options) {
             }
             pathVal = pathVal.$$v;
           }
-          if (pathVal == null) return key1 ? undefined : pathVal;
 
+          if (!key1) return pathVal;
+          if (pathVal == null) return undefined;
           pathVal = pathVal[key1];
           if (pathVal && pathVal.then) {
             promiseWarning(fullExp);
@@ -10348,8 +10353,9 @@ function cspSafeGetterFn(key0, key1, key2, key3, key4, fullExp, options) {
             }
             pathVal = pathVal.$$v;
           }
-          if (pathVal == null) return key2 ? undefined : pathVal;
 
+          if (!key2) return pathVal;
+          if (pathVal == null) return undefined;
           pathVal = pathVal[key2];
           if (pathVal && pathVal.then) {
             promiseWarning(fullExp);
@@ -10360,8 +10366,9 @@ function cspSafeGetterFn(key0, key1, key2, key3, key4, fullExp, options) {
             }
             pathVal = pathVal.$$v;
           }
-          if (pathVal == null) return key3 ? undefined : pathVal;
 
+          if (!key3) return pathVal;
+          if (pathVal == null) return undefined;
           pathVal = pathVal[key3];
           if (pathVal && pathVal.then) {
             promiseWarning(fullExp);
@@ -10372,8 +10379,9 @@ function cspSafeGetterFn(key0, key1, key2, key3, key4, fullExp, options) {
             }
             pathVal = pathVal.$$v;
           }
-          if (pathVal == null) return key4 ? undefined : pathVal;
 
+          if (!key4) return pathVal;
+          if (pathVal == null) return undefined;
           pathVal = pathVal[key4];
           if (pathVal && pathVal.then) {
             promiseWarning(fullExp);
