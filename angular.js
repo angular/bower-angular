@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.8-build.2059+sha.0ef76dd
+ * @license AngularJS v1.2.8-build.2060+sha.1b7a6c6
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.8-build.2059+sha.0ef76dd/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.8-build.2060+sha.1b7a6c6/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1833,7 +1833,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.8-build.2059+sha.0ef76dd',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.8-build.2060+sha.1b7a6c6',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 8,
@@ -11371,7 +11371,7 @@ function $RootScopeProvider(){
         } else {
           ChildScope = function() {}; // should be anonymous; This is so that when the minifier munges
             // the name it does not become random set of chars. This will then show up as class
-            // name in the debugger.
+            // name in the web inspector.
           ChildScope.prototype = this;
           child = new ChildScope();
           child.$id = nextUid();
