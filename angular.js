@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.7-build.2040+sha.884ef0d
+ * @license AngularJS v1.2.7-build.2041+sha.53ec33f
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.7-build.2040+sha.884ef0d/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.7-build.2041+sha.53ec33f/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1831,7 +1831,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.7-build.2040+sha.884ef0d',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.7-build.2041+sha.53ec33f',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 7,
@@ -4713,7 +4713,7 @@ function $TemplateCacheProvider() {
  * @function
  *
  * @description
- * Compiles a piece of HTML string or DOM into a template and produces a template function, which
+ * Compiles an HTML string or DOM into a template and produces a template function, which
  * can then be used to link {@link ng.$rootScope.Scope `scope`} and the template together.
  *
  * The compilation is a process of walking the DOM tree and matching DOM elements to
