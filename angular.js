@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.7-build.2045+sha.6a6f71f
+ * @license AngularJS v1.2.7-build.2057+sha.3d38fff
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.7-build.2045+sha.6a6f71f/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.7-build.2057+sha.3d38fff/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1038,7 +1038,9 @@ function fromJson(json) {
 
 
 function toBoolean(value) {
-  if (value && value.length !== 0) {
+  if (typeof value === 'function') {
+    value = true;
+  } else if (value && value.length !== 0) {
     var v = lowercase("" + value);
     value = !(v == 'f' || v == '0' || v == 'false' || v == 'no' || v == 'n' || v == '[]');
   } else {
@@ -1831,7 +1833,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.7-build.2045+sha.6a6f71f',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.7-build.2057+sha.3d38fff',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 7,
@@ -7871,13 +7873,13 @@ function $HttpProvider() {
   }];
 }
 
-var XHR = window.XMLHttpRequest || function() {
+function createXhr(method) {
+  // IE8 doesn't support PATCH method, but the ActiveX object does
   /* global ActiveXObject */
-  try { return new ActiveXObject("Msxml2.XMLHTTP.6.0"); } catch (e1) {}
-  try { return new ActiveXObject("Msxml2.XMLHTTP.3.0"); } catch (e2) {}
-  try { return new ActiveXObject("Msxml2.XMLHTTP"); } catch (e3) {}
-  throw minErr('$httpBackend')('noxhr', "This browser does not support XMLHttpRequest.");
-};
+  return (msie <= 8 && lowercase(method) === 'patch')
+      ? new ActiveXObject('Microsoft.XMLHTTP')
+      : new window.XMLHttpRequest();
+}
 
 
 /**
@@ -7899,11 +7901,11 @@ var XHR = window.XMLHttpRequest || function() {
  */
 function $HttpBackendProvider() {
   this.$get = ['$browser', '$window', '$document', function($browser, $window, $document) {
-    return createHttpBackend($browser, XHR, $browser.defer, $window.angular.callbacks, $document[0]);
+    return createHttpBackend($browser, createXhr, $browser.defer, $window.angular.callbacks, $document[0]);
   }];
 }
 
-function createHttpBackend($browser, XHR, $browserDefer, callbacks, rawDocument) {
+function createHttpBackend($browser, createXhr, $browserDefer, callbacks, rawDocument) {
   var ABORTED = -1;
 
   // TODO(vojta): fix the signature
@@ -7928,7 +7930,9 @@ function createHttpBackend($browser, XHR, $browserDefer, callbacks, rawDocument)
         delete callbacks[callbackId];
       });
     } else {
-      var xhr = new XHR();
+
+      var xhr = createXhr(method);
+
       xhr.open(method, url, true);
       forEach(headers, function(value, key) {
         if (isDefined(value)) {
@@ -7940,12 +7944,14 @@ function createHttpBackend($browser, XHR, $browserDefer, callbacks, rawDocument)
       // response is in the cache. the promise api will ensure that to the app code the api is
       // always async
       xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4) {
-          // onreadystatechange might by called multiple times
-          // with readyState === 4 on mobile webkit caused by
-          // xhrs that are resolved while the app is in the background (see #5426).
-          xhr.onreadystatechange = undefined;
-
+        // onreadystatechange might by called multiple times with readyState === 4 on mobile webkit caused by
+        // xhrs that are resolved while the app is in the background (see #5426).
+        // since calling completeRequest sets the `xhr` variable to null, we just check if it's not null before
+        // continuing
+        //
+        // we can't set xhr.onreadystatechange to undefined or delete it because that breaks IE8 (method=PATCH) and
+        // Safari respectively.
+        if (xhr && xhr.readyState == 4) {
           var responseHeaders = null,
               response = null;
 
@@ -13478,7 +13484,7 @@ function $SnifferProvider() {
       // http://code.google.com/p/android/issues/detail?id=17471
       // https://github.com/angular/angular.js/issues/904
 
-      // older webit browser (533.9) on Boxee box has exactly the same problem as Android has
+      // older webkit browser (533.9) on Boxee box has exactly the same problem as Android has
       // so let's not use the history API also
       // We are purposefully using `!(android < 4)` to cover the case when `android` is undefined
       // jshint -W018
@@ -13900,21 +13906,21 @@ function $FilterProvider($provide) {
  *     property of the object. That's equivalent to the simple substring match with a `string`
  *     as described above.
  *
- *   - `function`: A predicate function can be used to write arbitrary filters. The function is
+ *   - `function(value)`: A predicate function can be used to write arbitrary filters. The function is
  *     called for each element of `array`. The final result is an array of those elements that
  *     the predicate returned true for.
  *
- * @param {function(expected, actual)|true|undefined} comparator Comparator which is used in
+ * @param {function(actual, expected)|true|undefined} comparator Comparator which is used in
  *     determining if the expected value (from the filter expression) and actual value (from
  *     the object in the array) should be considered a match.
  *
  *   Can be one of:
  *
- *     - `function(expected, actual)`:
+ *     - `function(actual, expected)`:
  *       The function will be given the object value and the predicate value to compare and
  *       should return true if the item should be included in filtered result.
  *
- *     - `true`: A shorthand for `function(expected, actual) { return angular.equals(expected, actual)}`.
+ *     - `true`: A shorthand for `function(actual, expected) { return angular.equals(expected, actual)}`.
  *       this is essentially strict comparison of expected and actual.
  *
  *     - `false|undefined`: A short hand for a function which will look for a substring match in case
