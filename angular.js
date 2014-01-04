@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.8-build.2067+sha.00cac6e
+ * @license AngularJS v1.2.8-build.2068+sha.d9ed9c5
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.8-build.2067+sha.00cac6e/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.8-build.2068+sha.d9ed9c5/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1833,7 +1833,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.8-build.2067+sha.00cac6e',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.8-build.2068+sha.d9ed9c5',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 8,
@@ -13914,8 +13914,8 @@ function $FilterProvider($provide) {
  *
  *   Can be one of:
  *
- *   - `string`: Predicate that results in a substring match using the value of `expression`
- *     string. All strings or objects with string properties in `array` that contain this string
+ *   - `string`: The string is evaluated as an expression and the resulting value is used for substring match against
+ *     the contents of the `array`. All strings or objects with string properties in `array` that contain this string
  *     will be returned. The predicate can be negated by prefixing the string with `!`.
  *
  *   - `Object`: A pattern object can be used to filter specific properties on objects contained
