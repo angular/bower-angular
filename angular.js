@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.8-build.2107+sha.36c9e42
+ * @license AngularJS v1.2.8-build.2108+sha.a9cccbe
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.8-build.2107+sha.36c9e42/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.8-build.2108+sha.a9cccbe/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1833,7 +1833,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.8-build.2107+sha.36c9e42',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.8-build.2108+sha.a9cccbe',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 8,
@@ -7967,11 +7967,12 @@ function createHttpBackend($browser, createXhr, $browserDefer, callbacks, rawDoc
 
           if(status !== ABORTED) {
             responseHeaders = xhr.getAllResponseHeaders();
-            response = xhr.responseType ? xhr.response : xhr.responseText;
+
+            // responseText is the old-school way of retrieving response (supported by IE8 & 9)
+            // response/responseType properties were introduced in XHR Level2 spec (supported by IE10)
+            response = ('response' in xhr) ? xhr.response : xhr.responseText;
           }
 
-          // responseText is the old-school way of retrieving response (supported by IE8 & 9)
-          // response/responseType properties were introduced in XHR Level2 spec (supported by IE10)
           completeRequest(callback,
               status || xhr.status,
               response,
