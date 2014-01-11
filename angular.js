@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.9-build.2116+sha.cde840f
+ * @license AngularJS v1.2.9-build.2117+sha.b2c84cc
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.9-build.2116+sha.cde840f/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.9-build.2117+sha.b2c84cc/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1833,7 +1833,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.9-build.2116+sha.cde840f',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.9-build.2117+sha.b2c84cc',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 9,
@@ -12687,7 +12687,7 @@ function $SceDelegateProvider() {
      *
      * @param {*} value The result of a prior {@link ng.$sceDelegate#methods_trustAs `$sceDelegate.trustAs`}
      *      call or anything else.
-     * @returns {*} The value the was originally provided to {@link ng.$sceDelegate#methods_trustAs
+     * @returns {*} The `value` that was originally provided to {@link ng.$sceDelegate#methods_trustAs
      *     `$sceDelegate.trustAs`} if `value` is the result of such a call.  Otherwise, returns
      *     `value` unchanged.
      */
