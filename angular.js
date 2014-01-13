@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.9-build.2122+sha.34fee06
+ * @license AngularJS v1.2.9-build.2123+sha.2cd09c9
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.9-build.2122+sha.34fee06/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.9-build.2123+sha.2cd09c9/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1833,7 +1833,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.9-build.2122+sha.34fee06',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.9-build.2123+sha.2cd09c9',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 9,
@@ -11836,7 +11836,7 @@ function $RootScopeProvider(){
 
           // `break traverseScopesLoop;` takes us to here
 
-          if(dirty && !(ttl--)) {
+          if((dirty || asyncQueue.length) && !(ttl--)) {
             clearPhase();
             throw $rootScopeMinErr('infdig',
                 '{0} $digest() iterations reached. Aborting!\n' +
