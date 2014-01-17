@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.10-build.2146+sha.0e4d7ca
+ * @license AngularJS v1.2.10-build.2147+sha.1cdcddb
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.10-build.2146+sha.0e4d7ca/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.10-build.2147+sha.1cdcddb/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1834,7 +1834,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.10-build.2146+sha.0e4d7ca',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.10-build.2147+sha.1cdcddb',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 10,
