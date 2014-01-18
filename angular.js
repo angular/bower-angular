@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.10-build.2156+sha.1028cfa
+ * @license AngularJS v1.2.10-build.2157+sha.42ec95e
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.10-build.2156+sha.1028cfa/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.10-build.2157+sha.42ec95e/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1834,7 +1834,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.10-build.2156+sha.1028cfa',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.10-build.2157+sha.42ec95e',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 10,
@@ -18593,6 +18593,13 @@ var ngIncludeFillContentDirective = ['$compile',
  * {@link api/ng.directive:ngRepeat `ngRepeat`}, as seen in the demo below. Besides this case, you
  * should use {@link guide/controller controllers} rather than `ngInit`
  * to initialize values on a scope.
+ * </div>
+ * <div class="alert alert-warning">
+ * **Note**: If you have assignment in `ngInit` along with {@link api/ng.$filter `$filter`}, make
+ * sure you have parenthesis for correct precedence:
+ * <pre class="prettyprint">
+ *   <ng-init="test1 = (data | orderBy:'name')">
+ * </pre>
  * </div>
  *
  * @priority 450
