@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.10-build.2175+sha.c3b5e16
+ * @license AngularJS v1.2.10-build.2176+sha.e020916
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.10-build.2175+sha.c3b5e16/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.10-build.2176+sha.e020916/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1834,7 +1834,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.10-build.2175+sha.c3b5e16',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.10-build.2176+sha.e020916',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 10,
@@ -14837,11 +14837,14 @@ var htmlAnchorDirective = valueFn({
       element.append(document.createComment('IE fix'));
     }
 
-    if (!attr.href && !attr.name) {
+    if (!attr.href && !attr.xlinkHref && !attr.name) {
       return function(scope, element) {
+        // SVGAElement does not use the href attribute, but rather the 'xlinkHref' attribute.
+        var href = toString.call(element.prop('href')) === '[object SVGAnimatedString]' ?
+                   'xlink:href' : 'href';
         element.on('click', function(event){
           // if we have no href url, then don't navigate anywhere.
-          if (!element.attr('href')) {
+          if (!element.attr(href)) {
             event.preventDefault();
           }
         });
