@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.11-build.2184+sha.319dd1a
+ * @license AngularJS v1.2.11-build.2185+sha.4f735b0
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.11-build.2184+sha.319dd1a/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.11-build.2185+sha.4f735b0/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1834,7 +1834,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.11-build.2184+sha.319dd1a',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.11-build.2185+sha.4f735b0',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 11,
@@ -19649,7 +19649,7 @@ var ngStyleDirective = ngDirective(function(scope, element, attr) {
  * as specified in the template.
  *
  * The directive itself works similar to ngInclude, however, instead of downloading template code (or loading it
- * from the template cache), `ngSwitch` simply choses one of the nested elements and makes it visible based on which element
+ * from the template cache), `ngSwitch` simply chooses one of the nested elements and makes it visible based on which element
  * matches the value obtained from the evaluated expression. In other words, you define a container element
  * (where you place the directive), place an expression on the **`on="..."` attribute**
  * (or the **`ng-switch="..."` attribute**), define any inner elements inside of the directive and place
