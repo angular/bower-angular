@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.12-build.2222+sha.c5f69e3
+ * @license AngularJS v1.2.12-build.2223+sha.95522cc
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.12-build.2222+sha.c5f69e3/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.12-build.2223+sha.95522cc/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -271,7 +271,7 @@ function isArrayLike(obj) {
  * is the value of an object property or an array element and `key` is the object property key or
  * array element index. Specifying a `context` for the function is optional.
  *
- * It is worth nothing that `.forEach` does not iterate over inherited properties because it filters
+ * It is worth noting that `.forEach` does not iterate over inherited properties because it filters
  * using the `hasOwnProperty` method.
  *
    <pre>
@@ -1834,7 +1834,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.12-build.2222+sha.c5f69e3',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.12-build.2223+sha.95522cc',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 12,
