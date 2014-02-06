@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.12-build.2223+sha.95522cc
+ * @license AngularJS v1.2.12-build.2225+sha.8829a2a
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.12-build.2223+sha.95522cc/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.12-build.2225+sha.8829a2a/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1834,7 +1834,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.12-build.2223+sha.95522cc',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.12-build.2225+sha.8829a2a',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 12,
@@ -14174,9 +14174,13 @@ function filterFilter() {
          expect(element(by.binding('amount | currency:"USD$"')).getText()).toBe('USD$1,234.56');
        });
        it('should update', function() {
+         if (browser.params.browser == 'safari') {
+           // Safari does not understand the minus key. See
+           // https://github.com/angular/protractor/issues/481
+           return;
+         }
          element(by.model('amount')).clear();
-         element(by.model('amount')).sendKeys('-1234');
-         expect(element(by.id('currency-default')).getText()).toBe('($1,234.00)');
+         element(by.model('amount')).sendKeys('-1234');         expect(element(by.id('currency-default')).getText()).toBe('($1,234.00)');
          expect(element(by.binding('amount | currency:"USD$"')).getText()).toBe('(USD$1,234.00)');
        });
      </doc:protractor>
@@ -16611,11 +16615,17 @@ var VALID_CLASS = 'ng-valid',
     </file>
     <file name="protractorTest.js">
       it('should data-bind and become invalid', function() {
+        if (browser.params.browser = 'safari') {
+          // SafariDriver can't handle contenteditable.
+          return;
+        };
         var contentEditable = element(by.css('.doc-example-live [contenteditable]'));
 
         expect(contentEditable.getText()).toEqual('Change me!');
 
-        contentEditable.clear();
+        // Firefox driver doesn't trigger the proper events on 'clear', so do this hack
+        contentEditable.click();
+        contentEditable.sendKeys(protractor.Key.chord(protractor.Key.COMMAND, "a"));
         contentEditable.sendKeys(protractor.Key.BACK_SPACE);
 
         expect(contentEditable.getText()).toEqual('');
@@ -18611,12 +18621,21 @@ var ngIfDirective = ['$animate', function($animate) {
       });
 
       it('should load template2.html', function() {
+        if (browser.params.browser == 'firefox') {
+          // Firefox can't handle using selects
+          // See https://github.com/angular/protractor/issues/480
+          return;
+        }
         templateSelect.click();
         templateSelect.element.all(by.css('option')).get(2).click();
         expect(includeElem.getText()).toMatch(/Content of template2.html/);
       });
 
       it('should change to blank', function() {
+        if (browser.params.browser == 'firefox') {
+          // Firefox can't handle using selects
+          return;
+        }
         templateSelect.click();
         templateSelect.element.all(by.css('option')).get(0).click();
         expect(includeElem.isPresent()).toBe(false);
