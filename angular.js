@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.13-build.2249+sha.ef4bf8c
+ * @license AngularJS v1.2.13-build.2250+sha.08793a6
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.13-build.2249+sha.ef4bf8c/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.13-build.2250+sha.08793a6/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1834,7 +1834,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.13-build.2249+sha.ef4bf8c',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.13-build.2250+sha.08793a6',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 13,
@@ -20082,23 +20082,16 @@ var ngSwitchDefaultDirective = ngDirective({
  *
  */
 var ngTranscludeDirective = ngDirective({
-  controller: ['$element', '$transclude', function($element, $transclude) {
+  link: function($scope, $element, $attrs, controller, $transclude) {
     if (!$transclude) {
       throw minErr('ngTransclude')('orphan',
-          'Illegal use of ngTransclude directive in the template! ' +
-          'No parent directive that requires a transclusion found. ' +
-          'Element: {0}',
-          startingTag($element));
+       'Illegal use of ngTransclude directive in the template! ' +
+       'No parent directive that requires a transclusion found. ' +
+       'Element: {0}',
+       startingTag($element));
     }
-
-    // remember the transclusion fn but call it during linking so that we don't process transclusion before directives on
-    // the parent element even when the transclusion replaces the current element. (we can't use priority here because
-    // that applies only to compile fns and not controllers
-    this.$transclude = $transclude;
-  }],
-
-  link: function($scope, $element, $attrs, controller) {
-    controller.$transclude(function(clone) {
+    
+    $transclude(function(clone) {
       $element.empty();
       $element.append(clone);
     });
