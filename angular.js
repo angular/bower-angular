@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.13-build.2250+sha.08793a6
+ * @license AngularJS v1.2.13-build.2251+sha.b4eed8a
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.13-build.2250+sha.08793a6/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.13-build.2251+sha.b4eed8a/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -160,6 +160,7 @@ function minErr(module) {
     -assertNotHasOwnProperty,
     -getter,
     -getBlockElements,
+    -hasOwnProperty,
 
 */
 
@@ -175,7 +176,7 @@ function minErr(module) {
  * @returns {string} Lowercased string.
  */
 var lowercase = function(string){return isString(string) ? string.toLowerCase() : string;};
-
+var hasOwnProperty = Object.prototype.hasOwnProperty;
 
 /**
  * @ngdoc function
@@ -1834,7 +1835,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.13-build.2250+sha.08793a6',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.13-build.2251+sha.b4eed8a',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 13,
@@ -14072,6 +14073,15 @@ function filterFilter() {
         };
       } else {
         comparator = function(obj, text) {
+          if (obj && text && typeof obj === 'object' && typeof text === 'object') {
+            for (var objKey in obj) {
+              if (objKey.charAt(0) !== '$' && hasOwnProperty.call(obj, objKey) &&
+                  comparator(obj[objKey], text[objKey])) {
+                return true;
+              }
+            }
+            return false;
+          }
           text = (''+text).toLowerCase();
           return (''+obj).toLowerCase().indexOf(text) > -1;
         };
