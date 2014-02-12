@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.13-build.2255+sha.72894f0
+ * @license AngularJS v1.2.13-build.2256+sha.e7ab857
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.13-build.2255+sha.72894f0/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.13-build.2256+sha.e7ab857/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1836,7 +1836,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.13-build.2255+sha.72894f0',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.13-build.2256+sha.e7ab857',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 13,
@@ -16706,6 +16706,9 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
    * You can override this for input directives whose concept of being empty is different to the
    * default. The `checkboxInputType` directive does this because in its case a value of `false`
    * implies empty.
+   * 
+   * @param {*} value Reference to check.
+   * @returns {boolean} True if `value` is empty.
    */
   this.$isEmpty = function(value) {
     return isUndefined(value) || value === '' || value === null || value !== value;
