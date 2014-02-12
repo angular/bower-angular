@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.13-build.2256+sha.e7ab857
+ * @license AngularJS v1.2.13-build.2257+sha.98b2f8e
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.13-build.2256+sha.e7ab857/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.13-build.2257+sha.98b2f8e/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1836,7 +1836,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.13-build.2256+sha.e7ab857',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.13-build.2257+sha.98b2f8e',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 13,
@@ -14197,7 +14197,8 @@ function filterFilter() {
            return;
          }
          element(by.model('amount')).clear();
-         element(by.model('amount')).sendKeys('-1234');         expect(element(by.id('currency-default')).getText()).toBe('($1,234.00)');
+         element(by.model('amount')).sendKeys('-1234');
+         expect(element(by.id('currency-default')).getText()).toBe('($1,234.00)');
          expect(element(by.binding('amount | currency:"USD$"')).getText()).toBe('(USD$1,234.00)');
        });
      </doc:protractor>
