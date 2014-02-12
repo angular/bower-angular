@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.13-build.2257+sha.98b2f8e
+ * @license AngularJS v1.2.13-build.2258+sha.d119e36
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.13-build.2257+sha.98b2f8e/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.13-build.2258+sha.d119e36/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1836,7 +1836,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.13-build.2257+sha.98b2f8e',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.13-build.2258+sha.d119e36',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 13,
@@ -9154,7 +9154,7 @@ function $LocationProvider(){
    * @eventType broadcast on root scope
    * @description
    * Broadcasted before a URL will change. This change can be prevented by calling
-   * `preventDefault` method of the event. See {@link ng.$rootScope.Scope#$on} for more
+   * `preventDefault` method of the event. See {@link ng.$rootScope.Scope#methods_$on} for more
    * details about event object. Upon successful change
    * {@link ng.$location#events_$locationChangeSuccess $locationChangeSuccess} is fired.
    *
