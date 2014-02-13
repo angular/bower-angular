@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.13-build.2259+sha.1079105
+ * @license AngularJS v1.2.13-build.2260+sha.2b73027
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.13-build.2259+sha.1079105/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.13-build.2260+sha.2b73027/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1836,7 +1836,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.13-build.2259+sha.1079105',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.13-build.2260+sha.2b73027',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 13,
@@ -16132,6 +16132,7 @@ function textInputType(scope, element, attr, ctrl, $sniffer, $browser) {
 
     element.on('compositionend', function() {
       composing = false;
+      listener();
     });
   }
 
