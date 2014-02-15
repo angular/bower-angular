@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.13-build.2263+sha.31c450b
+ * @license AngularJS v1.2.13-build.2265+sha.c086f83
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.13-build.2263+sha.31c450b/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.13-build.2265+sha.c086f83/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1836,7 +1836,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.13-build.2263+sha.31c450b',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.13-build.2265+sha.c086f83',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 13,
@@ -2068,6 +2068,14 @@ var jqCache = JQLite.cache = {},
     removeEventListenerFn = (window.document.removeEventListener
       ? function(element, type, fn) {element.removeEventListener(type, fn, false); }
       : function(element, type, fn) {element.detachEvent('on' + type, fn); });
+
+/*
+ * !!! This is an undocumented "private" function !!!
+ */
+var jqData = JQLite._data = function(node) {
+  //jQuery always returns an object on cache miss
+  return this.cache[node[this.expando]] || {};
+};
 
 function jqNextId() { return ++jqId; }
 
@@ -4059,6 +4067,29 @@ var $AnimateProvider = ['$provide', function($provide) {
         done && $timeout(done, 0, false);
       },
 
+      /**
+       *
+       * @ngdoc function
+       * @name ng.$animate#setClass
+       * @methodOf ng.$animate
+       * @function
+       * @description Adds and/or removes the given CSS classes to and from the element.
+       * Once complete, the done() callback will be fired (if provided).
+       * @param {jQuery/jqLite element} element the element which will it's CSS classes changed
+       *   removed from it
+       * @param {string} add the CSS classes which will be added to the element
+       * @param {string} remove the CSS class which will be removed from the element
+       * @param {function=} done the callback function (if provided) that will be fired after the
+       *   CSS classes have been set on the element
+       */
+      setClass : function(element, add, remove, done) {
+        forEach(element, function (element) {
+          jqLiteAddClass(element, add);
+          jqLiteRemoveClass(element, remove);
+        });
+        done && $timeout(done, 0, false);
+      },
+
       enabled : noop
     };
   }];
@@ -5389,8 +5420,16 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
        * @param {string} oldClasses The former CSS className value
        */
       $updateClass : function(newClasses, oldClasses) {
-        this.$removeClass(tokenDifference(oldClasses, newClasses));
-        this.$addClass(tokenDifference(newClasses, oldClasses));
+        var toAdd = tokenDifference(newClasses, oldClasses);
+        var toRemove = tokenDifference(oldClasses, newClasses);
+
+        if(toAdd.length === 0) {
+          $animate.removeClass(this.$$element, toRemove);
+        } else if(toRemove.length === 0) {
+          $animate.addClass(this.$$element, toAdd);
+        } else {
+          $animate.setClass(this.$$element, toAdd, toRemove);
+        }
       },
 
       /**
@@ -20832,4 +20871,4 @@ var styleDirective = valueFn({
 
 })(window, document);
 
-!angular.$$csp() && angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{display:none !important;}ng\\:form{display:block;}</style>');
+!angular.$$csp() && angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{display:none !important;}ng\\:form{display:block;}.ng-animate-block-transitions{transition:0s all!important;-webkit-transition:0s all!important;}</style>');
