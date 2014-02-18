@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.14-build.2277+sha.481508d
+ * @license AngularJS v1.2.14-build.2278+sha.21dac2a
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.14-build.2277+sha.481508d/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.14-build.2278+sha.21dac2a/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1878,7 +1878,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.14-build.2277+sha.481508d',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.14-build.2278+sha.21dac2a',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 14,
@@ -17437,6 +17437,18 @@ function classDirective(name, selector) {
  * @description
  * The `ngClass` directive allows you to dynamically set CSS classes on an HTML element by databinding
  * an expression that represents all classes to be added.
+ *
+ * The directive operates in three different ways, depending on which of three types the expression
+ * evaluates to:
+ *
+ * 1. If the expression evaluates to a string, the string should be one or more space-delimited class
+ * names.
+ *
+ * 2. If the expression evaluates to an array, each element of the array should be a string that is
+ * one or more space-delimited class names.
+ *
+ * 3. If the expression evaluates to an object, then for each key-value pair of the
+ * object with a truthy value the corresponding key is used as a class name.
  *
  * The directive won't add duplicate classes if a particular class was already set.
  *
