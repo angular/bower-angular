@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.14-build.2307+sha.1293cc8
+ * @license AngularJS v1.2.14-build.2311+sha.f4a121f
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.14-build.2307+sha.1293cc8/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.14-build.2311+sha.f4a121f/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1878,7 +1878,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.14-build.2307+sha.1293cc8',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.14-build.2311+sha.f4a121f',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 14,
@@ -4563,9 +4563,11 @@ function $CacheFactoryProvider() {
       return caches[cacheId] = {
 
         put: function(key, value) {
-          var lruEntry = lruHash[key] || (lruHash[key] = {key: key});
+          if (capacity < Number.MAX_VALUE) {
+            var lruEntry = lruHash[key] || (lruHash[key] = {key: key});
 
-          refresh(lruEntry);
+            refresh(lruEntry);
+          }
 
           if (isUndefined(value)) return;
           if (!(key in data)) size++;
@@ -4580,26 +4582,31 @@ function $CacheFactoryProvider() {
 
 
         get: function(key) {
-          var lruEntry = lruHash[key];
+          if (capacity < Number.MAX_VALUE) {
+            var lruEntry = lruHash[key];
 
-          if (!lruEntry) return;
+            if (!lruEntry) return;
 
-          refresh(lruEntry);
+            refresh(lruEntry);
+          }
 
           return data[key];
         },
 
 
         remove: function(key) {
-          var lruEntry = lruHash[key];
+          if (capacity < Number.MAX_VALUE) {
+            var lruEntry = lruHash[key];
 
-          if (!lruEntry) return;
+            if (!lruEntry) return;
 
-          if (lruEntry == freshEnd) freshEnd = lruEntry.p;
-          if (lruEntry == staleEnd) staleEnd = lruEntry.n;
-          link(lruEntry.n,lruEntry.p);
+            if (lruEntry == freshEnd) freshEnd = lruEntry.p;
+            if (lruEntry == staleEnd) staleEnd = lruEntry.n;
+            link(lruEntry.n,lruEntry.p);
 
-          delete lruHash[key];
+            delete lruHash[key];
+          }
+
           delete data[key];
           size--;
         },
