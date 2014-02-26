@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.14-build.2324+sha.6b049c7
+ * @license AngularJS v1.2.14-build.2325+sha.3d6dff4
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.14-build.2324+sha.6b049c7/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.14-build.2325+sha.3d6dff4/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1880,7 +1880,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.14-build.2324+sha.6b049c7',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.14-build.2325+sha.3d6dff4',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 14,
@@ -8840,11 +8840,6 @@ function LocationHashbangUrl(appBase, hashPrefix) {
       throw $locationMinErr('ihshprfx', 'Invalid url "{0}", missing hash prefix "{1}".', url,
           hashPrefix);
     }
-
-    if (withoutHashUrl === '' && withoutBaseUrl.charAt(0) === '?') {
-      withoutHashUrl = withoutBaseUrl;
-    }
-
     parseAppUrl(withoutHashUrl, this, appBase);
 
     this.$$path = removeWindowsDriveName(this.$$path, withoutHashUrl, appBase);
@@ -8895,14 +8890,10 @@ function LocationHashbangUrl(appBase, hashPrefix) {
    */
   this.$$compose = function() {
     var search = toKeyValue(this.$$search),
-        hash = this.$$hash ? '#' + encodeUriSegment(this.$$hash) : '',
-        url = '';
+        hash = this.$$hash ? '#' + encodeUriSegment(this.$$hash) : '';
 
     this.$$url = encodePath(this.$$path) + (search ? '?' + search : '') + hash;
-    if (this.$$url) {
-      url = this.$$path ? hashPrefix + this.$$url : this.$$url;
-    }
-    this.$$absUrl = appBase + url;
+    this.$$absUrl = appBase + (this.$$url ? hashPrefix + this.$$url : '');
   };
 
   this.$$rewrite = function(url) {
