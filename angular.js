@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.15-build.2390+sha.235731d
+ * @license AngularJS v1.2.15-build.2391+sha.53ec5e1
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.15-build.2390+sha.235731d/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.15-build.2391+sha.53ec5e1/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1880,7 +1880,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.15-build.2390+sha.235731d',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.15-build.2391+sha.53ec5e1',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 15,
@@ -5280,7 +5280,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
       Suffix = 'Directive',
       COMMENT_DIRECTIVE_REGEXP = /^\s*directive\:\s*([\d\w\-_]+)\s+(.*)$/,
       CLASS_DIRECTIVE_REGEXP = /(([\d\w\-_]+)(?:\:([^;]+))?;?)/,
-      TABLE_CONTENT_REGEXP = /^<\s*(tr|th|td|tbody)(\s+[^>]*)?>/i;
+      TABLE_CONTENT_REGEXP = /^<\s*(tr|th|td|thead|tbody|tfoot)(\s+[^>]*)?>/i;
 
   // Ref: http://developers.whatwg.org/webappapis.html#event-handler-idl-attributes
   // The assumption is that future DOM event attribute names will begin with
@@ -6426,16 +6426,15 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
       template = trim(template);
       if ((type = TABLE_CONTENT_REGEXP.exec(template))) {
         type = type[1].toLowerCase();
-        var table = jqLite('<table>' + template + '</table>'),
-            tbody = table.children('tbody'),
-            leaf = /(td|th)/.test(type) && table.find('tr');
-        if (tbody.length && type !== 'tbody') {
-          table = tbody;
+        var table = jqLite('<table>' + template + '</table>');
+        if (/(thead|tbody|tfoot)/.test(type)) {
+          return table.children(type);
         }
-        if (leaf && leaf.length) {
-          table = leaf;
+        table = table.children('tbody');
+        if (type === 'tr') {
+          return table.children('tr');
         }
-        return table.contents();
+        return table.children('tr').contents();
       }
       return jqLite('<div>' +
                       template +
