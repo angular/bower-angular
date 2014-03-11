@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-beta.2-build.2411+sha.0f13f24
+ * @license AngularJS v1.3.0-beta.2-build.2412+sha.d6419d0
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-beta.2-build.2411+sha.0f13f24/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-beta.2-build.2412+sha.d6419d0/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1878,7 +1878,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-beta.2-build.2411+sha.0f13f24',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-beta.2-build.2412+sha.d6419d0',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -19936,9 +19936,11 @@ var ngPluralizeDirective = ['$locale', '$interpolate', function($locale, $interp
  * as **data-ng-repeat-start**, **x-ng-repeat-start** and **ng:repeat-start**).
  *
  * @animations
- * enter - when a new item is added to the list or when an item is revealed after a filter
- * leave - when an item is removed from the list or when an item is filtered out
- * move - when an adjacent item is filtered out causing a reorder or when the item contents are reordered
+ * **.enter** - when a new item is added to the list or when an item is revealed after a filter
+ *
+ * **.leave** - when an item is removed from the list or when an item is filtered out
+ *
+ * **.move** - when an adjacent item is filtered out causing a reorder or when the item contents are reordered
  *
  * @element ANY
  * @scope
