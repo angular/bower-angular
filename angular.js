@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.2468+sha.78057a9
+ * @license AngularJS v1.3.0-build.2469+sha.299b220
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2468+sha.78057a9/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2469+sha.299b220/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1919,7 +1919,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.2468+sha.78057a9',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.2469+sha.299b220',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -5591,7 +5591,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
        * @param {function(interpolatedValue)} fn Function that will be called whenever
                 the interpolated value of the attribute changes.
        *        See the {@link guide/directive#Attributes Directives} guide for more info.
-       * @returns {function()} the `fn` parameter.
+       * @returns {function()} Returns a deregistration function for this observer.
        */
       $observe: function(key, fn) {
         var attrs = this,
@@ -5605,7 +5605,10 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             fn(attrs[key]);
           }
         });
-        return fn;
+
+        return function() {
+          arrayRemove(listeners, fn);
+        };
       }
     };
 
