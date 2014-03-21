@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.15-build.24+sha.dc5ada4
+ * @license AngularJS v1.2.15-build.25+sha.ad128e0
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.15-build.24+sha.dc5ada4/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.15-build.25+sha.ad128e0/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1919,7 +1919,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.15-build.24+sha.dc5ada4',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.15-build.25+sha.ad128e0',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 15,
@@ -8089,13 +8089,16 @@ function createHttpBackend($browser, createXhr, $browserDefer, callbacks, rawDoc
       var callbackId = '_' + (callbacks.counter++).toString(36);
       callbacks[callbackId] = function(data) {
         callbacks[callbackId].data = data;
-        callbacks[callbackId].called = true;
       };
 
       var jsonpDone = jsonpReq(url.replace('JSON_CALLBACK', 'angular.callbacks.' + callbackId),
-          callbackId, function(status, text) {
-        completeRequest(callback, status, callbacks[callbackId].data, "", text);
-        callbacks[callbackId] = noop;
+          function() {
+        if (callbacks[callbackId].data) {
+          completeRequest(callback, 200, callbacks[callbackId].data);
+        } else {
+          completeRequest(callback, status || -2);
+        }
+        callbacks[callbackId] = angular.noop;
       });
     } else {
 
@@ -8195,40 +8198,34 @@ function createHttpBackend($browser, createXhr, $browserDefer, callbacks, rawDoc
     }
   };
 
-  function jsonpReq(url, callbackId, done) {
+  function jsonpReq(url, done) {
     // we can't use jQuery/jqLite here because jQuery does crazy shit with script elements, e.g.:
     // - fetches local scripts via XHR and evals them
     // - adds and immediately removes script elements from the document
-    var script = rawDocument.createElement('script'), callback = null;
-    script.type = "text/javascript";
+    var script = rawDocument.createElement('script'),
+        doneWrapper = function() {
+          script.onreadystatechange = script.onload = script.onerror = null;
+          rawDocument.body.removeChild(script);
+          if (done) done();
+        };
+
+    script.type = 'text/javascript';
     script.src = url;
-    script.async = true;
 
-    callback = function(event) {
-      removeEventListenerFn(script, "load", callback);
-      removeEventListenerFn(script, "error", callback);
-      rawDocument.body.removeChild(script);
-      script = null;
-      var status = -1;
-      var text = "unknown";
-
-      if (event) {
-        if (event.type === "load" && !callbacks[callbackId].called) {
-          event = { type: "error" };
+    if (msie && msie <= 8) {
+      script.onreadystatechange = function() {
+        if (/loaded|complete/.test(script.readyState)) {
+          doneWrapper();
         }
-        text = event.type;
-        status = event.type === "error" ? 404 : 200;
-      }
+      };
+    } else {
+      script.onload = script.onerror = function() {
+        doneWrapper();
+      };
+    }
 
-      if (done) {
-        done(status, text);
-      }
-    };
-
-    addEventListenerFn(script, "load", callback);
-    addEventListenerFn(script, "error", callback);
     rawDocument.body.appendChild(script);
-    return callback;
+    return doneWrapper;
   }
 }
 
