@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.16-build.62+sha.7287dbf
+ * @license AngularJS v1.2.16-build.63+sha.8d4d437
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.16-build.62+sha.7287dbf/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.16-build.63+sha.8d4d437/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1919,7 +1919,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.16-build.62+sha.7287dbf',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.16-build.63+sha.8d4d437',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 16,
@@ -12299,15 +12299,26 @@ function $RootScopeProvider(){
 
         forEach(this.$$listenerCount, bind(null, decrementListenerCount, this));
 
+        // sever all the references to parent scopes (after this cleanup, the current scope should
+        // not be retained by any of our references and should be eligible for garbage collection)
         if (parent.$$childHead == this) parent.$$childHead = this.$$nextSibling;
         if (parent.$$childTail == this) parent.$$childTail = this.$$prevSibling;
         if (this.$$prevSibling) this.$$prevSibling.$$nextSibling = this.$$nextSibling;
         if (this.$$nextSibling) this.$$nextSibling.$$prevSibling = this.$$prevSibling;
 
-        // This is bogus code that works around Chrome's GC leak
-        // see: https://github.com/angular/angular.js/issues/1313#issuecomment-10378451
-        this.$parent = this.$$nextSibling = this.$$prevSibling = this.$$childHead =
-            this.$$childTail = null;
+        // This is bogus code that works around V8's memory leak coming from ICs
+        // see: https://code.google.com/p/v8/issues/detail?id=2073#c26
+        //
+        // for more info also see:
+        // - https://github.com/angular/angular.js/issues/6794#issuecomment-38648909
+        // - https://github.com/angular/angular.js/issues/1313#issuecomment-10378451
+        for (var prop in this) {
+          if (hasOwnProperty.call(this, prop)) {
+            this[prop] = null;
+          }
+        }
+        // recreate the $$destroyed flag
+        this.$$destroyed = true;
       },
 
       /**
