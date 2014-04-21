@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.2615+sha.8d0cb30
+ * @license AngularJS v1.3.0-build.2616+sha.546cb42
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2615+sha.8d0cb30/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2616+sha.546cb42/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2020,7 +2020,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.2615+sha.8d0cb30',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.2616+sha.546cb42',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -7022,9 +7022,11 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
                 // register any observers
                 if (!interpolateFn) return;
 
-                // TODO(i): this should likely be attr.$set(name, iterpolateFn(scope) so that we reset the
-                // actual attr value
+                // initialize attr object so that it's ready in case we need the value for isolate
+                // scope initialization, otherwise the value would not be available from isolate
+                // directive's linking fn during linking phase
                 attr[name] = interpolateFn(scope);
+
                 ($$observers[name] || ($$observers[name] = [])).$$inter = true;
                 (attr.$$observers && attr.$$observers[name].$$scope || scope).
                   $watch(interpolateFn, function interpolateFnWatchAction(newValue, oldValue) {
@@ -8699,40 +8701,44 @@ function $InterpolateProvider() {
      * @returns {function(context)} an interpolation function which is used to compute the
      *    interpolated string. The function has these parameters:
      *
-     *    * `context`: an object against which any expressions embedded in the strings are evaluated
-     *      against.
-     *
+     * - `context`: evaluation context for all expressions embedded in the interpolated text
      */
     function $interpolate(text, mustHaveExpression, trustedContext) {
       var startIndex,
           endIndex,
           index = 0,
-          parts = [],
-          length = text.length,
+          separators = [],
+          expressions = [],
+          parseFns = [],
+          textLength = text.length,
           hasInterpolation = false,
-          fn,
+          hasText = false,
           exp,
-          concat = [];
+          concat = [],
+          lastValuesCache = { values: {}, results: {}};
 
-      while(index < length) {
+      while(index < textLength) {
         if ( ((startIndex = text.indexOf(startSymbol, index)) != -1) &&
              ((endIndex = text.indexOf(endSymbol, startIndex + startSymbolLength)) != -1) ) {
-          (index != startIndex) && parts.push(text.substring(index, startIndex));
-          parts.push(fn = $parse(exp = text.substring(startIndex + startSymbolLength, endIndex)));
-          fn.exp = exp;
+          if (index !== startIndex) hasText = true;
+          separators.push(text.substring(index, startIndex));
+          exp = text.substring(startIndex + startSymbolLength, endIndex);
+          expressions.push(exp);
+          parseFns.push($parse(exp));
           index = endIndex + endSymbolLength;
           hasInterpolation = true;
         } else {
-          // we did not find anything, so we have to add the remainder to the parts array
-          (index != length) && parts.push(text.substring(index));
-          index = length;
+          // we did not find an interpolation, so we have to add the remainder to the separators array
+          if (index !== textLength) {
+            hasText = true;
+            separators.push(text.substring(index));
+          }
+          break;
         }
       }
 
-      if (!(length = parts.length)) {
-        // we added, nothing, must have been an empty string.
-        parts.push('');
-        length = 1;
+      if (separators.length === expressions.length) {
+        separators.push('');
       }
 
       // Concatenating expressions makes it hard to reason about whether some combination of
@@ -8741,44 +8747,92 @@ function $InterpolateProvider() {
       // that's used is assigned or constructed by some JS code somewhere that is more testable or
       // make it obvious that you bound the value to some user controlled value.  This helps reduce
       // the load when auditing for XSS issues.
-      if (trustedContext && parts.length > 1) {
+      if (trustedContext && hasInterpolation && (hasText || expressions.length > 1)) {
           throw $interpolateMinErr('noconcat',
               "Error while interpolating: {0}\nStrict Contextual Escaping disallows " +
               "interpolations that concatenate multiple expressions when a trusted value is " +
               "required.  See http://docs.angularjs.org/api/ng.$sce", text);
       }
 
-      if (!mustHaveExpression  || hasInterpolation) {
-        concat.length = length;
-        fn = function(context) {
-          try {
-            for(var i = 0, ii = length, part; i<ii; i++) {
-              if (typeof (part = parts[i]) == 'function') {
-                part = part(context);
-                if (trustedContext) {
-                  part = $sce.getTrusted(trustedContext, part);
-                } else {
-                  part = $sce.valueOf(part);
-                }
-                if (part === null || isUndefined(part)) {
-                  part = '';
-                } else if (typeof part != 'string') {
-                  part = toJson(part);
-                }
-              }
-              concat[i] = part;
-            }
-            return concat.join('');
+      if (!mustHaveExpression || hasInterpolation) {
+        concat.length = separators.length + expressions.length;
+
+        var compute = function(values) {
+          for(var i = 0, ii = expressions.length; i < ii; i++) {
+            concat[2*i] = separators[i];
+            concat[(2*i)+1] = values[i];
           }
-          catch(err) {
-            var newErr = $interpolateMinErr('interr', "Can't interpolate: {0}\n{1}", text,
-                err.toString());
-            $exceptionHandler(newErr);
-          }
+          concat[2*ii] = separators[ii];
+          return concat.join('');
         };
-        fn.exp = text;
-        fn.parts = parts;
-        return fn;
+
+        var stringify = function (value) {
+          if (trustedContext) {
+            value = $sce.getTrusted(trustedContext, value);
+          } else {
+            value = $sce.valueOf(value);
+          }
+
+          if (value === null || isUndefined(value)) {
+            value = '';
+          } else if (typeof value != 'string') {
+            value = toJson(value);
+          }
+
+          return value;
+        };
+
+        return extend(function interpolationFn(context) {
+            var scopeId = context.$id || 'notAScope';
+            var lastValues = lastValuesCache.values[scopeId];
+            var lastResult = lastValuesCache.results[scopeId];
+            var i = 0;
+            var ii = expressions.length;
+            var values = new Array(ii);
+            var val;
+            var inputsChanged = lastResult === undefined ? true: false;
+
+
+            // if we haven't seen this context before, initialize the cache and try to setup
+            // a cleanup routine that purges the cache when the scope goes away.
+            if (!lastValues) {
+              lastValues = [];
+              inputsChanged = true;
+              if (context.$on) {
+                context.$on('$destroy', function() {
+                  lastValuesCache.values[scopeId] = null;
+                  lastValuesCache.results[scopeId] = null;
+                });
+              }
+            }
+
+
+            try {
+              for (; i < ii; i++) {
+                val = stringify(parseFns[i](context));
+                if (val !== lastValues[i]) {
+                  inputsChanged = true;
+                }
+                values[i] = val;
+              }
+
+              if (inputsChanged) {
+                lastValuesCache.values[scopeId] = values;
+                lastValuesCache.results[scopeId] = lastResult = compute(values);
+              }
+            } catch(err) {
+              var newErr = $interpolateMinErr('interr', "Can't interpolate: {0}\n{1}", text,
+                  err.toString());
+              $exceptionHandler(newErr);
+            }
+
+            return lastResult;
+          }, {
+          // all of these properties are undocumented for now
+          exp: text, //just for compatibility with regular watchers created via $watch
+          separators: separators,
+          expressions: expressions
+        });
       }
     }
 
@@ -12177,6 +12231,58 @@ function $RootScopeProvider(){
         };
       },
 
+      /**
+       * @ngdoc method
+       * @name $rootScope.Scope#$watchGroup
+       * @function
+       *
+       * @description
+       * A variant of {@link ng.$rootScope.Scope#$watch $watch()} where it watches an array of `watchExpressions`.
+       * If any one expression in the collection changes the `listener` is executed.
+       *
+       * - The items in the `watchCollection` array are observed via standard $watch operation and are examined on every
+       *   call to $digest() to see if any items changes.
+       * - The `listener` is called whenever any expression in the `watchExpressions` array changes.
+       *
+       * @param {Array.<string|Function(scope)>} watchExpressions Array of expressions that will be individually
+       * watched using {@link ng.$rootScope.Scope#$watch $watch()}
+       *
+       * @param {function(newValues, oldValues, scope)} listener Callback called whenever the return value of any
+       *    expression in `watchExpressions` changes
+       *    The `newValues` array contains the current values of the `watchExpressions`, with the indexes matching
+       *    those of `watchExpression`
+       *    and the `oldValues` array contains the previous values of the `watchExpressions`, with the indexes matching
+       *    those of `watchExpression`
+       *    The `scope` refers to the current scope.
+       *
+       * @returns {function()} Returns a de-registration function for all listeners.
+       */
+      $watchGroup: function(watchExpressions, listener) {
+        var oldValues = new Array(watchExpressions.length);
+        var newValues = new Array(watchExpressions.length);
+        var deregisterFns = [];
+        var changeCount = 0;
+        var self = this;
+
+        forEach(watchExpressions, function (expr, i) {
+          deregisterFns.push(self.$watch(expr, function (value, oldValue) {
+            newValues[i] = value;
+            oldValues[i] = oldValue;
+            changeCount++;
+          }));
+        }, this);
+
+        deregisterFns.push(self.$watch(function () {return changeCount;}, function () {
+          listener(newValues, oldValues, self);
+        }));
+
+        return function deregisterWatchGroup() {
+          forEach(deregisterFns, function (fn) {
+            fn();
+          });
+        };
+      },
+
 
       /**
        * @ngdoc method
@@ -12579,7 +12685,7 @@ function $RootScopeProvider(){
 
         // prevent NPEs since these methods have references to properties we nulled out
         this.$destroy = this.$digest = this.$apply = noop;
-        this.$on = this.$watch = function() { return noop; };
+        this.$on = this.$watch = this.$watchGroup = function() { return noop; };
       },
 
       /**
@@ -20728,7 +20834,7 @@ var ngPluralizeDirective = ['$locale', '$interpolate', function($locale, $interp
           //if explicit number rule such as 1, 2, 3... is defined, just use it. Otherwise,
           //check it against pluralization rules in $locale service
           if (!(value in whens)) value = $locale.pluralCat(value - offset);
-           return whensExpFns[value](scope, element, true);
+           return whensExpFns[value](scope);
         } else {
           return '';
         }
@@ -22463,7 +22569,9 @@ var optionDirective = ['$interpolate', function($interpolate) {
         if (interpolateFn) {
           scope.$watch(interpolateFn, function interpolateWatchAction(newVal, oldVal) {
             attr.$set('value', newVal);
-            if (newVal !== oldVal) selectCtrl.removeOption(oldVal);
+            if (oldVal !== newVal) {
+              selectCtrl.removeOption(oldVal);
+            }
             selectCtrl.addOption(newVal);
           });
         } else {
