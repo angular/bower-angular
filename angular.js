@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.2626+sha.828ad89
+ * @license AngularJS v1.3.0-build.2627+sha.8377e81
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2626+sha.828ad89/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2627+sha.8377e81/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2020,7 +2020,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.2626+sha.828ad89',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.2627+sha.8377e81',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -12058,18 +12058,23 @@ function $RootScopeProvider(){
           child.$$asyncQueue = this.$$asyncQueue;
           child.$$postDigestQueue = this.$$postDigestQueue;
         } else {
-          ChildScope = function() {}; // should be anonymous; This is so that when the minifier munges
-            // the name it does not become random set of chars. This will then show up as class
-            // name in the web inspector.
-          ChildScope.prototype = this;
-          child = new ChildScope();
-          child.$id = nextUid();
+          // Only create a child scope class if somebody asks for one,
+          // but cache it to allow the VM to optimize lookups.
+          if (!this.$$childScopeClass) {
+            this.$$childScopeClass = function() {
+              this.$$watchers = this.$$nextSibling =
+                  this.$$childHead = this.$$childTail = null;
+              this.$$listeners = {};
+              this.$$listenerCount = {};
+              this.$id = nextUid();
+              this.$$childScopeClass = null;
+            };
+            this.$$childScopeClass.prototype = this;
+          }
+          child = new this.$$childScopeClass();
         }
         child['this'] = child;
-        child.$$listeners = {};
-        child.$$listenerCount = {};
         child.$parent = this;
-        child.$$watchers = child.$$nextSibling = child.$$childHead = child.$$childTail = null;
         child.$$prevSibling = this.$$childTail;
         if (this.$$childHead) {
           this.$$childTail.$$nextSibling = child;
