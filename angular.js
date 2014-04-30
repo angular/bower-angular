@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.2659+sha.e0d4c42
+ * @license AngularJS v1.3.0-build.2660+sha.3fb2d2a
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2659+sha.e0d4c42/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2660+sha.3fb2d2a/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2019,7 +2019,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.2659+sha.e0d4c42',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.2660+sha.3fb2d2a',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -4035,7 +4035,7 @@ createInjector.$$annotate = annotate;
  * @requires $rootScope
  *
  * @description
- * When called, it checks current value of `$location.hash()` and scroll to related element,
+ * When called, it checks current value of `$location.hash()` and scrolls to the related element,
  * according to rules specified in
  * [Html5 spec](http://dev.w3.org/html5/spec/Overview.html#the-indicated-part-of-the-document).
  *
