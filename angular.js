@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.2672+sha.8c08fcf
+ * @license AngularJS v1.3.0-build.2673+sha.1c0241e
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2672+sha.8c08fcf/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2673+sha.1c0241e/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2024,7 +2024,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.2672+sha.8c08fcf',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.2673+sha.1c0241e',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -8664,7 +8664,7 @@ function $InterpolateProvider() {
      *
      * ```js
      *   var $interpolate = ...; // injected
-     *   var context = {greeting: 'Hey', name: undefined };
+     *   var context = {greeting: 'Hello', name: undefined };
      *
      *   // default "forgiving" mode
      *   var exp = $interpolate('{{greeting}} {{name}}!');
@@ -18308,9 +18308,20 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
    * @param {string} trigger Event that triggered the update.
    */
   this.$setViewValue = function(value, trigger) {
-    var debounceDelay = ctrl.$options && (isObject(ctrl.$options.debounce)
-        ? (ctrl.$options.debounce[trigger] || ctrl.$options.debounce['default'] || 0)
-        : ctrl.$options.debounce) || 0;
+    var debounceDelay = 0,
+        options = ctrl.$options,
+        debounce;
+
+    if(options && isDefined(options.debounce)) {
+      debounce = options.debounce;
+      if(isNumber(debounce)) {
+        debounceDelay = debounce;
+      } else if(isNumber(debounce[trigger])) {
+        debounceDelay = debounce[trigger];
+      } else if (isNumber(debounce['default'])) {
+        debounceDelay = debounce['default'];
+      }
+    }
 
     $timeout.cancel(pendingDebounce);
     if (debounceDelay) {
