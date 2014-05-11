@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.2690+sha.be7c02c
+ * @license AngularJS v1.3.0-build.2691+sha.d71dbb1
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2690+sha.be7c02c/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2691+sha.d71dbb1/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1509,8 +1509,10 @@ function snake_case(name, separator){
 }
 
 function bindJQuery() {
+  var originalCleanData;
   // bind to jQuery if present;
   jQuery = window.jQuery;
+
   // reset to jQuery or default to us.
   if (jQuery) {
     jqLite = jQuery;
@@ -1521,14 +1523,22 @@ function bindJQuery() {
       injector: JQLitePrototype.injector,
       inheritedData: JQLitePrototype.inheritedData
     });
-    // Method signature:
-    //     jqLitePatchJQueryRemove(name, dispatchThis, filterElems, getterIfNoArguments)
-    jqLitePatchJQueryRemove('remove', true, true, false);
-    jqLitePatchJQueryRemove('empty', false, false, false);
-    jqLitePatchJQueryRemove('html', false, false, true);
+
+    originalCleanData = jQuery.cleanData;
+    // Prevent double-proxying.
+    originalCleanData = originalCleanData.$$original || originalCleanData;
+
+    jQuery.cleanData = function(elems) {
+      for (var i = 0, elem; (elem = elems[i]) != null; i++) {
+        jQuery(elem).triggerHandler('$destroy');
+      }
+      originalCleanData(elems);
+    };
+    jQuery.cleanData.$$original = originalCleanData;
   } else {
     jqLite = JQLite;
   }
+
   angular.element = jqLite;
 }
 
@@ -2024,7 +2034,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.2690+sha.be7c02c',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.2691+sha.d71dbb1',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -2287,49 +2297,6 @@ function camelCase(name) {
       return offset ? letter.toUpperCase() : letter;
     }).
     replace(MOZ_HACK_REGEXP, 'Moz$1');
-}
-
-/////////////////////////////////////////////
-// jQuery mutation patch
-//
-// In conjunction with bindJQuery intercepts all jQuery's DOM destruction apis and fires a
-// $destroy event on all DOM nodes being removed.
-//
-/////////////////////////////////////////////
-
-function jqLitePatchJQueryRemove(name, dispatchThis, filterElems, getterIfNoArguments) {
-  var originalJqFn = jQuery.fn[name];
-  originalJqFn = originalJqFn.$original || originalJqFn;
-  removePatch.$original = originalJqFn;
-  jQuery.fn[name] = removePatch;
-
-  function removePatch(param) {
-    // jshint -W040
-    var list = filterElems && param ? [this.filter(param)] : [this],
-        fireEvent = dispatchThis,
-        set, setIndex, setLength,
-        element, childIndex, childLength, children;
-
-    if (!getterIfNoArguments || param != null) {
-      while(list.length) {
-        set = list.shift();
-        for(setIndex = 0, setLength = set.length; setIndex < setLength; setIndex++) {
-          element = jqLite(set[setIndex]);
-          if (fireEvent) {
-            element.triggerHandler('$destroy');
-          } else {
-            fireEvent = !fireEvent;
-          }
-          for(childIndex = 0, childLength = (children = element.children()).length;
-              childIndex < childLength;
-              childIndex++) {
-            list.push(jQuery(children[childIndex]));
-          }
-        }
-      }
-    }
-    return originalJqFn.apply(this, arguments);
-  }
 }
 
 var SINGLE_TAG_REGEXP = /^<(\w+)\s*\/?>(?:<\/\1>|)$/;
