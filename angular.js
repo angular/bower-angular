@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.2691+sha.d71dbb1
+ * @license AngularJS v1.3.0-build.2692+sha.7f5e0f0
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2691+sha.d71dbb1/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2692+sha.7f5e0f0/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1528,6 +1528,9 @@ function bindJQuery() {
     // Prevent double-proxying.
     originalCleanData = originalCleanData.$$original || originalCleanData;
 
+    // All nodes removed from the DOM via various jQuery APIs like .remove()
+    // are passed through jQuery.cleanData. Monkey-patch this method to fire
+    // the $destroy event on all removed nodes.
     jQuery.cleanData = function(elems) {
       for (var i = 0, elem; (elem = elems[i]) != null; i++) {
         jQuery(elem).triggerHandler('$destroy');
@@ -2034,7 +2037,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.2691+sha.d71dbb1',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.2692+sha.7f5e0f0',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
