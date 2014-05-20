@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.2718+sha.e994259
+ * @license AngularJS v1.3.0-build.2719+sha.e3f78c1
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2718+sha.e994259/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2719+sha.e3f78c1/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2037,7 +2037,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.2718+sha.e994259',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.2719+sha.e3f78c1',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -8605,7 +8605,13 @@ function $InterpolateProvider() {
 
   this.$get = ['$parse', '$exceptionHandler', '$sce', function($parse, $exceptionHandler, $sce) {
     var startSymbolLength = startSymbol.length,
-        endSymbolLength = endSymbol.length;
+        endSymbolLength = endSymbol.length,
+        escapedStartRegexp = new RegExp(startSymbol.replace(/./g, escape), 'g'),
+        escapedEndRegexp = new RegExp(endSymbol.replace(/./g, escape), 'g');
+
+    function escape(ch) {
+      return '\\\\\\' + ch;
+    }
 
     /**
      * @ngdoc service
@@ -8649,6 +8655,42 @@ function $InterpolateProvider() {
      * ```
      *
      * `allOrNothing` is useful for interpolating URLs. `ngSrc` and `ngSrcset` use this behavior.
+     *
+     * ####Escaped Interpolation
+     * $interpolate provides a mechanism for escaping interpolation markers. Start and end markers
+     * can be escaped by preceding each of their characters with a REVERSE SOLIDUS U+005C (backslash).
+     * It will be rendered as a regular start/end marker, and will not be interpreted as an expression
+     * or binding.
+     *
+     * This enables web-servers to prevent script injection attacks and defacing attacks, to some
+     * degree, while also enabling code examples to work without relying on the
+     * {@link ng.directive:ngNonBindable ngNonBindable} directive.
+     *
+     * **For security purposes, it is strongly encouraged that web servers escape user-supplied data,
+     * replacing angle brackets (&lt;, &gt;) with &amp;lt; and &amp;gt; respectively, and replacing all
+     * interpolation start/end markers with their escaped counterparts.**
+     *
+     * Escaped interpolation markers are only replaced with the actual interpolation markers in rendered
+     * output when the $interpolate service processes the text. So, for HTML elements interpolated
+     * by {@link ng.$compile $compile}, or otherwise interpolated with the `mustHaveExpression` parameter
+     * set to `true`, the interpolated text must contain an unescaped interpolation expression. As such,
+     * this is typically useful only when user-data is used in rendering a template from the server, or
+     * when otherwise untrusted data is used by a directive.
+     *
+     * <example>
+     *  <file name="index.html">
+     *    <div ng-init="username='A user'">
+     *      <p ng-init="apptitle='Escaping demo'">{{apptitle}}: \{\{ username = "some jerk"; \}\}
+     *        </p>
+     *      <p><strong>{{username}}</strong> attempts to inject code which will deface the
+     *        application, but fails to accomplish their task, because the server has correctly
+     *        escaped the interpolation start/end markers with REVERSE SOLIDUS U+005C (backslash)
+     *        characters.</p>
+     *      <p>Instead, the result of the attempted script injection is visible, and can be removed
+     *        from the database by an administrator.</p>
+     *    </div>
+     *  </file>
+     * </example>
      *
      * @param {string} text The text with markup to interpolate.
      * @param {boolean=} mustHaveExpression if set to true then the interpolation string must have
@@ -8699,6 +8741,12 @@ function $InterpolateProvider() {
           break;
         }
       }
+
+      forEach(separators, function(key, i) {
+        separators[i] = separators[i].
+          replace(escapedStartRegexp, startSymbol).
+          replace(escapedEndRegexp, endSymbol);
+      });
 
       if (separators.length === expressions.length) {
         separators.push('');
