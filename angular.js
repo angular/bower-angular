@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.17-build.200+sha.c241a57
+ * @license AngularJS v1.2.17-build.201+sha.88505d8
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.17-build.200+sha.c241a57/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.17-build.201+sha.88505d8/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1919,7 +1919,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.17-build.200+sha.c241a57',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.17-build.201+sha.88505d8',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 17,
@@ -10008,9 +10008,6 @@ Lexer.prototype = {
 
     this.tokens = [];
 
-    var token;
-    var json = [];
-
     while (this.index < this.text.length) {
       this.ch = this.text.charAt(this.index);
       if (this.is('"\'')) {
@@ -10019,19 +10016,11 @@ Lexer.prototype = {
         this.readNumber();
       } else if (this.isIdent(this.ch)) {
         this.readIdent();
-        // identifiers can only be if the preceding char was a { or ,
-        if (this.was('{,') && json[0] === '{' &&
-            (token = this.tokens[this.tokens.length - 1])) {
-          token.json = token.text.indexOf('.') === -1;
-        }
       } else if (this.is('(){}[].,;:?')) {
         this.tokens.push({
           index: this.index,
-          text: this.ch,
-          json: (this.was(':[,') && this.is('{[')) || this.is('}]:,')
+          text: this.ch
         });
-        if (this.is('{[')) json.unshift(this.ch);
-        if (this.is('}]')) json.shift();
         this.index++;
       } else if (this.isWhitespace(this.ch)) {
         this.index++;
@@ -10052,8 +10041,7 @@ Lexer.prototype = {
           this.tokens.push({
             index: this.index,
             text: this.ch,
-            fn: fn,
-            json: (this.was('[,:') && this.is('+-'))
+            fn: fn
           });
           this.index += 1;
         } else {
@@ -10136,7 +10124,8 @@ Lexer.prototype = {
     this.tokens.push({
       index: start,
       text: number,
-      json: true,
+      literal: true,
+      constant: true,
       fn: function() { return number; }
     });
   },
@@ -10188,7 +10177,8 @@ Lexer.prototype = {
     // OPERATORS is our own object so we don't need to use special hasOwnPropertyFn
     if (OPERATORS.hasOwnProperty(ident)) {
       token.fn = OPERATORS[ident];
-      token.json = OPERATORS[ident];
+      token.literal = true;
+      token.constant = true;
     } else {
       var getter = getterFn(ident, this.options, this.text);
       token.fn = extend(function(self, locals) {
@@ -10205,13 +10195,11 @@ Lexer.prototype = {
     if (methodName) {
       this.tokens.push({
         index:lastDot,
-        text: '.',
-        json: false
+        text: '.'
       });
       this.tokens.push({
         index: lastDot + 1,
-        text: methodName,
-        json: false
+        text: methodName
       });
     }
   },
@@ -10249,7 +10237,8 @@ Lexer.prototype = {
           index: start,
           text: rawString,
           string: string,
-          json: true,
+          literal: true,
+          constant: true,
           fn: function() { return string; }
         });
         return;
@@ -10281,28 +10270,12 @@ Parser.ZERO = extend(function () {
 Parser.prototype = {
   constructor: Parser,
 
-  parse: function (text, json) {
+  parse: function (text) {
     this.text = text;
-
-    //TODO(i): strip all the obsolte json stuff from this file
-    this.json = json;
 
     this.tokens = this.lexer.lex(text);
 
-    if (json) {
-      // The extra level of aliasing is here, just in case the lexer misses something, so that
-      // we prevent any accidental execution in JSON.
-      this.assignment = this.logicalOR;
-
-      this.functionCall =
-      this.fieldAccess =
-      this.objectIndex =
-      this.filterChain = function() {
-        this.throwError('is not valid json', {text: text, index: 0});
-      };
-    }
-
-    var value = json ? this.primary() : this.statements();
+    var value = this.statements();
 
     if (this.tokens.length !== 0) {
       this.throwError('is an unexpected token', this.tokens[0]);
@@ -10329,10 +10302,8 @@ Parser.prototype = {
       if (!primary) {
         this.throwError('not a primary expression', token);
       }
-      if (token.json) {
-        primary.constant = true;
-        primary.literal = true;
-      }
+      primary.literal = !!token.literal;
+      primary.constant = !!token.constant;
     }
 
     var next, context;
@@ -10380,9 +10351,6 @@ Parser.prototype = {
   expect: function(e1, e2, e3, e4){
     var token = this.peek(e1, e2, e3, e4);
     if (token) {
-      if (this.json && !token.json) {
-        this.throwError('is not valid json', token);
-      }
       this.tokens.shift();
       return token;
     }
@@ -11136,7 +11104,7 @@ function $ParseProvider() {
 
           var lexer = new Lexer($parseOptions);
           var parser = new Parser(lexer, $filter, $parseOptions);
-          parsedExpression = parser.parse(exp, false);
+          parsedExpression = parser.parse(exp);
 
           if (exp !== 'hasOwnProperty') {
             // Only cache the value if it's not going to mess up the cache object
