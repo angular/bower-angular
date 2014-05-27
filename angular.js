@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.2767+sha.3fc95e0
+ * @license AngularJS v1.3.0-build.2768+sha.462eefc
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2767+sha.3fc95e0/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2768+sha.462eefc/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2037,7 +2037,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.2767+sha.3fc95e0',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.2768+sha.462eefc',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -19443,11 +19443,17 @@ var ngCloakDirective = ngDirective({
  * @example
  * Here is a simple form for editing user contact information. Adding, removing, clearing, and
  * greeting are methods declared on the controller (see source tab). These methods can
- * easily be called from the angular markup. Notice that the scope becomes the `this` for the
- * controller's instance. This allows for easy access to the view data from the controller. Also
- * notice that any changes to the data are automatically reflected in the View without the need
- * for a manual update. The example is shown in two different declaration styles you may use
- * according to preference.
+ * easily be called from the angular markup. Any changes to the data are automatically reflected
+ * in the View without the need for a manual update.
+ *
+ * Two different declaration styles are included below: one which injects `scope` into the
+ * controller, and another which instead binds methods and properties directly onto the controller
+ * using `this`. The first option is more common in the Angular community, and is generally used
+ * in boilerplates and in this guide. However, there are advantages to binding properties directly
+ * to the controller and avoiding scope. Using `controller as` makes it obvious which controller
+ * you are accessing in the template when multiple controllers apply to an element. Since there
+ * is always a `.` in the bindings, you don't have to worry about prototypal inheritance masking
+ * primitives.
    <example>
      <file name="index.html">
       <script>
