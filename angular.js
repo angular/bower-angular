@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.2797+sha.1d90744
+ * @license AngularJS v1.3.0-build.2798+sha.1ec6d55
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2797+sha.1d90744/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2798+sha.1ec6d55/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2067,7 +2067,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.2797+sha.1d90744',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.2798+sha.1ec6d55',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -2295,7 +2295,7 @@ function publishExternalAPI(angular){
  */
 
 var jqCache = JQLite.cache = {},
-    jqName = JQLite.expando = 'ng-' + new Date().getTime(),
+    jqName = JQLite.expando = 'ng' + new Date().getTime(),
     jqId = 1,
     addEventListenerFn = (window.document.addEventListener
       ? function(element, type, fn) {element.addEventListener(type, fn, false);}
