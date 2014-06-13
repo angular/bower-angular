@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-beta.12
+ * @license AngularJS v1.3.0-build.2830+sha.20c3c9e
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-beta.12/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2830+sha.20c3c9e/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2071,11 +2071,11 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-beta.12',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.2830+sha.20c3c9e',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
-  codeName: 'ephemeral-acceleration'
+  codeName: 'snapshot'
 };
 
 
@@ -2305,7 +2305,7 @@ function publishExternalAPI(angular){
  * @returns {Object} jQuery object.
  */
 
-JQLite.expando = 'ng';
+JQLite.expando = 'ng339';
 
 var jqCache = JQLite.cache = {},
     jqId = 1,
@@ -2480,7 +2480,7 @@ function jqLiteOff(element, type, fn, unsupported) {
 }
 
 function jqLiteRemoveData(element, name) {
-  var expandoId = element.ng,
+  var expandoId = element.ng339,
       expandoStore = jqCache[expandoId];
 
   if (expandoStore) {
@@ -2494,17 +2494,17 @@ function jqLiteRemoveData(element, name) {
       jqLiteOff(element);
     }
     delete jqCache[expandoId];
-    element.ng = undefined; // don't delete DOM expandos. IE and Chrome don't like it
+    element.ng339 = undefined; // don't delete DOM expandos. IE and Chrome don't like it
   }
 }
 
 function jqLiteExpandoStore(element, key, value) {
-  var expandoId = element.ng,
+  var expandoId = element.ng339,
       expandoStore = jqCache[expandoId || -1];
 
   if (isDefined(value)) {
     if (!expandoStore) {
-      element.ng = expandoId = jqNextId();
+      element.ng339 = expandoId = jqNextId();
       expandoStore = jqCache[expandoId] = {};
     }
     expandoStore[key] = value;
