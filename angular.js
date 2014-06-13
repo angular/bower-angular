@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.2822+sha.398053c
+ * @license AngularJS v1.3.0-build.2823+sha.600a41a
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2822+sha.398053c/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2823+sha.600a41a/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2080,7 +2080,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.2822+sha.398053c',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.2823+sha.600a41a',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -11225,7 +11225,8 @@ function $ParseProvider() {
             if (oneTimeParseFn.$$unwatch && self && self.$$postDigestQueue) {
               self.$$postDigestQueue.push(function () {
                 // create a copy if the value is defined and it is not a $sce value
-                if ((stable = isDefined(lastValue)) && !lastValue.$$unwrapTrustedValue) {
+                if ((stable = isDefined(lastValue)) &&
+                    (lastValue === null || !lastValue.$$unwrapTrustedValue)) {
                   lastValue = copy(lastValue, null);
                 }
               });
