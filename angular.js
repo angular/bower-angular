@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.18-build.249+sha.f0904cf
+ * @license AngularJS v1.2.18-build.250+sha.f81d56e
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.18-build.249+sha.f0904cf/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.18-build.250+sha.f81d56e/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1953,7 +1953,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.18-build.249+sha.f0904cf',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.18-build.250+sha.f81d56e',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 18,
