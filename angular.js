@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.2853+sha.b1a6baa
+ * @license AngularJS v1.3.0-build.2854+sha.ceaea86
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2853+sha.b1a6baa/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2854+sha.ceaea86/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2073,7 +2073,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.2853+sha.b1a6baa',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.2854+sha.ceaea86',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -2593,6 +2593,10 @@ function jqLiteAddNodes(root, elements) {
       // if an Array or NodeList and not a Window
       if (typeof length === 'number' && elements.window !== elements) {
         if (length) {
+          if (elements.item) {
+            // convert NodeList to an Array to make PhantomJS 1.x happy
+            elements = slice.call(elements);
+          }
           push.apply(root, elements);
         }
       } else {
