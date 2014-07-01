@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.2863+sha.8252b8b
+ * @license AngularJS v1.3.0-build.2864+sha.ca75279
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2863+sha.8252b8b/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2864+sha.ca75279/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2069,7 +2069,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.2863+sha.8252b8b',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.2864+sha.ca75279',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -4323,6 +4323,7 @@ var $AnimateProvider = ['$provide', function($provide) {
             ? after.after(element)
             : parent.prepend(element);
         async(done);
+        return noop;
       },
 
       /**
@@ -4339,6 +4340,7 @@ var $AnimateProvider = ['$provide', function($provide) {
       leave : function(element, done) {
         element.remove();
         async(done);
+        return noop;
       },
 
       /**
@@ -4362,7 +4364,7 @@ var $AnimateProvider = ['$provide', function($provide) {
       move : function(element, parent, after, done) {
         // Do not remove element before insert. Removing will cause data associated with the
         // element to be dropped. Insert will implicitly do the remove.
-        this.enter(element, parent, after, done);
+        return this.enter(element, parent, after, done);
       },
 
       /**
@@ -4379,13 +4381,14 @@ var $AnimateProvider = ['$provide', function($provide) {
        *   className value has been added to the element
        */
       addClass : function(element, className, done) {
-        className = isString(className) ?
-                      className :
-                      isArray(className) ? className.join(' ') : '';
+        className = !isString(className)
+                        ? (isArray(className) ? className.join(' ') : '')
+                        : className;
         forEach(element, function (element) {
           jqLiteAddClass(element, className);
         });
         async(done);
+        return noop;
       },
 
       /**
@@ -4409,6 +4412,7 @@ var $AnimateProvider = ['$provide', function($provide) {
           jqLiteRemoveClass(element, className);
         });
         async(done);
+        return noop;
       },
 
       /**
@@ -4431,6 +4435,7 @@ var $AnimateProvider = ['$provide', function($provide) {
           jqLiteRemoveClass(element, remove);
         });
         async(done);
+        return noop;
       },
 
       enabled : noop
