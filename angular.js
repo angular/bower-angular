@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.2934+sha.048a5f1
+ * @license AngularJS v1.3.0-build.2935+sha.e8066c4
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2934+sha.048a5f1/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2935+sha.e8066c4/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2060,7 +2060,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.2934+sha.048a5f1',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.2935+sha.e8066c4',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -5333,6 +5333,13 @@ function $TemplateCacheProvider() {
  * The directive definition object provides instructions to the {@link ng.$compile
  * compiler}. The attributes are:
  *
+ * ### `multiElement`
+ * When this property is set to true, the HTML compiler will collect DOM nodes between
+ * nodes with the attributes `directive-name-start` and `directive-name-end`, and group them
+ * together as the directive elements. It is recomended that this feature be used on directives
+ * which are not strictly behavioural (such as {@link api/ng.directive:ngClick ngClick}), and which
+ * do not manipulate or replace child nodes (such as {@link api/ng.directive:ngInclude ngInclude}).
+ *
  * #### `priority`
  * When there are multiple directives defined on a single DOM element, sometimes it
  * is necessary to specify the order in which the directives are applied. The `priority` is used
@@ -6269,10 +6276,12 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
               }
 
               var directiveNName = ngAttrName.replace(/(Start|End)$/, '');
-              if (ngAttrName === directiveNName + 'Start') {
-                attrStartName = name;
-                attrEndName = name.substr(0, name.length - 5) + 'end';
-                name = name.substr(0, name.length - 6);
+              if (directiveIsMultiElement(directiveNName)) {
+                if (ngAttrName === directiveNName + 'Start') {
+                  attrStartName = name;
+                  attrEndName = name.substr(0, name.length - 5) + 'end';
+                  name = name.substr(0, name.length - 6);
+                }
               }
 
               nName = directiveNormalize(name.toLowerCase());
@@ -6884,6 +6893,27 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
       return match;
     }
 
+
+    /**
+     * looks up the directive and returns true if it is a multi-element directive,
+     * and therefore requires DOM nodes between -start and -end markers to be grouped
+     * together.
+     *
+     * @param {string} name name of the directive to look up.
+     * @returns true if directive was registered as multi-element.
+     */
+    function directiveIsMultiElement(name) {
+      if (hasDirectives.hasOwnProperty(name)) {
+        for(var directive, directives = $injector.get(name + Suffix),
+            i = 0, ii = directives.length; i<ii; i++) {
+          directive = directives[i];
+          if (directive.multiElement) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
 
     /**
      * When the element is replaced with HTML template then the new attributes
@@ -20775,6 +20805,7 @@ forEach(
  */
 var ngIfDirective = ['$animate', function($animate) {
   return {
+    multiElement: true,
     transclude: 'element',
     priority: 600,
     terminal: true,
@@ -21610,6 +21641,7 @@ var ngRepeatDirective = ['$parse', '$animate', function($parse, $animate) {
   var NG_REMOVED = '$$NG_REMOVED';
   var ngRepeatMinErr = minErr('ngRepeat');
   return {
+    multiElement: true,
     transclude: 'element',
     priority: 1000,
     terminal: true,
@@ -21955,10 +21987,13 @@ var ngRepeatDirective = ['$parse', '$animate', function($parse, $animate) {
   </example>
  */
 var ngShowDirective = ['$animate', function($animate) {
-  return function(scope, element, attr) {
-    scope.$watch(attr.ngShow, function ngShowWatchAction(value){
-      $animate[value ? 'removeClass' : 'addClass'](element, 'ng-hide');
-    });
+  return {
+    multiElement: true,
+    link: function(scope, element, attr) {
+      scope.$watch(attr.ngShow, function ngShowWatchAction(value){
+        $animate[value ? 'removeClass' : 'addClass'](element, 'ng-hide');
+      });
+    }
   };
 }];
 
@@ -22106,10 +22141,13 @@ var ngShowDirective = ['$animate', function($animate) {
   </example>
  */
 var ngHideDirective = ['$animate', function($animate) {
-  return function(scope, element, attr) {
-    scope.$watch(attr.ngHide, function ngHideWatchAction(value){
-      $animate[value ? 'addClass' : 'removeClass'](element, 'ng-hide');
-    });
+  return {
+    multiElement: true,
+    link: function(scope, element, attr) {
+      scope.$watch(attr.ngHide, function ngHideWatchAction(value){
+        $animate[value ? 'addClass' : 'removeClass'](element, 'ng-hide');
+      });
+    }
   };
 }];
 
@@ -22353,6 +22391,7 @@ var ngSwitchWhenDirective = ngDirective({
   transclude: 'element',
   priority: 800,
   require: '^ngSwitch',
+  multiElement: true,
   link: function(scope, element, attrs, ctrl, $transclude) {
     ctrl.cases['!' + attrs.ngSwitchWhen] = (ctrl.cases['!' + attrs.ngSwitchWhen] || []);
     ctrl.cases['!' + attrs.ngSwitchWhen].push({ transclude: $transclude, element: element });
@@ -22363,6 +22402,7 @@ var ngSwitchDefaultDirective = ngDirective({
   transclude: 'element',
   priority: 800,
   require: '^ngSwitch',
+  multiElement: true,
   link: function(scope, element, attr, ctrl, $transclude) {
     ctrl.cases['?'] = (ctrl.cases['?'] || []);
     ctrl.cases['?'].push({ transclude: $transclude, element: element });
