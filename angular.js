@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.2937+sha.4adc44a
+ * @license AngularJS v1.3.0-build.2938+sha.d2f348b
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2937+sha.4adc44a/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2938+sha.d2f348b/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -814,7 +814,7 @@ function isLeafNode (node) {
  </div>
 
  <script>
-  angular.module('copyExample')
+  angular.module('copyExample', [])
     .controller('ExampleController', ['$scope', function($scope) {
       $scope.master= {};
 
@@ -2060,7 +2060,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.2937+sha.4adc44a',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.2938+sha.d2f348b',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
