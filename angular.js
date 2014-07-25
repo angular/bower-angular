@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.2980+sha.683d722
+ * @license AngularJS v1.3.0-build.2981+sha.c03b9e5
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2980+sha.683d722/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2981+sha.c03b9e5/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1260,7 +1260,7 @@ function encodeUriQuery(val, pctEncodeSpaces) {
 var ngAttrPrefixes = ['ng-', 'data-ng-', 'ng:', 'x-ng-'];
 
 function getNgAttribute(element, ngAttr) {
-  var attr, i, ii = ngAttrPrefixes.length, j, jj;
+  var attr, i, ii = ngAttrPrefixes.length;
   element = jqLite(element);
   for (i=0; i<ii; ++i) {
     attr = ngAttrPrefixes[i] + ngAttr;
@@ -2066,7 +2066,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.2980+sha.683d722',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.2981+sha.c03b9e5',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
