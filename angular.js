@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.2979+sha.fefb7ed
+ * @license AngularJS v1.3.0-build.2980+sha.683d722
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2979+sha.fefb7ed/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.2980+sha.683d722/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2066,7 +2066,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.2979+sha.fefb7ed',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.2980+sha.683d722',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -12310,13 +12310,12 @@ function $RootScopeProvider(){
        *
        *    - `string`: Evaluated as {@link guide/expression expression}
        *    - `function(scope)`: called with current `scope` as a parameter.
-       * @param {function()=} listener Callback called whenever the return value of
-       *   the `watchExpression` changes.
+       * @param {function(newVal, oldVal, scope)} listener Callback called whenever the value
+       *    of `watchExpression` changes.
        *
-       *    - `string`: Evaluated as {@link guide/expression expression}
-       *    - `function(newValue, oldValue, scope)`: called with current and previous values as
-       *      parameters.
-       *
+       *    - `newVal` contains the current value of the `watchExpression`
+       *    - `oldVal` contains the previous value of the `watchExpression`
+       *    - `scope` refers to the current scope
        * @param {boolean=} objectEquality Compare for object equality using {@link angular.equals} instead of
        *     comparing for reference equality.
        * @param {function()=} deregisterNotifier Function to call when the deregistration function
