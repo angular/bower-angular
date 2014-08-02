@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3012+sha.108a69b
+ * @license AngularJS v1.3.0-build.3013+sha.c024f28
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3012+sha.108a69b/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3013+sha.c024f28/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2070,7 +2070,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3012+sha.108a69b',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3013+sha.c024f28',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -11329,8 +11329,12 @@ function $ParseProvider() {
             var parser = new Parser(lexer, $filter, $parseOptions);
             parsedExpression = parser.parse(exp);
 
-            if (parsedExpression.constant) parsedExpression.$$watchDelegate = constantWatch;
-            else if (oneTime) parsedExpression.$$watchDelegate = oneTimeWatch;
+            if (parsedExpression.constant) {
+              parsedExpression.$$watchDelegate = constantWatch;
+            } else if (oneTime) {
+              parsedExpression.$$watchDelegate = parsedExpression.literal ?
+                oneTimeLiteralWatch : oneTimeWatch;
+            }
 
             if (cacheKey !== 'hasOwnProperty') {
               // Only cache the value if it's not going to mess up the cache object
@@ -11365,6 +11369,30 @@ function $ParseProvider() {
           });
         }
       }, objectEquality);
+    }
+
+    function oneTimeLiteralWatch(scope, listener, objectEquality, parsedExpression) {
+      var unwatch;
+      return unwatch = scope.$watch(function oneTimeWatch(scope) {
+        return parsedExpression(scope);
+      }, function oneTimeListener(value, old, scope) {
+        if (isFunction(listener)) {
+          listener.call(this, value, old, scope);
+        }
+        if (isAllDefined(value)) {
+          scope.$$postDigest(function () {
+            if(isAllDefined(value)) unwatch();
+          });
+        }
+      }, objectEquality);
+
+      function isAllDefined(value) {
+        var allDefined = true;
+        forEach(value, function (val) {
+          if (!isDefined(val)) allDefined = false;
+        });
+        return allDefined;
+      }
     }
 
     function constantWatch(scope, listener, objectEquality, parsedExpression) {
