@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3018+sha.23bc92b
+ * @license AngularJS v1.3.0-build.3019+sha.fc73256
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3018+sha.23bc92b/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3019+sha.fc73256/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2070,7 +2070,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3018+sha.23bc92b',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3019+sha.fc73256',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -16633,9 +16633,8 @@ function FormController(element, attrs, $scope, $animate) {
   };
 
   /**
-   * @ngdoc function
-   * @name ng.directive:form.FormController#$setSubmitted
-   * @methodOf ng.directive:form.FormController
+   * @ngdoc method
+   * @name form.FormController#setSubmitted
    *
    * @description
    * Sets the form to its submitted state.
