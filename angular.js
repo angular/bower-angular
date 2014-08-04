@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3019+sha.fc73256
+ * @license AngularJS v1.3.0-build.3020+sha.91d5640
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3019+sha.fc73256/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3020+sha.91d5640/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2070,7 +2070,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3019+sha.fc73256',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3020+sha.91d5640',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -7275,7 +7275,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
       jqLite(newNode).data(jqLite(firstElementToRemove).data());
 
       // Remove data of the replaced element. We cannot just call .remove()
-      // on the element it since that would deallocate scope and event handlers that are still needed
+      // on the element it since that would deallocate scope that is needed
       // for the new node. Instead, remove the data "manually".
       if (!jQuery) {
         delete jqLite.cache[firstElementToRemove[jqLite.expando]];
