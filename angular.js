@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3037+sha.37ba3b9
+ * @license AngularJS v1.3.0-build.3038+sha.01d81cd
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3037+sha.37ba3b9/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3038+sha.01d81cd/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2070,7 +2070,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3037+sha.37ba3b9',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3038+sha.01d81cd',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -3153,26 +3153,37 @@ forEach({
 
   clone: jqLiteClone,
 
-  triggerHandler: function(element, eventName, eventData) {
-    // Copy event handlers in case event handlers array is modified during execution.
-    var eventFns = (jqLiteExpandoStore(element, 'events') || {})[eventName],
-        eventFnsCopy = shallowCopy(eventFns || []);
+  triggerHandler: function(element, event, extraParameters) {
 
-    eventData = eventData || [];
+    var dummyEvent, eventFnsCopy, handlerArgs;
+    var eventName = event.type || event;
+    var eventFns = (jqLiteExpandoStore(element, 'events') || {})[eventName];
 
-    var event = [{
-      preventDefault: function() {
-        this.defaultPrevented = true;
-      },
-      isDefaultPrevented: function() {
-        return this.defaultPrevented === true;
-      },
-      stopPropagation: noop
-    }];
+    if (eventFns) {
 
-    forEach(eventFnsCopy, function(fn) {
-      fn.apply(element, event.concat(eventData));
-    });
+      // Create a dummy event to pass to the handlers
+      dummyEvent = {
+        preventDefault: function() { this.defaultPrevented = true; },
+        isDefaultPrevented: function() { return this.defaultPrevented === true; },
+        stopPropagation: noop,
+        type: eventName,
+        target: element
+      };
+
+      // If a custom event was provided then extend our dummy event with it
+      if (event.type) {
+        dummyEvent = extend(dummyEvent, event);
+      }
+
+      // Copy event handlers in case event handlers array is modified during execution.
+      eventFnsCopy = shallowCopy(eventFns);
+      handlerArgs = extraParameters ? [dummyEvent].concat(extraParameters) : [dummyEvent];
+
+      forEach(eventFnsCopy, function(fn) {
+        fn.apply(element, handlerArgs);
+      });
+
+    }
   }
 }, function(fn, name){
   /**
