@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3045+sha.6bdaa4b
+ * @license AngularJS v1.3.0-build.3046+sha.b9389b2
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3045+sha.6bdaa4b/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3046+sha.b9389b2/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1533,8 +1533,15 @@ function snake_case(name, separator) {
   });
 }
 
+var bindJQueryFired = false;
+var skipDestroyOnNextJQueryCleanData;
 function bindJQuery() {
   var originalCleanData;
+
+  if (bindJQueryFired) {
+    return;
+  }
+
   // bind to jQuery if present;
   jQuery = window.jQuery;
   // Use jQuery if it exists with proper functionality, otherwise default to us.
@@ -1551,25 +1558,28 @@ function bindJQuery() {
       inheritedData: JQLitePrototype.inheritedData
     });
 
-    originalCleanData = jQuery.cleanData;
-    // Prevent double-proxying.
-    originalCleanData = originalCleanData.$$original || originalCleanData;
-
     // All nodes removed from the DOM via various jQuery APIs like .remove()
     // are passed through jQuery.cleanData. Monkey-patch this method to fire
     // the $destroy event on all removed nodes.
+    originalCleanData = jQuery.cleanData;
     jQuery.cleanData = function(elems) {
-      for (var i = 0, elem; (elem = elems[i]) != null; i++) {
-        jQuery(elem).triggerHandler('$destroy');
+      if (!skipDestroyOnNextJQueryCleanData) {
+        for (var i = 0, elem; (elem = elems[i]) != null; i++) {
+          jQuery(elem).triggerHandler('$destroy');
+        }
+      } else {
+        skipDestroyOnNextJQueryCleanData = false;
       }
       originalCleanData(elems);
     };
-    jQuery.cleanData.$$original = originalCleanData;
   } else {
     jqLite = JQLite;
   }
 
   angular.element = jqLite;
+
+  // Prevent double-proxying.
+  bindJQueryFired = true;
 }
 
 /**
@@ -2070,7 +2080,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3045+sha.6bdaa4b',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3046+sha.b9389b2',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -7291,11 +7301,15 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
       if (!jQuery) {
         delete jqLite.cache[firstElementToRemove[jqLite.expando]];
       } else {
-        // jQuery 2.x doesn't expose the data storage. Use jQuery.cleanData to clean up after the replaced
-        // element. Note that we need to use the original method here and not the one monkey-patched by Angular
-        // since the patched method emits the $destroy event causing the scope to be trashed and we do need
-        // the very same scope to work with the new element.
-        jQuery.cleanData.$$original([firstElementToRemove]);
+        // jQuery 2.x doesn't expose the data storage. Use jQuery.cleanData to clean up after
+        // the replaced element. The cleanData version monkey-patched by Angular would cause
+        // the scope to be trashed and we do need the very same scope to work with the new
+        // element. However, we cannot just cache the non-patched version and use it here as
+        // that would break if another library patches the method after Angular does (one
+        // example is jQuery UI). Instead, set a flag indicating scope destroying should be
+        // skipped this one time.
+        skipDestroyOnNextJQueryCleanData = true;
+        jQuery.cleanData([firstElementToRemove]);
       }
 
       for (var k = 1, kk = elementsToRemove.length; k < kk; k++) {
