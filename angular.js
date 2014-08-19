@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3061+sha.1bdca93
+ * @license AngularJS v1.3.0-build.3062+sha.28b54bb
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3061+sha.1bdca93/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3062+sha.28b54bb/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2077,7 +2077,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3061+sha.1bdca93',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3062+sha.28b54bb',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -3055,7 +3055,7 @@ forEach({
   },
 
   wrap: function(element, wrapNode) {
-    wrapNode = jqLite(wrapNode)[0];
+    wrapNode = jqLite(wrapNode).eq(0).clone()[0];
     var parent = element.parentNode;
     if (parent) {
       parent.replaceChild(wrapNode, element);
