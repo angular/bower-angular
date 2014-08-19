@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3062+sha.28b54bb
+ * @license AngularJS v1.3.0-build.3063+sha.63249a0
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3062+sha.28b54bb/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3063+sha.63249a0/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2077,7 +2077,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3062+sha.28b54bb',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3063+sha.63249a0',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -19801,7 +19801,6 @@ var ngBindTemplateDirective = ['$interpolate', function($interpolate) {
  * @param {expression} ngBindHtml {@link guide/expression Expression} to evaluate.
  *
  * @example
-   Try it here: enter text in text box and watch the greeting change.
 
    <example module="bindHtmlExample" deps="angular-sanitize.js">
      <file name="index.html">
