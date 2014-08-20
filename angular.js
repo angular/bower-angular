@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3072+sha.f02f7d9
+ * @license AngularJS v1.3.0-build.3073+sha.d18b281
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3072+sha.f02f7d9/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3073+sha.d18b281/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2078,7 +2078,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3072+sha.f02f7d9',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3073+sha.d18b281',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -10093,6 +10093,7 @@ function $LocationProvider(){
             // relative path - join with current path
             var stack = $location.path().split("/"),
               parts = href.split("/");
+            if (stack.length === 2 && !stack[1]) stack.length = 1;
             for (var i=0; i<parts.length; i++) {
               if (parts[i] == ".")
                 continue;
