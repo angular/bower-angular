@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3080+sha.3623019
+ * @license AngularJS v1.3.0-build.3081+sha.0872388
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3080+sha.3623019/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3081+sha.0872388/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1477,7 +1477,11 @@ function bootstrap(element, modules, config) {
 
     if (element.injector()) {
       var tag = (element[0] === document) ? 'document' : startingTag(element);
-      throw ngMinErr('btstrpd', "App Already Bootstrapped with this Element '{0}'", tag);
+      //Encode angle brackets to prevent input from being sanitized to empty string #8683
+      throw ngMinErr(
+          'btstrpd',
+          "App Already Bootstrapped with this Element '{0}'",
+          tag.replace(/</,'&lt;').replace(/>/,'&gt;'));
     }
 
     modules = modules || [];
@@ -2081,7 +2085,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3080+sha.3623019',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3081+sha.0872388',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
