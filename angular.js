@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3094+sha.d713ad1
+ * @license AngularJS v1.3.0-build.3095+sha.252e8b5
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3094+sha.d713ad1/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3095+sha.252e8b5/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1496,7 +1496,7 @@ function bootstrap(element, modules, config) {
     modules.unshift('ng');
     var injector = createInjector(modules, config.strictDi);
     injector.invoke(['$rootScope', '$rootElement', '$compile', '$injector',
-       function(scope, element, compile, injector) {
+       function bootstrapApply(scope, element, compile, injector) {
         scope.$apply(function() {
           element.data('$injector', injector);
           compile(element)(scope);
@@ -2090,7 +2090,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3094+sha.d713ad1',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3095+sha.252e8b5',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -5402,10 +5402,6 @@ function $TemplateCacheProvider() {
  *   by calling the `localFn` as `localFn({amount: 22})`.
  *
  *
- * #### `bindToController`
- * When an isolate scope is used for a component (see above), and `controllerAs` is used, `bindToController` will
- * allow a component to have its properties bound to the controller, rather than to scope. When the controller
- * is instantiated, the initial values of the isolate scope bindings are already available.
  *
  * #### `controller`
  * Controller constructor function. The controller is instantiated before the
@@ -6121,7 +6117,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
         if (transcludeControllers) {
           for (var controllerName in transcludeControllers) {
-            $linkNode.data('$' + controllerName + 'Controller', transcludeControllers[controllerName].instance);
+            $linkNode.data('$' + controllerName + 'Controller', transcludeControllers[controllerName]);
           }
         }
 
@@ -6452,7 +6448,6 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
       var terminalPriority = -Number.MAX_VALUE,
           newScopeDirective,
           controllerDirectives = previousCompileContext.controllerDirectives,
-          controllers,
           newIsolateScopeDirective = previousCompileContext.newIsolateScopeDirective,
           templateDirective = previousCompileContext.templateDirective,
           nonTlbTranscludeDirective = previousCompileContext.nonTlbTranscludeDirective,
@@ -6690,9 +6685,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
           value = null;
 
           if (elementControllers && retrievalMethod === 'data') {
-            if (value = elementControllers[require]) {
-              value = value.instance;
-            }
+            value = elementControllers[require];
           }
           value = value || $element[retrievalMethod]('$' + require + 'Controller');
 
@@ -6725,45 +6718,9 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
         }
 
         if (newIsolateScopeDirective) {
-          isolateScope = scope.$new(true);
-        }
-
-        transcludeFn = boundTranscludeFn && controllersBoundTransclude;
-        if (controllerDirectives) {
-          // TODO: merge `controllers` and `elementControllers` into single object.
-          controllers = {};
-          elementControllers = {};
-          forEach(controllerDirectives, function(directive) {
-            var locals = {
-              $scope: directive === newIsolateScopeDirective || directive.$$isolateScope ? isolateScope : scope,
-              $element: $element,
-              $attrs: attrs,
-              $transclude: transcludeFn
-            }, controllerInstance;
-
-            controller = directive.controller;
-            if (controller == '@') {
-              controller = attrs[directive.name];
-            }
-
-            controllerInstance = $controller(controller, locals, true, directive.controllerAs);
-
-            // For directives with element transclusion the element is a comment,
-            // but jQuery .data doesn't support attaching data to comment nodes as it's hard to
-            // clean up (http://bugs.jquery.com/ticket/8335).
-            // Instead, we save the controllers for the element in a local hash and attach to .data
-            // later, once we have the actual element.
-            elementControllers[directive.name] = controllerInstance;
-            if (!hasElementTranscludeDirective) {
-              $element.data('$' + directive.name + 'Controller', controllerInstance.instance);
-            }
-
-            controllers[directive.name] = controllerInstance;
-          });
-        }
-
-        if (newIsolateScopeDirective) {
           var LOCAL_REGEXP = /^\s*([@=&])(\??)\s*(\w*)\s*$/;
+
+          isolateScope = scope.$new(true);
 
           if (templateDirective && (templateDirective === newIsolateScopeDirective ||
               templateDirective === newIsolateScopeDirective.$$originalDirective)) {
@@ -6772,14 +6729,10 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             $element.data('$isolateScopeNoTemplate', isolateScope);
           }
 
+
+
           safeAddClass($element, 'ng-isolate-scope');
 
-          var isolateScopeController = controllers && controllers[newIsolateScopeDirective.name];
-          var isolateBindingContext = isolateScope;
-          if (isolateScopeController && isolateScopeController.identifier &&
-              newIsolateScopeDirective.bindToController === true) {
-            isolateBindingContext = isolateScopeController.instance;
-          }
           forEach(newIsolateScopeDirective.scope, function(definition, scopeName) {
             var match = definition.match(LOCAL_REGEXP) || [],
                 attrName = match[3] || scopeName,
@@ -6800,7 +6753,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
                 if( attrs[attrName] ) {
                   // If the attribute has been provided then we trigger an interpolation to ensure
                   // the value is there for use in the link fn
-                  isolateBindingContext[scopeName] = $interpolate(attrs[attrName])(scope);
+                  isolateScope[scopeName] = $interpolate(attrs[attrName])(scope);
                 }
                 break;
 
@@ -6816,21 +6769,21 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
                 }
                 parentSet = parentGet.assign || function() {
                   // reset the change, or we will throw this exception on every $digest
-                  lastValue = isolateBindingContext[scopeName] = parentGet(scope);
+                  lastValue = isolateScope[scopeName] = parentGet(scope);
                   throw $compileMinErr('nonassign',
                       "Expression '{0}' used with directive '{1}' is non-assignable!",
                       attrs[attrName], newIsolateScopeDirective.name);
                 };
-                lastValue = isolateBindingContext[scopeName] = parentGet(scope);
+                lastValue = isolateScope[scopeName] = parentGet(scope);
                 var unwatch = scope.$watch($parse(attrs[attrName], function parentValueWatch(parentValue) {
-                  if (!compare(parentValue, isolateBindingContext[scopeName])) {
+                  if (!compare(parentValue, isolateScope[scopeName])) {
                     // we are out of sync and need to copy
                     if (!compare(parentValue, lastValue)) {
                       // parent changed and it has precedence
-                      isolateBindingContext[scopeName] = parentValue;
+                      isolateScope[scopeName] = parentValue;
                     } else {
                       // if the parent can be assigned then do so
-                      parentSet(scope, parentValue = isolateBindingContext[scopeName]);
+                      parentSet(scope, parentValue = isolateScope[scopeName]);
                     }
                   }
                   return lastValue = parentValue;
@@ -6840,7 +6793,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
               case '&':
                 parentGet = $parse(attrs[attrName]);
-                isolateBindingContext[scopeName] = function(locals) {
+                isolateScope[scopeName] = function(locals) {
                   return parentGet(scope, locals);
                 };
                 break;
@@ -6853,11 +6806,37 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             }
           });
         }
-        if (controllers) {
-          forEach(controllers, function(controller) {
-            controller();
+        transcludeFn = boundTranscludeFn && controllersBoundTransclude;
+        if (controllerDirectives) {
+          elementControllers = {};
+          forEach(controllerDirectives, function(directive) {
+            var locals = {
+              $scope: directive === newIsolateScopeDirective || directive.$$isolateScope ? isolateScope : scope,
+              $element: $element,
+              $attrs: attrs,
+              $transclude: transcludeFn
+            }, controllerInstance;
+
+            controller = directive.controller;
+            if (controller == '@') {
+              controller = attrs[directive.name];
+            }
+
+            controllerInstance = $controller(controller, locals);
+            // For directives with element transclusion the element is a comment,
+            // but jQuery .data doesn't support attaching data to comment nodes as it's hard to
+            // clean up (http://bugs.jquery.com/ticket/8335).
+            // Instead, we save the controllers for the element in a local hash and attach to .data
+            // later, once we have the actual element.
+            elementControllers[directive.name] = controllerInstance;
+            if (!hasElementTranscludeDirective) {
+              $element.data('$' + directive.name + 'Controller', controllerInstance);
+            }
+
+            if (directive.controllerAs) {
+              locals.$scope[directive.controllerAs] = controllerInstance;
+            }
           });
-          controllers = null;
         }
 
         // PRELINKING
@@ -7530,24 +7509,13 @@ function $ControllerProvider() {
      * It's just a simple call to {@link auto.$injector $injector}, but extracted into
      * a service, so that one can override this service with [BC version](https://gist.github.com/1649788).
      */
-    return function(expression, locals, later, ident) {
-      // PRIVATE API:
-      //   param `later` --- indicates that the controller's constructor is invoked at a later time.
-      //                     If true, $controller will allocate the object with the correct
-      //                     prototype chain, but will not invoke the controller until a returned
-      //                     callback is invoked.
-      //   param `ident` --- An optional label which overrides the label parsed from the controller
-      //                     expression, if any.
+    return function(expression, locals) {
       var instance, match, constructor, identifier;
-      later = later === true;
-      if (ident && isString(ident)) {
-        identifier = ident;
-      }
 
       if(isString(expression)) {
         match = expression.match(CNTRL_REG),
         constructor = match[1],
-        identifier = identifier || match[3];
+        identifier = match[3];
         expression = controllers.hasOwnProperty(constructor)
             ? controllers[constructor]
             : getter(locals.$scope, constructor, true) ||
@@ -7556,52 +7524,20 @@ function $ControllerProvider() {
         assertArgFn(expression, constructor, true);
       }
 
-      if (later) {
-        // Instantiate controller later:
-        // This machinery is used to create an instance of the object before calling the
-        // controller's constructor itself.
-        //
-        // This allows properties to be added to the controller before the constructor is
-        // invoked. Primarily, this is used for isolate scope bindings in $compile.
-        //
-        // This feature is not intended for use by applications, and is thus not documented
-        // publicly.
-        var Constructor = function() {};
-        Constructor.prototype = (isArray(expression) ?
-          expression[expression.length - 1] : expression).prototype;
-        instance = new Constructor();
-
-        if (identifier) {
-          addIdentifier(locals, identifier, instance, constructor || expression.name);
-        }
-
-        return extend(function() {
-          $injector.invoke(expression, instance, locals, constructor);
-          return instance;
-        }, {
-          instance: instance,
-          identifier: identifier
-        });
-      }
-
       instance = $injector.instantiate(expression, locals, constructor);
 
       if (identifier) {
-        addIdentifier(locals, identifier, instance, constructor || expression.name);
+        if (!(locals && typeof locals.$scope === 'object')) {
+          throw minErr('$controller')('noscp',
+              "Cannot export controller '{0}' as '{1}'! No $scope object provided via `locals`.",
+              constructor || expression.name, identifier);
+        }
+
+        locals.$scope[identifier] = instance;
       }
 
       return instance;
     };
-
-    function addIdentifier(locals, identifier, instance, name) {
-      if (!(locals && isObject(locals.$scope))) {
-        throw minErr('$controller')('noscp',
-          "Cannot export controller '{0}' as '{1}'! No $scope object provided via `locals`.",
-          name, identifier);
-      }
-
-      locals.$scope[identifier] = instance;
-    }
   }];
 }
 
