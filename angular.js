@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3100+sha.525a8f8
+ * @license AngularJS v1.3.0-build.3101+sha.8ac9035
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3100+sha.525a8f8/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3101+sha.8ac9035/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2090,7 +2090,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3100+sha.525a8f8',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3101+sha.8ac9035',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -10662,6 +10662,16 @@ Lexer.prototype = {
         break;
       }
       this.index++;
+    }
+
+    //check if the identifier ends with . and if so move back one char
+    if (lastDot && ident[ident.length - 1] === '.') {
+      this.index--;
+      ident = ident.slice(0, -1);
+      lastDot = ident.lastIndexOf('.');
+      if (lastDot === -1) {
+        lastDot = undefined;
+      }
     }
 
     //check if this is not a method invocation and if it is back out to last dot
