@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3104+sha.addfc56
+ * @license AngularJS v1.3.0-build.3106+sha.2e3a7fd
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3104+sha.addfc56/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3106+sha.2e3a7fd/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2090,7 +2090,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3104+sha.addfc56',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3106+sha.2e3a7fd',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -6214,9 +6214,11 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
                   (nodeLinkFn.transcludeOnThisElement || !nodeLinkFn.templateOnThisElement)
                      && nodeLinkFn.transclude) : transcludeFn);
 
-        linkFns.push(nodeLinkFn, childLinkFn);
-        linkFnFound = linkFnFound || nodeLinkFn || childLinkFn;
-        nodeLinkFnFound = nodeLinkFnFound || nodeLinkFn;
+        if (nodeLinkFn || childLinkFn) {
+          linkFns.push(i, nodeLinkFn, childLinkFn);
+          linkFnFound = true;
+          nodeLinkFnFound = nodeLinkFnFound || nodeLinkFn;
+        }
 
         //use the previous context only for the first element in the virtual group
         previousCompileContext = null;
@@ -6226,7 +6228,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
       return linkFnFound ? compositeLinkFn : null;
 
       function compositeLinkFn(scope, nodeList, $rootElement, parentBoundTranscludeFn) {
-        var nodeLinkFn, childLinkFn, node, childScope, i, ii, n, childBoundTranscludeFn;
+        var nodeLinkFn, childLinkFn, node, childScope, i, ii, idx, childBoundTranscludeFn;
         var stableNodeList;
 
 
@@ -6236,16 +6238,17 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
           var nodeListLength = nodeList.length;
           stableNodeList = new Array(nodeListLength);
 
-          for (i = 0; i < nodeListLength; i++) {
-            stableNodeList[i] = nodeList[i];
+          // create a sparse array by only copying the elements which have a linkFn
+          for (i = 0; i < linkFns.length; i+=3) {
+            idx = linkFns[i];
+            stableNodeList[idx] = nodeList[idx];
           }
         } else {
           stableNodeList = nodeList;
         }
 
-        // TODO(perf): when the DOM is sparsely annotated with directives, we spend a lot of time iterating over nulls here
-        for(i = 0, n = 0, ii = linkFns.length; i < ii; n++) {
-          node = stableNodeList[n];
+        for(i = 0, ii = linkFns.length; i < ii;) {
+          node = stableNodeList[linkFns[i++]];
           nodeLinkFn = linkFns[i++];
           childLinkFn = linkFns[i++];
 
