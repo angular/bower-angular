@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3116+sha.5f90340
+ * @license AngularJS v1.3.0-build.3117+sha.0e44ac2
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3116+sha.5f90340/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3117+sha.0e44ac2/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -691,18 +691,8 @@ function makeMap(str) {
 }
 
 
-if (msie < 9) {
-  nodeName_ = function(element) {
-    element = element.nodeName ? element : element[0];
-    return lowercase(
-      (element.scopeName && element.scopeName != 'HTML')
-      ? element.scopeName + ':' + element.nodeName : element.nodeName
-    );
-  };
-} else {
-  nodeName_ = function(element) {
-    return lowercase(element.nodeName ? element.nodeName : element[0].nodeName);
-  };
+function nodeName_(element) {
+  return lowercase(element.nodeName || element[0].nodeName);
 }
 
 
@@ -2092,7 +2082,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3116+sha.5f90340',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3117+sha.0e44ac2',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -3202,21 +3192,23 @@ forEach({
  *         The resulting string key is in 'type:hashKey' format.
  */
 function hashKey(obj, nextUidFn) {
-  var objType = typeof obj,
-      key;
+  var key = obj && obj.$$hashKey;
 
-  if (objType == 'function' || (objType == 'object' && obj !== null)) {
-    if (typeof (key = obj.$$hashKey) == 'function') {
-      // must invoke on object to keep the right this
+  if (key) {
+    if (typeof key === 'function') {
       key = obj.$$hashKey();
-    } else if (key === undefined) {
-      key = obj.$$hashKey = (nextUidFn || nextUid)();
     }
-  } else {
-    key = obj;
+    return key;
   }
 
-  return objType + ':' + key;
+  var objType = typeof obj;
+  if (objType == 'function' || (objType == 'object' && obj !== null)) {
+    key = obj.$$hashKey = objType + ':' + (nextUidFn || nextUid)();
+  } else {
+    key = objType + ':' + obj;
+  }
+
+  return key;
 }
 
 /**
