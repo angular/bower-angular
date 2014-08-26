@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3112+sha.2f4437b
+ * @license AngularJS v1.3.0-build.3113+sha.23da614
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3112+sha.2f4437b/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3113+sha.23da614/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2090,7 +2090,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3112+sha.2f4437b',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3113+sha.23da614',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -4270,10 +4270,20 @@ var $AnimateProvider = ['$provide', function($provide) {
     return this.$$classNameFilter;
   };
 
-  this.$get = ['$timeout', '$$asyncCallback', function($timeout, $$asyncCallback) {
+  this.$get = ['$$q', '$$asyncCallback', function($$q, $$asyncCallback) {
 
-    function async(fn) {
-      fn && $$asyncCallback(fn);
+    var currentDefer;
+    function asyncPromise() {
+      // only serve one instance of a promise in order to save CPU cycles
+      if (!currentDefer) {
+        currentDefer = $$q.defer();
+        currentDefer.promise.cancel = noop; //ngAnimate.$animate provides this
+        $$asyncCallback(function() {
+          currentDefer.resolve();
+          currentDefer = null;
+        });
+      }
+      return currentDefer.promise;
     }
 
     /**
@@ -4301,22 +4311,19 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @name $animate#enter
        * @kind function
        * @description Inserts the element into the DOM either after the `after` element or
-       * as the first child within the `parent` element. Once complete, the done() callback
-       * will be fired (if provided).
+       * as the first child within the `parent` element. When the function is called a promise
+       * is returned that will be resolved at a later time.
        * @param {DOMElement} element the element which will be inserted into the DOM
        * @param {DOMElement} parent the parent element which will append the element as
        *   a child (if the after element is not present)
        * @param {DOMElement} after the sibling element which will append the element
        *   after itself
-       * @param {Function=} done callback function that will be called after the element has been
-       *   inserted into the DOM
+       * @return {Promise} the animation callback promise
        */
-      enter : function(element, parent, after, done) {
-        after
-            ? after.after(element)
-            : parent.prepend(element);
-        async(done);
-        return noop;
+      enter : function(element, parent, after) {
+        after ? after.after(element)
+              : parent.prepend(element);
+        return asyncPromise();
       },
 
       /**
@@ -4324,16 +4331,14 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @ngdoc method
        * @name $animate#leave
        * @kind function
-       * @description Removes the element from the DOM. Once complete, the done() callback will be
-       *   fired (if provided).
+       * @description Removes the element from the DOM. When the function is called a promise
+       * is returned that will be resolved at a later time.
        * @param {DOMElement} element the element which will be removed from the DOM
-       * @param {Function=} done callback function that will be called after the element has been
-       *   removed from the DOM
+       * @return {Promise} the animation callback promise
        */
-      leave : function(element, done) {
+      leave : function(element) {
         element.remove();
-        async(done);
-        return noop;
+        return asyncPromise();
       },
 
       /**
@@ -4342,8 +4347,8 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @name $animate#move
        * @kind function
        * @description Moves the position of the provided element within the DOM to be placed
-       * either after the `after` element or inside of the `parent` element. Once complete, the
-       * done() callback will be fired (if provided).
+       * either after the `after` element or inside of the `parent` element. When the function
+       * is called a promise is returned that will be resolved at a later time.
        *
        * @param {DOMElement} element the element which will be moved around within the
        *   DOM
@@ -4351,13 +4356,12 @@ var $AnimateProvider = ['$provide', function($provide) {
        *   inserted into (if the after element is not present)
        * @param {DOMElement} after the sibling element where the element will be
        *   positioned next to
-       * @param {Function=} done the callback function (if provided) that will be fired after the
-       *   element has been moved to its new position
+       * @return {Promise} the animation callback promise
        */
-      move : function(element, parent, after, done) {
+      move : function(element, parent, after) {
         // Do not remove element before insert. Removing will cause data associated with the
         // element to be dropped. Insert will implicitly do the remove.
-        return this.enter(element, parent, after, done);
+        return this.enter(element, parent, after);
       },
 
       /**
@@ -4365,23 +4369,21 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @ngdoc method
        * @name $animate#addClass
        * @kind function
-       * @description Adds the provided className CSS class value to the provided element. Once
-       * complete, the done() callback will be fired (if provided).
+       * @description Adds the provided className CSS class value to the provided element.
+       * When the function is called a promise is returned that will be resolved at a later time.
        * @param {DOMElement} element the element which will have the className value
        *   added to it
        * @param {string} className the CSS class which will be added to the element
-       * @param {Function=} done the callback function (if provided) that will be fired after the
-       *   className value has been added to the element
+       * @return {Promise} the animation callback promise
        */
-      addClass : function(element, className, done) {
+      addClass : function(element, className) {
         className = !isString(className)
                         ? (isArray(className) ? className.join(' ') : '')
                         : className;
         forEach(element, function (element) {
           jqLiteAddClass(element, className);
         });
-        async(done);
-        return noop;
+        return asyncPromise();
       },
 
       /**
@@ -4390,22 +4392,20 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @name $animate#removeClass
        * @kind function
        * @description Removes the provided className CSS class value from the provided element.
-       * Once complete, the done() callback will be fired (if provided).
+       * When the function is called a promise is returned that will be resolved at a later time.
        * @param {DOMElement} element the element which will have the className value
        *   removed from it
        * @param {string} className the CSS class which will be removed from the element
-       * @param {Function=} done the callback function (if provided) that will be fired after the
-       *   className value has been removed from the element
+       * @return {Promise} the animation callback promise
        */
-      removeClass : function(element, className, done) {
-        className = isString(className) ?
-                      className :
-                      isArray(className) ? className.join(' ') : '';
+      removeClass : function(element, className) {
+        className = !isString(className)
+                        ? (isArray(className) ? className.join(' ') : '')
+                        : className;
         forEach(element, function (element) {
           jqLiteRemoveClass(element, className);
         });
-        async(done);
-        return noop;
+        return asyncPromise();
       },
 
       /**
@@ -4414,22 +4414,21 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @name $animate#setClass
        * @kind function
        * @description Adds and/or removes the given CSS classes to and from the element.
-       * Once complete, the done() callback will be fired (if provided).
+       * When the function is called a promise is returned that will be resolved at a later time.
        * @param {DOMElement} element the element which will have its CSS classes changed
        *   removed from it
        * @param {string} add the CSS classes which will be added to the element
        * @param {string} remove the CSS class which will be removed from the element
-       * @param {Function=} done the callback function (if provided) that will be fired after the
-       *   CSS classes have been set on the element
+       * @return {Promise} the animation callback promise
        */
-      setClass : function(element, add, remove, done) {
+      setClass : function(element, add, remove) {
         this.addClass(element, add);
         this.removeClass(element, remove);
-        async(done);
-        return noop;
+        return asyncPromise();
       },
 
-      enabled : noop
+      enabled : noop,
+      cancel : noop
     };
   }];
 }];
@@ -21144,7 +21143,7 @@ var ngIfDirective = ['$animate', function($animate) {
             }
             if(block) {
               previousElements = getBlockNodes(block.clone);
-              $animate.leave(previousElements, function() {
+              $animate.leave(previousElements).then(function() {
                 previousElements = null;
               });
               block = null;
@@ -21353,7 +21352,7 @@ var ngIncludeDirective = ['$http', '$templateCache', '$anchorScroll', '$animate'
             currentScope = null;
           }
           if(currentElement) {
-            $animate.leave(currentElement, function() {
+            $animate.leave(currentElement).then(function() {
               previousElement = null;
             });
             previousElement = currentElement;
@@ -21383,7 +21382,7 @@ var ngIncludeDirective = ['$http', '$templateCache', '$anchorScroll', '$animate'
               // directives to non existing elements.
               var clone = $transclude(newScope, function(clone) {
                 cleanupLastIncludeContent();
-                $animate.enter(clone, null, $element, afterAnimation);
+                $animate.enter(clone, null, $element).then(afterAnimation);
               });
 
               currentScope = newScope;
@@ -22711,7 +22710,7 @@ var ngSwitchDirective = ['$animate', function($animate) {
           var selected = getBlockNodes(selectedElements[i].clone);
           selectedScopes[i].$destroy();
           previousElements[i] = selected;
-          $animate.leave(selected, function() {
+          $animate.leave(selected).then(function() {
             previousElements.splice(i, 1);
           });
         }
