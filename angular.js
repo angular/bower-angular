@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3117+sha.0e44ac2
+ * @license AngularJS v1.3.0-build.3118+sha.2ae4f40
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3117+sha.0e44ac2/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3118+sha.2ae4f40/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2082,7 +2082,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3117+sha.0e44ac2',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3118+sha.2ae4f40',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -16463,9 +16463,11 @@ var nullFormCtrl = {
   $addControl: noop,
   $removeControl: noop,
   $setValidity: noop,
+  $$setPending: noop,
   $setDirty: noop,
   $setPristine: noop,
-  $setSubmitted: noop
+  $setSubmitted: noop,
+  $$clearControlValidity: noop
 },
 SUBMITTED_CLASS = 'ng-submitted';
 
@@ -16511,8 +16513,9 @@ function FormController(element, attrs, $scope, $animate) {
   var form = this,
       parentForm = element.parent().controller('form') || nullFormCtrl,
       invalidCount = 0, // used to easily determine if we are valid
-      errors = form.$error = {},
-      controls = [];
+      pendingCount = 0,
+      controls = [],
+      errors = form.$error = {};
 
   // init state
   form.$name = attrs.name || attrs.ngForm;
@@ -16602,11 +16605,35 @@ function FormController(element, attrs, $scope, $animate) {
     if (control.$name && form[control.$name] === control) {
       delete form[control.$name];
     }
-    forEach(errors, function(queue, validationToken) {
-      form.$setValidity(validationToken, true, control);
-    });
 
+    form.$$clearControlValidity(control);
     arrayRemove(controls, control);
+  };
+
+  form.$$clearControlValidity = function(control) {
+    forEach(form.$pending, clear);
+    forEach(errors, clear);
+
+    function clear(queue, validationToken) {
+      form.$setValidity(validationToken, true, control);
+    }
+
+    parentForm.$$clearControlValidity(form);
+  };
+
+  form.$$setPending = function(validationToken, control) {
+    var pending = form.$pending && form.$pending[validationToken];
+
+    if (!pending || !includes(pending, control)) {
+      pendingCount++;
+      form.$valid = form.$invalid = undefined;
+      form.$pending = form.$pending || {};
+      if (!pending) {
+        pending = form.$pending[validationToken] = [];
+      }
+      pending.push(control);
+      parentForm.$$setPending(validationToken, form);
+    }
   };
 
   /**
@@ -16620,24 +16647,56 @@ function FormController(element, attrs, $scope, $animate) {
    */
   form.$setValidity = function(validationToken, isValid, control) {
     var queue = errors[validationToken];
+    var pendingChange, pending = form.$pending && form.$pending[validationToken];
+
+    if (pending) {
+      pendingChange = indexOf(pending, control) >= 0;
+      if (pendingChange) {
+        arrayRemove(pending, control);
+        pendingCount--;
+
+        if (pending.length === 0) {
+          delete form.$pending[validationToken];
+        }
+      }
+    }
+
+    var pendingNoMore = form.$pending && pendingCount === 0;
+    if (pendingNoMore) {
+      form.$pending = undefined;
+    }
 
     if (isValid) {
-      if (queue) {
-        arrayRemove(queue, control);
-        if (!queue.length) {
-          invalidCount--;
+      if (queue || pendingChange) {
+        if (queue) {
+          arrayRemove(queue, control);
+        }
+        if (!queue || !queue.length) {
+          if (errors[validationToken]) {
+            invalidCount--;
+          }
           if (!invalidCount) {
-            toggleValidCss(isValid);
-            form.$valid = true;
-            form.$invalid = false;
+            if (!form.$pending) {
+              toggleValidCss(isValid);
+              form.$valid = true;
+              form.$invalid = false;
+            }
+          } else if(pendingNoMore) {
+            toggleValidCss(false);
+            form.$valid = false;
+            form.$invalid = true;
           }
           errors[validationToken] = false;
           toggleValidCss(true, validationToken);
           parentForm.$setValidity(validationToken, true, form);
         }
       }
-
     } else {
+      if (!form.$pending) {
+        form.$valid = false;
+        form.$invalid = true;
+      }
+
       if (!invalidCount) {
         toggleValidCss(isValid);
       }
@@ -16650,9 +16709,6 @@ function FormController(element, attrs, $scope, $animate) {
         parentForm.$setValidity(validationToken, false, form);
       }
       queue.push(control);
-
-      form.$valid = false;
-      form.$invalid = true;
     }
   };
 
@@ -16961,6 +17017,7 @@ var MONTH_REGEXP = /^(\d{4})-(\d\d)$/;
 var TIME_REGEXP = /^(\d\d):(\d\d)(?::(\d\d))?$/;
 var DEFAULT_REGEXP = /(\s+|^)default(\s+|$)/;
 
+var $ngModelMinErr = new minErr('ngModel');
 var inputType = {
 
   /**
@@ -17828,13 +17885,6 @@ var inputType = {
   'file': noop
 };
 
-// A helper function to call $setValidity and return the value / undefined,
-// a pattern that is repeated a lot in the input validation logic.
-function validate(ctrl, validatorName, validity, value){
-  ctrl.$setValidity(validatorName, validity);
-  return validity ? value : undefined;
-}
-
 function testFlags(validity, flags) {
   var i, flag;
   if (flags) {
@@ -17846,25 +17896,6 @@ function testFlags(validity, flags) {
     }
   }
   return false;
-}
-
-// Pass validity so that behaviour can be mocked easier.
-function addNativeHtml5Validators(ctrl, validatorName, badFlags, ignoreFlags, validity) {
-  if (isObject(validity)) {
-    ctrl.$$hasNativeValidators = true;
-    var validator = function(value) {
-      // Don't overwrite previous validation, don't consider valueMissing to apply (ng-required can
-      // perform the required validation)
-      if (!ctrl.$error[validatorName] &&
-          !testFlags(validity, ignoreFlags) &&
-          testFlags(validity, badFlags)) {
-        ctrl.$setValidity(validatorName, false);
-        return;
-      }
-      return value;
-    };
-    ctrl.$parsers.push(validator);
-  }
 }
 
 function textInputType(scope, element, attr, ctrl, $sniffer, $browser) {
@@ -18017,25 +18048,20 @@ function createDateParser(regexp, mapping) {
 
 function createDateInputType(type, regexp, parseDate, format) {
    return function dynamicDateInputType(scope, element, attr, ctrl, $sniffer, $browser, $filter) {
+      badInputChecker(scope, element, attr, ctrl);
       textInputType(scope, element, attr, ctrl, $sniffer, $browser);
       var timezone = ctrl && ctrl.$options && ctrl.$options.timezone;
 
+      ctrl.$$parserName = type;
       ctrl.$parsers.push(function(value) {
-         if(ctrl.$isEmpty(value)) {
-            ctrl.$setValidity(type, true);
-            return null;
-         }
-
-         if(regexp.test(value)) {
-            ctrl.$setValidity(type, true);
+         if (ctrl.$isEmpty(value)) return null;
+         if (regexp.test(value)) {
             var parsedDate = parseDate(value);
             if (timezone === 'UTC') {
               parsedDate.setMinutes(parsedDate.getMinutes() - parsedDate.getTimezoneOffset());
             }
             return parsedDate;
          }
-
-         ctrl.$setValidity(type, false);
          return undefined;
       });
 
@@ -18047,81 +18073,69 @@ function createDateInputType(type, regexp, parseDate, format) {
       });
 
       if(attr.min) {
-         var minValidator = function(value) {
-            var valid = ctrl.$isEmpty(value) ||
-               (parseDate(value) >= parseDate(attr.min));
-            ctrl.$setValidity('min', valid);
-            return valid ? value : undefined;
-         };
-
-         ctrl.$parsers.push(minValidator);
-         ctrl.$formatters.push(minValidator);
+        ctrl.$validators.min = function(value) {
+          return ctrl.$isEmpty(value) || isUndefined(attr.min) || parseDate(value) >= parseDate(attr.min);
+        };
       }
 
       if(attr.max) {
-         var maxValidator = function(value) {
-            var valid = ctrl.$isEmpty(value) ||
-               (parseDate(value) <= parseDate(attr.max));
-            ctrl.$setValidity('max', valid);
-            return valid ? value : undefined;
-         };
-
-         ctrl.$parsers.push(maxValidator);
-         ctrl.$formatters.push(maxValidator);
+        ctrl.$validators.max = function(value) {
+          return ctrl.$isEmpty(value) || isUndefined(attr.max) || parseDate(value) <= parseDate(attr.max);
+        };
       }
    };
 }
 
-var numberBadFlags = ['badInput'];
+function badInputChecker(scope, element, attr, ctrl) {
+  var node = element[0];
+  var nativeValidation = ctrl.$$hasNativeValidators = isObject(node.validity);
+  if (nativeValidation) {
+    ctrl.$parsers.push(function(value) {
+      var validity = element.prop(VALIDITY_STATE_PROPERTY) || {};
+      return validity.badInput || validity.typeMismatch ? undefined : value;
+    });
+  }
+}
 
 function numberInputType(scope, element, attr, ctrl, $sniffer, $browser) {
+  badInputChecker(scope, element, attr, ctrl);
   textInputType(scope, element, attr, ctrl, $sniffer, $browser);
 
+  ctrl.$$parserName = 'number';
   ctrl.$parsers.push(function(value) {
-    var empty = ctrl.$isEmpty(value);
-    if (empty || NUMBER_REGEXP.test(value)) {
-      ctrl.$setValidity('number', true);
-      return value === '' ? null : (empty ? value : parseFloat(value));
-    } else {
-      ctrl.$setValidity('number', false);
-      return undefined;
-    }
+    if(ctrl.$isEmpty(value))      return null;
+    if(NUMBER_REGEXP.test(value)) return parseFloat(value);
+    return undefined;
   });
 
-  addNativeHtml5Validators(ctrl, 'number', numberBadFlags, null, ctrl.$$validityState);
-
   ctrl.$formatters.push(function(value) {
-    return ctrl.$isEmpty(value) ? '' : '' + value;
+    if (!ctrl.$isEmpty(value)) {
+      if (!isNumber(value)) {
+        throw $ngModelMinErr('numfmt', 'Expected `{0}` to be a number', value);
+      }
+      value = value.toString();
+    }
+    return value;
   });
 
   if (attr.min) {
-    var minValidator = function(value) {
-      var min = parseFloat(attr.min);
-      return validate(ctrl, 'min', ctrl.$isEmpty(value) || value >= min, value);
+    ctrl.$validators.min = function(value) {
+      return ctrl.$isEmpty(value) || isUndefined(attr.min) || value >= parseFloat(attr.min);
     };
-
-    ctrl.$parsers.push(minValidator);
-    ctrl.$formatters.push(minValidator);
   }
 
   if (attr.max) {
-    var maxValidator = function(value) {
-      var max = parseFloat(attr.max);
-      return validate(ctrl, 'max', ctrl.$isEmpty(value) || value <= max, value);
+    ctrl.$validators.max = function(value) {
+      return ctrl.$isEmpty(value) || isUndefined(attr.max) || value <= parseFloat(attr.max);
     };
-
-    ctrl.$parsers.push(maxValidator);
-    ctrl.$formatters.push(maxValidator);
   }
-
-  ctrl.$formatters.push(function(value) {
-    return validate(ctrl, 'number', ctrl.$isEmpty(value) || isNumber(value), value);
-  });
 }
 
 function urlInputType(scope, element, attr, ctrl, $sniffer, $browser) {
+  badInputChecker(scope, element, attr, ctrl);
   textInputType(scope, element, attr, ctrl, $sniffer, $browser);
 
+  ctrl.$$parserName = 'url';
   ctrl.$validators.url = function(modelValue, viewValue) {
     var value = modelValue || viewValue;
     return ctrl.$isEmpty(value) || URL_REGEXP.test(value);
@@ -18129,8 +18143,10 @@ function urlInputType(scope, element, attr, ctrl, $sniffer, $browser) {
 }
 
 function emailInputType(scope, element, attr, ctrl, $sniffer, $browser) {
+  badInputChecker(scope, element, attr, ctrl);
   textInputType(scope, element, attr, ctrl, $sniffer, $browser);
 
+  ctrl.$$parserName = 'email';
   ctrl.$validators.email = function(modelValue, viewValue) {
     var value = modelValue || viewValue;
     return ctrl.$isEmpty(value) || EMAIL_REGEXP.test(value);
@@ -18166,7 +18182,7 @@ function parseConstantExpr($parse, context, name, expression, fallback) {
   if (isDefined(expression)) {
     parseFn = $parse(expression);
     if (!parseFn.constant) {
-      throw new minErr('ngModel')('constexpr', 'Expected constant expression for `{0}`, but saw ' +
+      throw minErr('ngModel')('constexpr', 'Expected constant expression for `{0}`, but saw ' +
                                    '`{1}`.', name, expression);
     }
     return parseFn(context);
@@ -18369,7 +18385,8 @@ var VALID_CLASS = 'ng-valid',
     PRISTINE_CLASS = 'ng-pristine',
     DIRTY_CLASS = 'ng-dirty',
     UNTOUCHED_CLASS = 'ng-untouched',
-    TOUCHED_CLASS = 'ng-touched';
+    TOUCHED_CLASS = 'ng-touched',
+    PENDING_CLASS = 'ng-pending';
 
 /**
  * @ngdoc type
@@ -18404,6 +18421,44 @@ var VALID_CLASS = 'ng-valid',
  *      provided with the model value as an argument and must return a true or false value depending
  *      on the response of that validation.
  *
+ * ```js
+ * ngModel.$validators.validCharacters = function(modelValue, viewValue) {
+ *   var value = modelValue || viewValue;
+ *   return /[0-9]+/.test(value) &&
+ *          /[a-z]+/.test(value) &&
+ *          /[A-Z]+/.test(value) &&
+ *          /\W+/.test(value);
+ * };
+ * ```
+ *
+ * @property {Object.<string, function>} $asyncValidators A collection of validations that are expected to
+ *      perform an asynchronous validation (e.g. a HTTP request). The validation function that is provided
+ *      is expected to return a promise when it is run during the model validation process. Once the promise
+ *      is delivered then the validation status will be set to true when fulfilled and false when rejected.
+ *      When the asynchronous validators are trigged, each of the validators will run in parallel and the model
+ *      value will only be updated once all validators have been fulfilled. Also, keep in mind that all
+ *      asynchronous validators will only run once all synchronous validators have passed.
+ *
+ * Please note that if $http is used then it is important that the server returns a success HTTP response code
+ * in order to fulfill the validation and a status level of `4xx` in order to reject the validation.
+ *
+ * ```js
+ * ngModel.$asyncValidators.uniqueUsername = function(modelValue, viewValue) {
+ *   var value = modelValue || viewValue;
+ *   return $http.get('/api/users/' + value).
+ *      then(function() {
+ *        //username exists, this means the validator fails
+ *        return false;
+ *      }, function() {
+ *        //username does not exist, therefore this validation is true
+ *        return true;
+ *      });
+ * };
+ * ```
+ *
+ * @param {string} name The name of the validator.
+ * @param {Function} validationFn The validation function that will be run.
+ *
  * @property {Array.<Function>} $viewChangeListeners Array of functions to execute whenever the
  *     view value has changed. It is called with no arguments, and its return value is ignored.
  *     This can be used in place of additional $watches against the model value.
@@ -18416,6 +18471,7 @@ var VALID_CLASS = 'ng-valid',
  * @property {boolean} $dirty True if user has already interacted with the control.
  * @property {boolean} $valid True if there is no error.
  * @property {boolean} $invalid True if at least one error on the control.
+ * @property {Object.<string, boolean>} $pending True if one or more asynchronous validators is still yet to be delivered.
  *
  * @description
  *
@@ -18523,6 +18579,8 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
   this.$viewValue = Number.NaN;
   this.$modelValue = Number.NaN;
   this.$validators = {};
+  this.$asyncValidators = {};
+  this.$validators = {};
   this.$parsers = [];
   this.$formatters = [];
   this.$viewChangeListeners = [];
@@ -18541,7 +18599,7 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
       ctrl = this;
 
   if (!ngModelSet) {
-    throw minErr('ngModel')('nonassign', "Expression '{0}' is non-assignable. Element: {1}",
+    throw $ngModelMinErr('nonassign', "Expression '{0}' is non-assignable. Element: {1}",
         $attr.ngModel, startingTag($element));
   }
 
@@ -18590,6 +18648,7 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
 
   var parentForm = $element.inheritedData('$formController') || nullFormCtrl,
       invalidCount = 0, // used to easily determine if we are valid
+      pendingCount = 0, // used to easily determine if there are any pending validations
       $error = this.$error = {}; // keep invalid keys here
 
 
@@ -18605,6 +18664,68 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
     $animate.removeClass($element, (isValid ? INVALID_CLASS : VALID_CLASS) + validationErrorKey);
     $animate.addClass($element, (isValid ? VALID_CLASS : INVALID_CLASS) + validationErrorKey);
   }
+
+  this.$$clearValidity = function() {
+    $animate.removeClass($element, PENDING_CLASS);
+    forEach(ctrl.$error, function(val, key) {
+      var validationKey = snake_case(key, '-');
+      $animate.removeClass($element, VALID_CLASS + validationKey);
+      $animate.removeClass($element, INVALID_CLASS + validationKey);
+    });
+
+    // just incase an asnyc validator is still running while
+    // the parser fails
+    if(ctrl.$pending) {
+      ctrl.$$clearPending();
+    }
+
+    invalidCount = 0;
+    $error = ctrl.$error = {};
+
+    parentForm.$$clearControlValidity(ctrl);
+  };
+
+  this.$$clearPending = function() {
+    pendingCount = 0;
+    ctrl.$pending = undefined;
+    $animate.removeClass($element, PENDING_CLASS);
+  };
+
+  this.$$setPending = function(validationErrorKey, promise, currentValue) {
+    ctrl.$pending = ctrl.$pending || {};
+    if (angular.isUndefined(ctrl.$pending[validationErrorKey])) {
+      ctrl.$pending[validationErrorKey] = true;
+      pendingCount++;
+    }
+
+    ctrl.$valid = ctrl.$invalid = undefined;
+    parentForm.$$setPending(validationErrorKey, ctrl);
+
+    $animate.addClass($element, PENDING_CLASS);
+    $animate.removeClass($element, INVALID_CLASS);
+    $animate.removeClass($element, VALID_CLASS);
+
+    //Special-case for (undefined|null|false|NaN) values to avoid
+    //having to compare each of them with each other
+    currentValue = currentValue || '';
+    promise.then(resolve(true), resolve(false));
+
+    function resolve(bool) {
+      return function() {
+        var value = ctrl.$viewValue || '';
+        if (ctrl.$pending && ctrl.$pending[validationErrorKey] && currentValue === value) {
+          pendingCount--;
+          delete ctrl.$pending[validationErrorKey];
+          ctrl.$setValidity(validationErrorKey, bool);
+          if (pendingCount === 0) {
+            ctrl.$$clearPending();
+            ctrl.$$updateValidModelValue(value);
+            ctrl.$$writeModelToScope();
+          }
+        }
+      };
+    }
+  };
 
   /**
    * @ngdoc method
@@ -18625,28 +18746,30 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
    * @param {boolean} isValid Whether the current state is valid (true) or invalid (false).
    */
   this.$setValidity = function(validationErrorKey, isValid) {
-    // Purposeful use of ! here to cast isValid to boolean in case it is undefined
+
+    // avoid doing anything if the validation value has not changed
     // jshint -W018
-    if ($error[validationErrorKey] === !isValid) return;
+    if (!ctrl.$pending && $error[validationErrorKey] === !isValid) return;
     // jshint +W018
 
     if (isValid) {
       if ($error[validationErrorKey]) invalidCount--;
-      if (!invalidCount) {
+      if (!invalidCount && !pendingCount) {
         toggleValidCss(true);
         ctrl.$valid = true;
         ctrl.$invalid = false;
       }
-    } else {
-      toggleValidCss(false);
-      ctrl.$invalid = true;
-      ctrl.$valid = false;
+    } else if(!$error[validationErrorKey]) {
       invalidCount++;
+      if (!pendingCount) {
+        toggleValidCss(false);
+        ctrl.$invalid = true;
+        ctrl.$valid = false;
+      }
     }
 
     $error[validationErrorKey] = !isValid;
     toggleValidCss(isValid, validationErrorKey);
-
     parentForm.$setValidity(validationErrorKey, isValid, ctrl);
   };
 
@@ -18774,7 +18897,7 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
    * @name ngModel.NgModelController#$validate
    *
    * @description
-   * Runs each of the registered validations set on the $validators object.
+   * Runs each of the registered validators (first synchronous validators and then asynchronous validators).
    */
   this.$validate = function() {
     // ignore $validate before model initialized
@@ -18790,9 +18913,40 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
   };
 
   this.$$runValidators = function(modelValue, viewValue) {
-    forEach(ctrl.$validators, function(fn, name) {
-      ctrl.$setValidity(name, fn(modelValue, viewValue));
+    // this is called in the event if incase the input value changes
+    // while a former asynchronous validator is still doing its thing
+    if(ctrl.$pending) {
+      ctrl.$$clearPending();
+    }
+
+    var continueValidation = validate(ctrl.$validators, function(validator, result) {
+      ctrl.$setValidity(validator, result);
     });
+
+    if (continueValidation) {
+      validate(ctrl.$asyncValidators, function(validator, result) {
+        if (!isPromiseLike(result)) {
+          throw $ngModelMinErr("$asyncValidators",
+            "Expected asynchronous validator to return a promise but got '{0}' instead.", result);
+        }
+        ctrl.$$setPending(validator, result, modelValue);
+      });
+    }
+
+    ctrl.$$updateValidModelValue(modelValue);
+
+    function validate(validators, callback) {
+      var status = true;
+      forEach(validators, function(fn, name) {
+        var result = fn(modelValue, viewValue);
+        callback(name, result);
+        status = status && result;
+      });
+      return status;
+    }
+  };
+
+  this.$$updateValidModelValue = function(modelValue) {
     ctrl.$modelValue         = ctrl.$valid ? modelValue : undefined;
     ctrl.$$invalidModelValue = ctrl.$valid ? undefined : modelValue;
   };
@@ -18826,13 +18980,24 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
       parentForm.$setDirty();
     }
 
-    var modelValue = viewValue;
-    forEach(ctrl.$parsers, function(fn) {
-      modelValue = fn(modelValue);
-    });
+    var hasBadInput, modelValue = viewValue;
+    for(var i = 0; i < ctrl.$parsers.length; i++) {
+      modelValue = ctrl.$parsers[i](modelValue);
+      if(isUndefined(modelValue)) {
+        hasBadInput = true;
+        break;
+      }
+    }
 
-    if (ctrl.$modelValue !== modelValue &&
-        (isUndefined(ctrl.$$invalidModelValue) || ctrl.$$invalidModelValue != modelValue)) {
+    var parserName = ctrl.$$parserName || 'parse';
+    if (hasBadInput) {
+      ctrl.$$invalidModelValue = ctrl.$modelValue = undefined;
+      ctrl.$$clearValidity();
+      ctrl.$setValidity(parserName, false);
+      ctrl.$$writeModelToScope();
+    } else if (ctrl.$modelValue !== modelValue &&
+                (isUndefined(ctrl.$$invalidModelValue) || ctrl.$$invalidModelValue != modelValue)) {
+      ctrl.$setValidity(parserName, true);
       ctrl.$$runValidators(modelValue, viewValue);
       ctrl.$$writeModelToScope();
     }
