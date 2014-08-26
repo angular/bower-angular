@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3111+sha.d0b4189
+ * @license AngularJS v1.3.0-build.3112+sha.2f4437b
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3111+sha.d0b4189/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3112+sha.2f4437b/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2090,7 +2090,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3111+sha.d0b4189',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3112+sha.2f4437b',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -4423,10 +4423,8 @@ var $AnimateProvider = ['$provide', function($provide) {
        *   CSS classes have been set on the element
        */
       setClass : function(element, add, remove, done) {
-        forEach(element, function (element) {
-          jqLiteAddClass(element, add);
-          jqLiteRemoveClass(element, remove);
-        });
+        this.addClass(element, add);
+        this.removeClass(element, remove);
         async(done);
         return noop;
       },
@@ -5969,14 +5967,13 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
        */
       $updateClass : function(newClasses, oldClasses) {
         var toAdd = tokenDifference(newClasses, oldClasses);
-        var toRemove = tokenDifference(oldClasses, newClasses);
-
-        if(toAdd.length === 0) {
-          $animate.removeClass(this.$$element, toRemove);
-        } else if(toRemove.length === 0) {
+        if (toAdd && toAdd.length) {
           $animate.addClass(this.$$element, toAdd);
-        } else {
-          $animate.setClass(this.$$element, toAdd, toRemove);
+        }
+
+        var toRemove = tokenDifference(oldClasses, newClasses);
+        if (toRemove && toRemove.length) {
+          $animate.removeClass(this.$$element, toRemove);
         }
       },
 
@@ -19927,15 +19924,13 @@ function classDirective(name, selector) {
         function updateClasses (oldClasses, newClasses) {
           var toAdd = arrayDifference(newClasses, oldClasses);
           var toRemove = arrayDifference(oldClasses, newClasses);
-          toRemove = digestClassCounts(toRemove, -1);
           toAdd = digestClassCounts(toAdd, 1);
-
-          if (toAdd.length === 0) {
-            $animate.removeClass(element, toRemove);
-          } else if (toRemove.length === 0) {
+          toRemove = digestClassCounts(toRemove, -1);
+          if (toAdd && toAdd.length) {
             $animate.addClass(element, toAdd);
-          } else {
-            $animate.setClass(element, toAdd, toRemove);
+          }
+          if (toRemove && toRemove.length) {
+            $animate.removeClass(element, toRemove);
           }
         }
 
