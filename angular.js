@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3118+sha.2ae4f40
+ * @license AngularJS v1.3.0-build.3119+sha.ea6fc6e
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3118+sha.2ae4f40/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3119+sha.ea6fc6e/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2082,7 +2082,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3118+sha.2ae4f40',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3119+sha.ea6fc6e',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -7783,6 +7783,34 @@ function $HttpProvider() {
     xsrfHeaderName: 'X-XSRF-TOKEN'
   };
 
+  var useApplyAsync = false;
+  /**
+   * @ngdoc method
+   * @name $httpProvider#useApplyAsync
+   * @description
+   *
+   * Configure $http service to combine processing of multiple http responses received at around
+   * the same time via {@link ng.$rootScope#applyAsync $rootScope.$applyAsync}. This can result in
+   * significant performance improvement for bigger applications that make many HTTP requests
+   * concurrently (common during application bootstrap).
+   *
+   * Defaults to false. If no value is specifed, returns the current configured value.
+   *
+   * @param {boolean=} value If true, when requests are loaded, they will schedule a deferred
+   *    "apply" on the next tick, giving time for subsequent requests in a roughly ~10ms window
+   *    to load and share the same digest cycle.
+   *
+   * @returns {boolean|Object} If a value is specified, returns the $httpProvider for chaining.
+   *    otherwise, returns the current configured value.
+   **/
+  this.useApplyAsync = function(value) {
+    if (isDefined(value)) {
+      useApplyAsync = !!value;
+      return this;
+    }
+    return useApplyAsync;
+  };
+
   /**
    * Are ordered by request, i.e. they are applied in the same order as the
    * array, on request, but reverse order, on response.
@@ -8589,8 +8617,16 @@ function $HttpProvider() {
           }
         }
 
-        resolvePromise(response, status, headersString, statusText);
-        if (!$rootScope.$$phase) $rootScope.$apply();
+        function resolveHttpPromise() {
+          resolvePromise(response, status, headersString, statusText);
+        }
+
+        if (useApplyAsync) {
+          $rootScope.$applyAsync(resolveHttpPromise);
+        } else {
+          resolveHttpPromise();
+          if (!$rootScope.$$phase) $rootScope.$apply();
+        }
       }
 
 
@@ -12173,6 +12209,7 @@ function $RootScopeProvider(){
   var TTL = 10;
   var $rootScopeMinErr = minErr('$rootScope');
   var lastDirtyWatch = null;
+  var applyAsyncId = null;
 
   this.digestTtl = function(value) {
     if (arguments.length) {
@@ -12236,6 +12273,7 @@ function $RootScopeProvider(){
       this.$$listeners = {};
       this.$$listenerCount = {};
       this.$$isolateBindings = {};
+      this.$$applyAsyncQueue = [];
     }
 
     /**
@@ -12790,6 +12828,13 @@ function $RootScopeProvider(){
 
         beginPhase('$digest');
 
+        if (this === $rootScope && applyAsyncId !== null) {
+          // If this is the root scope, and $applyAsync has scheduled a deferred $apply(), then
+          // cancel the scheduled $apply and flush the queue of expressions to be evaluated.
+          $browser.defer.cancel(applyAsyncId);
+          flushApplyAsync();
+        }
+
         lastDirtyWatch = null;
 
         do { // "while dirty" loop
@@ -13101,6 +13146,33 @@ function $RootScopeProvider(){
 
       /**
        * @ngdoc method
+       * @name $rootScope.Scope#$applyAsync
+       * @kind function
+       *
+       * @description
+       * Schedule the invokation of $apply to occur at a later time. The actual time difference
+       * varies across browsers, but is typically around ~10 milliseconds.
+       *
+       * This can be used to queue up multiple expressions which need to be evaluated in the same
+       * digest.
+       *
+       * @param {(string|function())=} exp An angular expression to be executed.
+       *
+       *    - `string`: execute using the rules as defined in {@link guide/expression expression}.
+       *    - `function(scope)`: execute the function with current `scope` parameter.
+       */
+      $applyAsync: function(expr) {
+        var scope = this;
+        expr && $rootScope.$$applyAsyncQueue.push($applyAsyncExpression);
+        scheduleApplyAsync();
+
+        function $applyAsyncExpression() {
+          scope.$eval(expr);
+        }
+      },
+
+      /**
+       * @ngdoc method
        * @name $rootScope.Scope#$on
        * @kind function
        *
@@ -13331,6 +13403,26 @@ function $RootScopeProvider(){
      * because it's unique we can easily tell it apart from other values
      */
     function initWatchVal() {}
+
+    function flushApplyAsync() {
+      var queue = $rootScope.$$applyAsyncQueue;
+      while (queue.length) {
+        try {
+          queue.shift()();
+        } catch(e) {
+          $exceptionHandler(e);
+        }
+      }
+      applyAsyncId = null;
+    }
+
+    function scheduleApplyAsync() {
+      if (applyAsyncId === null) {
+        applyAsyncId = $browser.defer(function() {
+          $rootScope.$apply(flushApplyAsync);
+        });
+      }
+    }
   }];
 }
 
