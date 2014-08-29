@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3149+sha.1eda183
+ * @license AngularJS v1.3.0-build.3150+sha.c09f619
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3149+sha.1eda183/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3150+sha.c09f619/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2124,7 +2124,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3149+sha.1eda183',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3150+sha.c09f619',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -11717,16 +11717,16 @@ function $ParseProvider() {
  * @description
  * A promise/deferred implementation inspired by [Kris Kowal's Q](https://github.com/kriskowal/q).
  *
- * $q can be used in two fashions --- One, which is more similar to Kris Kowal's Q or jQuery's Deferred
- * implementations, the other resembles ES6 promises to some degree.
+ * $q can be used in two fashions --- one which is more similar to Kris Kowal's Q or jQuery's Deferred
+ * implementations, and the other which resembles ES6 promises to some degree.
  *
  * # $q constructor
  *
  * The streamlined ES6 style promise is essentially just using $q as a constructor which takes a `resolver`
- * function as the first argument). This is similar to the native Promise implementation from ES6 Harmony,
+ * function as the first argument. This is similar to the native Promise implementation from ES6 Harmony,
  * see [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise).
  *
- * While the constructor-style use is supported, not all of the supporting methods from Harmony promises are
+ * While the constructor-style use is supported, not all of the supporting methods from ES6 Harmony promises are
  * available yet.
  *
  * It can be used like so:
@@ -11753,9 +11753,9 @@ function $ParseProvider() {
  *   });
  * ```
  *
- * Note, progress/notify callbacks are not currently supported via the ES6-style interface.
+ * Note: progress/notify callbacks are not currently supported via the ES6-style interface.
  *
- * However, the more traditional CommonJS style usage is still available, and documented below.
+ * However, the more traditional CommonJS-style usage is still available, and documented below.
  *
  * [The CommonJS Promise proposal](http://wiki.commonjs.org/wiki/Promises) describes a promise as an
  * interface for interacting with an object that represents the result of an action that is
@@ -11843,7 +11843,7 @@ function $ParseProvider() {
  *
  *   This method *returns a new promise* which is resolved or rejected via the return value of the
  *   `successCallback`, `errorCallback`. It also notifies via the return value of the
- *   `notifyCallback` method. The promise can not be resolved or rejected from the notifyCallback
+ *   `notifyCallback` method. The promise cannot be resolved or rejected from the notifyCallback
  *   method.
  *
  * - `catch(errorCallback)` – shorthand for `promise.then(null, errorCallback)`
@@ -11913,7 +11913,7 @@ function $ParseProvider() {
  *  ```
  *
  * @param {function(function, function)} resolver Function which is responsible for resolving or
- *   rejecting the newly created promise. The first parameteter is a function which resolves the
+ *   rejecting the newly created promise. The first parameter is a function which resolves the
  *   promise, the second parameter is a function which rejects the promise.
  *
  * @returns {Promise} The newly created promise.
