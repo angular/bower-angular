@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3155+sha.2ae10f6
+ * @license AngularJS v1.3.0-build.3156+sha.c9b0bfe
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3155+sha.2ae10f6/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3156+sha.c9b0bfe/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2124,7 +2124,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3155+sha.2ae10f6',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3156+sha.c9b0bfe',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -23380,22 +23380,23 @@ var ngSwitchDirective = ['$animate', function($animate) {
       var watchExpr = attr.ngSwitch || attr.on,
           selectedTranscludes = [],
           selectedElements = [],
-          previousElements = [],
+          previousLeaveAnimations = [],
           selectedScopes = [];
 
       scope.$watch(watchExpr, function ngSwitchWatchAction(value) {
         var i, ii;
-        for (i = 0, ii = previousElements.length; i < ii; ++i) {
-          previousElements[i].remove();
+        for (i = 0, ii = previousLeaveAnimations.length; i < ii; ++i) {
+          $animate.cancel(previousLeaveAnimations[i]);
         }
-        previousElements.length = 0;
+        previousLeaveAnimations.length = 0;
 
         for (i = 0, ii = selectedScopes.length; i < ii; ++i) {
           var selected = getBlockNodes(selectedElements[i].clone);
           selectedScopes[i].$destroy();
-          previousElements[i] = selected;
-          $animate.leave(selected).then(function() {
-            previousElements.splice(i, 1);
+
+          var promise = previousLeaveAnimations[i] = $animate.leave(selected);
+          promise.then(function() {
+            previousLeaveAnimations.splice(i, 1);
           });
         }
 
