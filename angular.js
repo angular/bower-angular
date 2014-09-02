@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3165+sha.c5b32f1
+ * @license AngularJS v1.3.0-build.3166+sha.e0d49a3
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3165+sha.c5b32f1/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3166+sha.e0d49a3/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2124,7 +2124,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3165+sha.c5b32f1',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3166+sha.e0d49a3',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -22840,7 +22840,7 @@ var ngRepeatDirective = ['$parse', '$animate', function($parse, $animate) {
               $transclude(function ngRepeatTransclude(clone, scope) {
                 block.scope = scope;
                 // http://jsperf.com/clone-vs-createcomment
-                var endNode = ngRepeatEndComment.cloneNode();
+                var endNode = ngRepeatEndComment.cloneNode(false);
                 clone[clone.length++] = endNode;
                 $animate.enter(clone, null, jqLite(previousNode));
                 previousNode = endNode;
