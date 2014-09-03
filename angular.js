@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3179+sha.0f806d9
+ * @license AngularJS v1.3.0-build.3180+sha.c3064f7
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3179+sha.0f806d9/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3180+sha.c3064f7/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2124,7 +2124,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3179+sha.0f806d9',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3180+sha.c3064f7',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -18381,7 +18381,6 @@ function baseInputType(scope, element, attr, ctrl, $sniffer, $browser) {
   var validity = element.prop(VALIDITY_STATE_PROPERTY);
   var placeholder = element[0].placeholder, noevent = {};
   var type = lowercase(element[0].type);
-  ctrl.$$validityState = validity;
 
   // In composition mode, users are still inputing intermediate text buffer,
   // hold the listener until composition is done.
@@ -18420,16 +18419,15 @@ function baseInputType(scope, element, attr, ctrl, $sniffer, $browser) {
       value = trim(value);
     }
 
-    // If a control is suffering from bad input, browsers discard its value, so it may be
-    // necessary to revalidate even if the control's value is the same empty value twice in
-    // a row.
-    var revalidate = validity && ctrl.$$hasNativeValidators;
-    if (ctrl.$viewValue !== value || (value === '' && revalidate)) {
+    // If a control is suffering from bad input (due to native validators), browsers discard its
+    // value, so it may be necessary to revalidate (by calling $setViewValue again) even if the
+    // control's value is the same empty value twice in a row.
+    if (ctrl.$viewValue !== value || (value === '' && ctrl.$$hasNativeValidators)) {
       if (scope.$root.$$phase) {
-        ctrl.$setViewValue(value, event, revalidate);
+        ctrl.$setViewValue(value, event);
       } else {
         scope.$apply(function() {
-          ctrl.$setViewValue(value, event, revalidate);
+          ctrl.$setViewValue(value, event);
         });
       }
     }
@@ -19447,11 +19445,15 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
    * event defined in `ng-model-options`. this method is rarely needed as `NgModelController`
    * usually handles calling this in response to input events.
    */
-  this.$commitViewValue = function(revalidate) {
+  this.$commitViewValue = function() {
     var viewValue = ctrl.$viewValue;
 
     $timeout.cancel(pendingDebounce);
-    if (!revalidate && ctrl.$$lastCommittedViewValue === viewValue) {
+
+    // If the view value has not changed then we should just exit, except in the case where there is
+    // a native validator on the element. In this case the validation state may have changed even though
+    // the viewValue has stayed empty.
+    if (ctrl.$$lastCommittedViewValue === viewValue && (viewValue !== '' || !ctrl.$$hasNativeValidators)) {
       return;
     }
     ctrl.$$lastCommittedViewValue = viewValue;
@@ -19547,14 +19549,14 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
    * @param {string} value Value from the view.
    * @param {string} trigger Event that triggered the update.
    */
-  this.$setViewValue = function(value, trigger, revalidate) {
+  this.$setViewValue = function(value, trigger) {
     ctrl.$viewValue = value;
     if (!ctrl.$options || ctrl.$options.updateOnDefault) {
-      ctrl.$$debounceViewValueCommit(trigger, revalidate);
+      ctrl.$$debounceViewValueCommit(trigger);
     }
   };
 
-  this.$$debounceViewValueCommit = function(trigger, revalidate) {
+  this.$$debounceViewValueCommit = function(trigger) {
     var debounceDelay = 0,
         options = ctrl.$options,
         debounce;
@@ -19573,10 +19575,10 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
     $timeout.cancel(pendingDebounce);
     if (debounceDelay) {
       pendingDebounce = $timeout(function() {
-        ctrl.$commitViewValue(revalidate);
+        ctrl.$commitViewValue();
       }, debounceDelay);
     } else {
-      ctrl.$commitViewValue(revalidate);
+      ctrl.$commitViewValue();
     }
   };
 
