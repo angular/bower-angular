@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3181+sha.5b2a386
+ * @license AngularJS v1.3.0-build.3184+sha.821da26
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3181+sha.5b2a386/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3184+sha.821da26/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -134,7 +134,6 @@ function minErr(module, ErrorConstructor) {
   map: true,
   size: true,
   includes: true,
-  indexOf: true,
   arrayRemove: true,
   isLeafNode: true,
   copy: true,
@@ -732,20 +731,11 @@ function size(obj, ownPropsOnly) {
 
 
 function includes(array, obj) {
-  return indexOf(array, obj) != -1;
-}
-
-function indexOf(array, obj) {
-  if (array.indexOf) return array.indexOf(obj);
-
-  for (var i = 0; i < array.length; i++) {
-    if (obj === array[i]) return i;
-  }
-  return -1;
+  return Array.prototype.indexOf.call(array, obj) != -1;
 }
 
 function arrayRemove(array, value) {
-  var index = indexOf(array, value);
+  var index = array.indexOf(value);
   if (index >=0)
     array.splice(index, 1);
   return value;
@@ -850,7 +840,7 @@ function copy(source, destination, stackSource, stackDest) {
     stackDest = stackDest || [];
 
     if (isObject(source)) {
-      var index = indexOf(stackSource, source);
+      var index = stackSource.indexOf(source);
       if (index !== -1) return stackDest[index];
 
       stackSource.push(source);
@@ -2124,7 +2114,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3181+sha.5b2a386',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3184+sha.821da26',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -8831,7 +8821,7 @@ function $HttpProvider() {
 
 
       function removePendingReq() {
-        var idx = indexOf($http.pendingRequests, config);
+        var idx = $http.pendingRequests.indexOf(config);
         if (idx !== -1) $http.pendingRequests.splice(idx, 1);
       }
     }
@@ -13410,7 +13400,7 @@ function $RootScopeProvider(){
 
         var self = this;
         return function() {
-          namedListeners[indexOf(namedListeners, listener)] = null;
+          namedListeners[namedListeners.indexOf(listener)] = null;
           decrementListenerCount(self, 1, name);
         };
       },
@@ -17113,7 +17103,7 @@ function FormController(element, attrs, $scope, $animate) {
     var pendingChange, pending = form.$pending && form.$pending[validationToken];
 
     if (pending) {
-      pendingChange = indexOf(pending, control) >= 0;
+      pendingChange = pending.indexOf(control) >= 0;
       if (pendingChange) {
         arrayRemove(pending, control);
         pendingCount--;
