@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3180+sha.c3064f7
+ * @license AngularJS v1.3.0-build.3181+sha.5b2a386
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3180+sha.c3064f7/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3181+sha.5b2a386/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2124,7 +2124,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3180+sha.c3064f7',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3181+sha.5b2a386',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -5828,7 +5828,6 @@ var $compileMinErr = minErr('$compile');
 /**
  * @ngdoc provider
  * @name $compileProvider
- * @kind function
  *
  * @description
  */
@@ -9071,7 +9070,6 @@ var $interpolateMinErr = minErr('$interpolate');
 /**
  * @ngdoc provider
  * @name $interpolateProvider
- * @kind function
  *
  * @description
  *
@@ -11595,7 +11593,6 @@ function getterFn(path, options, fullExp) {
 /**
  * @ngdoc provider
  * @name $parseProvider
- * @kind function
  *
  * @description
  * `$parseProvider` can be used for configuring the default behavior of the {@link ng.$parse $parse}
@@ -17085,8 +17082,6 @@ function FormController(element, attrs, $scope, $animate) {
     function clear(queue, validationToken) {
       form.$setValidity(validationToken, true, control);
     }
-
-    parentForm.$$clearControlValidity(form);
   };
 
   form.$$setPending = function(validationToken, control) {
