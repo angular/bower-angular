@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3197+sha.6d1e7cd
+ * @license AngularJS v1.3.0-build.3198+sha.02bada1
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3197+sha.6d1e7cd/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3198+sha.02bada1/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2114,7 +2114,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3197+sha.6d1e7cd',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3198+sha.02bada1',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -23447,6 +23447,10 @@ var ngSwitchDirective = ['$animate', function($animate) {
           previousLeaveAnimations = [],
           selectedScopes = [];
 
+      var spliceFactory = function(array, index) {
+          return function() { array.splice(index, 1); };
+      };
+
       scope.$watch(watchExpr, function ngSwitchWatchAction(value) {
         var i, ii;
         for (i = 0, ii = previousLeaveAnimations.length; i < ii; ++i) {
@@ -23457,11 +23461,8 @@ var ngSwitchDirective = ['$animate', function($animate) {
         for (i = 0, ii = selectedScopes.length; i < ii; ++i) {
           var selected = getBlockNodes(selectedElements[i].clone);
           selectedScopes[i].$destroy();
-
           var promise = previousLeaveAnimations[i] = $animate.leave(selected);
-          promise.then(function() {
-            previousLeaveAnimations.splice(i, 1);
-          });
+          promise.then(spliceFactory(previousLeaveAnimations, i));
         }
 
         selectedElements.length = 0;
