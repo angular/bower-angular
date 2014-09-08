@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3216+sha.41cec4d
+ * @license AngularJS v1.3.0-build.3217+sha.9bedeb3
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3216+sha.41cec4d/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3217+sha.9bedeb3/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -291,9 +291,9 @@ function isArrayLike(obj) {
  *
  * @description
  * Invokes the `iterator` function once for each item in `obj` collection, which can be either an
- * object or an array. The `iterator` function is invoked with `iterator(value, key)`, where `value`
- * is the value of an object property or an array element and `key` is the object property key or
- * array element index. Specifying a `context` for the function is optional.
+ * object or an array. The `iterator` function is invoked with `iterator(value, key, obj)`, where `value`
+ * is the value of an object property or an array element, `key` is the object property key or
+ * array element index and obj is the `obj` itself. Specifying a `context` for the function is optional.
  *
  * It is worth noting that `.forEach` does not iterate over inherited properties because it filters
  * using the `hasOwnProperty` method.
@@ -321,22 +321,22 @@ function forEach(obj, iterator, context) {
         // Need to check if hasOwnProperty exists,
         // as on IE8 the result of querySelectorAll is an object without a hasOwnProperty function
         if (key != 'prototype' && key != 'length' && key != 'name' && (!obj.hasOwnProperty || obj.hasOwnProperty(key))) {
-          iterator.call(context, obj[key], key);
+          iterator.call(context, obj[key], key, obj);
         }
       }
     } else if (isArray(obj) || isArrayLike(obj)) {
       var isPrimitive = typeof obj !== 'object';
       for (key = 0, length = obj.length; key < length; key++) {
         if (isPrimitive || key in obj) {
-          iterator.call(context, obj[key], key);
+          iterator.call(context, obj[key], key, obj);
         }
       }
     } else if (obj.forEach && obj.forEach !== forEach) {
-        obj.forEach(iterator, context);
+        obj.forEach(iterator, context, obj);
     } else {
       for (key in obj) {
         if (obj.hasOwnProperty(key)) {
-          iterator.call(context, obj[key], key);
+          iterator.call(context, obj[key], key, obj);
         }
       }
     }
@@ -417,15 +417,19 @@ function setHashKey(obj, h) {
  */
 function extend(dst) {
   var h = dst.$$hashKey;
-  forEach(arguments, function(obj) {
-    if (obj !== dst) {
-      forEach(obj, function(value, key) {
-        dst[key] = value;
-      });
-    }
-  });
 
-  setHashKey(dst,h);
+  for (var i = 1, ii = arguments.length; i < ii; i++) {
+    var obj = arguments[i];
+    if (obj) {
+      var keys = Object.keys(obj);
+      for (var j = 0, jj = keys.length; j < jj; j++) {
+        var key = keys[j];
+        dst[key] = obj[key];
+      }
+    }
+  }
+
+  setHashKey(dst, h);
   return dst;
 }
 
@@ -2118,7 +2122,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3216+sha.41cec4d',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3217+sha.9bedeb3',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
