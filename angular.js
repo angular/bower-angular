@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3225+sha.7235329
+ * @license AngularJS v1.3.0-build.3226+sha.b3b476d
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3225+sha.7235329/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3226+sha.b3b476d/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2122,7 +2122,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3225+sha.7235329',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3226+sha.b3b476d',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -10715,12 +10715,21 @@ function ensureSafeFunction(obj, fullExpression) {
   }
 }
 
+//Keyword constants
+var CONSTANTS = createMap();
+forEach({
+  'null': function() { return null; },
+  'true': function() { return true; },
+  'false': function() { return false; },
+  'undefined': function() {}
+}, function(constantGetter, name) {
+  constantGetter.constant = constantGetter.literal = constantGetter.sharedGetter = true;
+  CONSTANTS[name] = constantGetter;
+});
+
+//Operators - will be wrapped by binaryFn/unaryFn/assignment/filter
 var OPERATORS = extend(createMap(), {
     /* jshint bitwise : false */
-    'null':function(){return null;},
-    'true':function(){return true;},
-    'false':function(){return false;},
-    undefined:noop,
     '+':function(self, locals, a,b){
       a=a(self, locals); b=b(self, locals);
       if (isDefined(a)) {
@@ -10940,30 +10949,11 @@ Lexer.prototype = {
       }
     }
 
-
-    var token = {
+    this.tokens.push({
       index: start,
-      text: ident
-    };
-
-    var fn = OPERATORS[ident];
-
-    if (fn) {
-      token.fn = fn;
-      token.constant = true;
-    } else {
-      var getter = getterFn(ident, this.options, expression);
-      // TODO(perf): consider exposing the getter reference
-      token.fn = extend(function $parsePathGetter(self, locals) {
-        return getter(self, locals);
-      }, {
-        assign: function(self, value) {
-          return setter(self, ident, value, expression);
-        }
-      });
-    }
-
-    this.tokens.push(token);
+      text: ident,
+      fn: CONSTANTS[ident] || getterFn(ident, this.options, expression)
+    });
 
     if (methodName) {
       this.tokens.push({
@@ -11032,6 +11022,7 @@ var Parser = function (lexer, $filter, options) {
 Parser.ZERO = extend(function () {
   return 0;
 }, {
+  sharedGetter: true,
   constant: true
 });
 
@@ -11570,9 +11561,14 @@ function getterFn(path, options, fullExp) {
     var evaledFnGetter = new Function('s', 'l', code); // s=scope, l=locals
     /* jshint +W054 */
     evaledFnGetter.toString = valueFn(code);
+    evaledFnGetter.assign = function(self, value) {
+      return setter(self, path, value, path);
+    };
+
     fn = evaledFnGetter;
   }
 
+  fn.sharedGetter = true;
   getterFnCache[path] = fn;
   return fn;
 }
@@ -11639,6 +11635,21 @@ function $ParseProvider() {
   this.$get = ['$filter', '$sniffer', function($filter, $sniffer) {
     $parseOptions.csp = $sniffer.csp;
 
+    function wrapSharedExpression(exp) {
+      var wrapped = exp;
+
+      if (exp.sharedGetter) {
+        wrapped = function $parseWrapper(self, locals) {
+          return exp(self, locals);
+        };
+        wrapped.literal = exp.literal;
+        wrapped.constant = exp.constant;
+        wrapped.assign = exp.assign;
+      }
+
+      return wrapped;
+    }
+
     return function $parse(exp, interceptorFn) {
       var parsedExpression, oneTime, cacheKey;
 
@@ -11661,6 +11672,9 @@ function $ParseProvider() {
             if (parsedExpression.constant) {
               parsedExpression.$$watchDelegate = constantWatchDelegate;
             } else if (oneTime) {
+              //oneTime is not part of the exp passed to the Parser so we may have to
+              //wrap the parsedExpression before adding a $$watchDelegate
+              parsedExpression = wrapSharedExpression(parsedExpression);
               parsedExpression.$$watchDelegate = parsedExpression.literal ?
                 oneTimeLiteralWatchDelegate : oneTimeWatchDelegate;
             }
