@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3227+sha.90cd1e0
+ * @license AngularJS v1.3.0-build.3228+sha.64c3b74
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3227+sha.90cd1e0/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3228+sha.64c3b74/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2122,7 +2122,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3227+sha.90cd1e0',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3228+sha.64c3b74',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -19087,15 +19087,33 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
   this.$name = $attr.name;
 
 
-  var ngModelGet = $parse($attr.ngModel),
-      ngModelSet = ngModelGet.assign,
+  var parsedNgModel = $parse($attr.ngModel),
       pendingDebounce = null,
       ctrl = this;
+
+  var ngModelGet = function ngModelGet() {
+    var modelValue = parsedNgModel($scope);
+    if (ctrl.$options && ctrl.$options.getterSetter && isFunction(modelValue)) {
+      modelValue = modelValue();
+    }
+    return modelValue;
+  };
+
+  var ngModelSet = function ngModelSet(newValue) {
+    var getterSetter;
+    if (ctrl.$options && ctrl.$options.getterSetter &&
+        isFunction(getterSetter = parsedNgModel($scope))) {
+
+      getterSetter(ctrl.$modelValue);
+    } else {
+      parsedNgModel.assign($scope, ctrl.$modelValue);
+    }
+  };
 
   this.$$setOptions = function(options) {
     ctrl.$options = options;
 
-    if (!ngModelSet && (!options || !options.getterSetter)) {
+    if (!parsedNgModel.assign && (!options || !options.getterSetter)) {
       throw $ngModelMinErr('nonassign', "Expression '{0}' is non-assignable. Element: {1}",
           $attr.ngModel, startingTag($element));
     }
@@ -19311,25 +19329,16 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
    * Runs each of the registered validators (first synchronous validators and then asynchronous validators).
    */
   this.$validate = function() {
-    // ignore $validate before model initialized
-    if (ctrl.$modelValue !== ctrl.$modelValue) {
+    // ignore $validate before model is initialized
+    if (isNumber(ctrl.$modelValue) && isNaN(ctrl.$modelValue)) {
       return;
     }
-
-    var prev = ctrl.$modelValue;
-    ctrl.$$runValidators(undefined, ctrl.$$invalidModelValue || ctrl.$modelValue, ctrl.$viewValue, function() {
-      if (prev !== ctrl.$modelValue) {
-        ctrl.$$writeModelToScope();
-      }
-    });
+    this.$$parseAndValidate();
   };
 
   this.$$runValidators = function(parseValid, modelValue, viewValue, doneCallback) {
     currentValidationRunId++;
     var localValidationRunId = currentValidationRunId;
-
-    // We can update the $$invalidModelValue immediately as we don't have to wait for validators!
-    ctrl.$$invalidModelValue = modelValue;
 
     // check parser error
     if (!processParseErrors(parseValid)) {
@@ -19407,8 +19416,6 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
 
     function validationDone() {
       if (localValidationRunId === currentValidationRunId) {
-        // set the validated model value
-        ctrl.$modelValue = ctrl.$valid ? modelValue : undefined;
 
         doneCallback();
       }
@@ -19447,8 +19454,13 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
       $animate.addClass($element, DIRTY_CLASS);
       parentForm.$setDirty();
     }
+    this.$$parseAndValidate();
+  };
 
-    var parserValid = true, modelValue = viewValue;
+  this.$$parseAndValidate = function() {
+    var parserValid = true,
+        viewValue = ctrl.$$lastCommittedViewValue,
+        modelValue = viewValue;
     for(var i = 0; i < ctrl.$parsers.length; i++) {
       modelValue = ctrl.$parsers[i](modelValue);
       if (isUndefined(modelValue)) {
@@ -19456,22 +19468,21 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
         break;
       }
     }
-
+    if (isNumber(ctrl.$modelValue) && isNaN(ctrl.$modelValue)) {
+      // ctrl.$modelValue has not been touched yet...
+      ctrl.$modelValue = ngModelGet();
+    }
+    var prevModelValue = ctrl.$modelValue;
     ctrl.$$runValidators(parserValid, modelValue, viewValue, function() {
-      ctrl.$$writeModelToScope();
+      ctrl.$modelValue = ctrl.$valid ? modelValue : undefined;
+      if (ctrl.$modelValue !== prevModelValue) {
+        ctrl.$$writeModelToScope();
+      }
     });
   };
 
   this.$$writeModelToScope = function() {
-    var getterSetter;
-
-    if (ctrl.$options && ctrl.$options.getterSetter &&
-        isFunction(getterSetter = ngModelGet($scope))) {
-
-      getterSetter(ctrl.$modelValue);
-    } else {
-      ngModelSet($scope, ctrl.$modelValue);
-    }
+    ngModelSet(ctrl.$modelValue);
     forEach(ctrl.$viewChangeListeners, function(listener) {
       try {
         listener();
@@ -19559,17 +19570,20 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
   };
 
   // model -> value
+  // Note: we cannot use a normal scope.$watch as we want to detect the following:
+  // 1. scope value is 'a'
+  // 2. user enters 'b'
+  // 3. ng-change kicks in and reverts scope value to 'a'
+  //    -> scope value did not change since the last digest as
+  //       ng-change executes in apply phase
+  // 4. view should be changed back to 'a'
   $scope.$watch(function ngModelWatch() {
-    var modelValue = ngModelGet($scope);
-
-    if (ctrl.$options && ctrl.$options.getterSetter && isFunction(modelValue)) {
-      modelValue = modelValue();
-    }
+    var modelValue = ngModelGet();
 
     // if scope model value and ngModel value are out of sync
     // TODO(perf): why not move this to the action fn?
-    if (ctrl.$modelValue !== modelValue &&
-        (isUndefined(ctrl.$$invalidModelValue) || ctrl.$$invalidModelValue != modelValue)) {
+    if (modelValue !== ctrl.$modelValue) {
+      ctrl.$modelValue = modelValue;
 
       var formatters = ctrl.$formatters,
           idx = formatters.length;
@@ -19578,12 +19592,11 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
       while(idx--) {
         viewValue = formatters[idx](viewValue);
       }
-      var lastViewValue = ctrl.$viewValue;
-      if (lastViewValue !== viewValue) {
-        ctrl.$$runValidators(undefined, modelValue, viewValue, function() {
-          ctrl.$viewValue = ctrl.$$lastCommittedViewValue = viewValue;
-          ctrl.$render();
-        });
+      if (ctrl.$viewValue !== viewValue) {
+        ctrl.$viewValue = ctrl.$$lastCommittedViewValue = viewValue;
+        ctrl.$render();
+
+        ctrl.$$runValidators(undefined, modelValue, viewValue, noop);
       }
     }
 
