@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3228+sha.64c3b74
+ * @license AngularJS v1.3.0-build.3229+sha.3c538c1
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3228+sha.64c3b74/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3229+sha.3c538c1/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2122,7 +2122,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3228+sha.64c3b74',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3229+sha.3c538c1',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -19473,12 +19473,23 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
       ctrl.$modelValue = ngModelGet();
     }
     var prevModelValue = ctrl.$modelValue;
+    var allowInvalid = ctrl.$options && ctrl.$options.allowInvalid;
+    if (allowInvalid) {
+      ctrl.$modelValue = modelValue;
+      writeToModelIfNeeded();
+    }
     ctrl.$$runValidators(parserValid, modelValue, viewValue, function() {
-      ctrl.$modelValue = ctrl.$valid ? modelValue : undefined;
+      if (!allowInvalid) {
+        ctrl.$modelValue = ctrl.$valid ? modelValue : undefined;
+        writeToModelIfNeeded();
+      }
+    });
+
+    function writeToModelIfNeeded() {
       if (ctrl.$modelValue !== prevModelValue) {
         ctrl.$$writeModelToScope();
       }
-    });
+    }
   };
 
   this.$$writeModelToScope = function() {
@@ -20201,6 +20212,8 @@ var ngValueDirective = function() {
  *     value of 0 triggers an immediate update. If an object is supplied instead, you can specify a
  *     custom value for each event. For example:
  *     `ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 0} }"`
+ *   - `allowInvalid`: boolean value which indicates that the model can be set with values that did
+ *     not validate correctly instead of the default behavior of setting the model to undefined.
  *   - `getterSetter`: boolean value which determines whether or not to treat functions bound to
        `ngModel` as getters/setters.
  *   - `timezone`: Defines the timezone to be used to read/write the `Date` instance in the model for
