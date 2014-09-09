@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3222+sha.6639ca9
+ * @license AngularJS v1.3.0-build.3223+sha.bd8ad0f
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3222+sha.6639ca9/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3223+sha.bd8ad0f/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2122,7 +2122,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3222+sha.6639ca9',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3223+sha.bd8ad0f',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -11386,7 +11386,7 @@ Parser.prototype = {
       if (args) {
         var i = argsFn.length;
         while (i--) {
-          args[i] = argsFn[i](scope, locals);
+          args[i] = ensureSafeObject(argsFn[i](scope, locals), expressionText);
         }
       }
 
@@ -11474,11 +11474,12 @@ Parser.prototype = {
 //////////////////////////////////////////////////
 
 function setter(obj, path, setValue, fullExp) {
+  ensureSafeObject(obj, fullExp);
 
   var element = path.split('.'), key;
   for (var i = 0; element.length > 1; i++) {
     key = ensureSafeMemberName(element.shift(), fullExp);
-    var propertyObj = obj[key];
+    var propertyObj = ensureSafeObject(obj[key], fullExp);
     if (!propertyObj) {
       propertyObj = {};
       obj[key] = propertyObj;
@@ -11486,7 +11487,6 @@ function setter(obj, path, setValue, fullExp) {
     obj = propertyObj;
   }
   key = ensureSafeMemberName(element.shift(), fullExp);
-  ensureSafeObject(obj, fullExp);
   ensureSafeObject(obj[key], fullExp);
   obj[key] = setValue;
   return setValue;
