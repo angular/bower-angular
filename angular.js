@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3234+sha.9314719
+ * @license AngularJS v1.3.0-build.3235+sha.56f09f0
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3234+sha.9314719/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3235+sha.56f09f0/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2122,7 +2122,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3234+sha.9314719',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3235+sha.56f09f0',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -5845,6 +5845,31 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
   // 'on' and be composed of only English letters.
   var EVENT_HANDLER_ATTR_REGEXP = /^(on[a-z]+|formaction)$/;
 
+  function parseIsolateBindings(scope, directiveName) {
+    var LOCAL_REGEXP = /^\s*([@=&])(\??)\s*(\w*)\s*$/;
+
+    var bindings = {};
+
+    forEach(scope, function(definition, scopeName) {
+      var match = definition.match(LOCAL_REGEXP);
+
+      if (!match) {
+        throw $compileMinErr('iscp',
+            "Invalid isolate scope definition for directive '{0}'." +
+            " Definition: {... {1}: '{2}' ...}",
+            directiveName, scopeName, definition);
+      }
+
+      bindings[scopeName] = {
+        attrName: match[3] || scopeName,
+        mode: match[1],
+        optional: match[2] === '?'
+      };
+    });
+
+    return bindings;
+  }
+
   /**
    * @ngdoc method
    * @name $compileProvider#directive
@@ -5882,6 +5907,9 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
                 directive.name = directive.name || name;
                 directive.require = directive.require || (directive.controller && directive.name);
                 directive.restrict = directive.restrict || 'EA';
+                if (isObject(directive.scope)) {
+                  directive.$$isolateBindings = parseIsolateBindings(directive.scope, directive.name);
+                }
                 directives.push(directive);
               } catch (e) {
                 $exceptionHandler(e);
@@ -6928,15 +6956,13 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
               newIsolateScopeDirective.bindToController === true) {
             isolateBindingContext = isolateScopeController.instance;
           }
-          forEach(newIsolateScopeDirective.scope, function(definition, scopeName) {
-            var match = definition.match(LOCAL_REGEXP) || [],
-                attrName = match[3] || scopeName,
-                optional = (match[2] == '?'),
-                mode = match[1], // @, =, or &
+
+          forEach(isolateScope.$$isolateBindings = newIsolateScopeDirective.$$isolateBindings, function(definition, scopeName) {
+            var attrName = definition.attrName,
+                optional = definition.optional,
+                mode = definition.mode, // @, =, or &
                 lastValue,
                 parentGet, parentSet, compare;
-
-            isolateScope.$$isolateBindings[scopeName] = mode + attrName;
 
             switch (mode) {
 
@@ -6992,12 +7018,6 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
                   return parentGet(scope, locals);
                 };
                 break;
-
-              default:
-                throw $compileMinErr('iscp',
-                    "Invalid isolate scope definition for directive '{0}'." +
-                    " Definition: {... {1}: '{2}' ...}",
-                    newIsolateScopeDirective.name, scopeName, definition);
             }
           });
         }
@@ -12496,7 +12516,7 @@ function $RootScopeProvider(){
       this.$$postDigestQueue = [];
       this.$$listeners = {};
       this.$$listenerCount = {};
-      this.$$isolateBindings = {};
+      this.$$isolateBindings = null;
       this.$$applyAsyncQueue = [];
     }
 
