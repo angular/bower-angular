@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3236+sha.3e51b84
+ * @license AngularJS v1.3.0-build.3237+sha.1a1ef62
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3236+sha.3e51b84/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3237+sha.1a1ef62/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2122,7 +2122,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3236+sha.3e51b84',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3237+sha.1a1ef62',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -18460,7 +18460,7 @@ function baseInputType(scope, element, attr, ctrl, $sniffer, $browser) {
   };
 }
 
-function weekParser(isoWeek) {
+function weekParser(isoWeek, existingDate) {
   if (isDate(isoWeek)) {
     return isoWeek;
   }
@@ -18471,9 +18471,21 @@ function weekParser(isoWeek) {
     if (parts) {
       var year = +parts[1],
           week = +parts[2],
+          hours = 0,
+          minutes = 0,
+          seconds = 0,
+          milliseconds = 0,
           firstThurs = getFirstThursdayOfYear(year),
           addDays = (week - 1) * 7;
-      return new Date(year, 0, firstThurs.getDate() + addDays);
+
+      if (existingDate) {
+        hours = existingDate.getHours();
+        minutes = existingDate.getMinutes();
+        seconds = existingDate.getSeconds();
+        milliseconds = existingDate.getMilliseconds();
+      }
+
+      return new Date(year, 0, firstThurs.getDate() + addDays, hours, minutes, seconds, milliseconds);
     }
   }
 
@@ -18481,7 +18493,7 @@ function weekParser(isoWeek) {
 }
 
 function createDateParser(regexp, mapping) {
-  return function(iso) {
+  return function(iso, date) {
     var parts, map;
 
     if (isDate(iso)) {
@@ -18503,14 +18515,26 @@ function createDateParser(regexp, mapping) {
 
       if (parts) {
         parts.shift();
-        map = { yyyy: 1970, MM: 1, dd: 1, HH: 0, mm: 0, ss: 0 };
+        if (date) {
+          map = {
+            yyyy: date.getFullYear(),
+            MM: date.getMonth() + 1,
+            dd: date.getDate(),
+            HH: date.getHours(),
+            mm: date.getMinutes(),
+            ss: date.getSeconds(),
+            sss: date.getMilliseconds()
+          };
+        } else {
+          map = { yyyy: 1970, MM: 1, dd: 1, HH: 0, mm: 0, ss: 0, sss: 0 };
+        }
 
         forEach(parts, function(part, index) {
           if (index < mapping.length) {
             map[mapping[index]] = +part;
           }
         });
-        return new Date(map.yyyy, map.MM - 1, map.dd, map.HH, map.mm, map.ss || 0);
+        return new Date(map.yyyy, map.MM - 1, map.dd, map.HH, map.mm, map.ss || 0, map.sss || 0);
       }
     }
 
@@ -18528,7 +18552,12 @@ function createDateInputType(type, regexp, parseDate, format) {
     ctrl.$parsers.push(function(value) {
       if (ctrl.$isEmpty(value)) return null;
       if (regexp.test(value)) {
-        var parsedDate = parseDate(value);
+        var previousDate = ctrl.$modelValue;
+        if (previousDate && timezone === 'UTC') {
+          var timezoneOffset = 60000 * previousDate.getTimezoneOffset();
+          previousDate = new Date(previousDate.getTime() + timezoneOffset);
+        }
+        var parsedDate = parseDate(value, previousDate);
         if (timezone === 'UTC') {
           parsedDate.setMinutes(parsedDate.getMinutes() - parsedDate.getTimezoneOffset());
         }
