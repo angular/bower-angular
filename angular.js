@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3246+sha.c1f2c3e
+ * @license AngularJS v1.3.0-build.3247+sha.d13b4bd
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3246+sha.c1f2c3e/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3247+sha.d13b4bd/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2122,7 +2122,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3246+sha.c1f2c3e',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3247+sha.d13b4bd',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -11555,7 +11555,7 @@ function getterFn(path, options, fullExp) {
     if (pathKeysLength < 6) {
       fn = cspSafeGetterFn(pathKeys[0], pathKeys[1], pathKeys[2], pathKeys[3], pathKeys[4], fullExp);
     } else {
-      fn = function(scope, locals) {
+      fn = function cspSafeGetter(scope, locals) {
         var i = 0, val;
         do {
           val = cspSafeGetterFn(pathKeys[i++], pathKeys[i++], pathKeys[i++], pathKeys[i++],
@@ -11584,14 +11584,14 @@ function getterFn(path, options, fullExp) {
     var evaledFnGetter = new Function('s', 'l', code); // s=scope, l=locals
     /* jshint +W054 */
     evaledFnGetter.toString = valueFn(code);
-    evaledFnGetter.assign = function(self, value) {
-      return setter(self, path, value, path);
-    };
 
     fn = evaledFnGetter;
   }
 
   fn.sharedGetter = true;
+  fn.assign = function(self, value) {
+    return setter(self, path, value, path);
+  };
   getterFnCache[path] = fn;
   return fn;
 }
