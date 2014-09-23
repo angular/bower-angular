@@ -1,6 +1,6 @@
 {
   "name": "angular",
-  "version": "1.2.26-build.474+sha.7112d48",
+  "version": "1.2.26-build.475+sha.930bd40",
   "main": "./angular.js",
   "dependencies": {
   }
