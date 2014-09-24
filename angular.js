@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3295+sha.e81ae14
+ * @license AngularJS v1.3.0-build.3296+sha.92f05e5
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3295+sha.e81ae14/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3296+sha.92f05e5/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2112,7 +2112,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3295+sha.e81ae14',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3296+sha.92f05e5',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -19709,14 +19709,17 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
   };
 
   this.$$parseAndValidate = function() {
-    var parserValid = true,
-        viewValue = ctrl.$$lastCommittedViewValue,
-        modelValue = viewValue;
-    for(var i = 0; i < ctrl.$parsers.length; i++) {
-      modelValue = ctrl.$parsers[i](modelValue);
-      if (isUndefined(modelValue)) {
-        parserValid = false;
-        break;
+    var viewValue = ctrl.$$lastCommittedViewValue;
+    var modelValue = viewValue;
+    var parserValid = isUndefined(modelValue) ? undefined : true;
+
+    if (parserValid) {
+      for(var i = 0; i < ctrl.$parsers.length; i++) {
+        modelValue = ctrl.$parsers[i](modelValue);
+        if (isUndefined(modelValue)) {
+          parserValid = false;
+          break;
+        }
       }
     }
     if (isNumber(ctrl.$modelValue) && isNaN(ctrl.$modelValue)) {
