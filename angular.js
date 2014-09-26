@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3301+sha.2c8b464
+ * @license AngularJS v1.3.0-build.3302+sha.8202c4d
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3301+sha.2c8b464/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3302+sha.8202c4d/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2112,7 +2112,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3301+sha.2c8b464',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3302+sha.8202c4d',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -4653,8 +4653,6 @@ function Browser(window, document, $log, $sniffer) {
         if (replace) history.replaceState(null, '', url);
         else {
           history.pushState(null, '', url);
-          // Crazy Opera Bug: http://my.opera.com/community/forums/topic.dml?id=1185462
-          baseElement.attr('href', baseElement.attr('href'));
         }
       } else {
         newLocation = url;
@@ -24650,11 +24648,7 @@ var optionDirective = ['$interpolate', function($interpolate) {
             selectCtrl = parent.data(selectCtrlName) ||
               parent.parent().data(selectCtrlName); // in case we are in optgroup
 
-        if (selectCtrl && selectCtrl.databound) {
-          // For some reason Opera defaults to true and if not overridden this messes up the repeater.
-          // We don't want the view to drive the initialization of the model anyway.
-          element.prop('selected', false);
-        } else {
+        if (!selectCtrl || !selectCtrl.databound) {
           selectCtrl = nullSelectCtrl;
         }
 
