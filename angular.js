@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3320+sha.3624e38
+ * @license AngularJS v1.3.0-build.3321+sha.a0bfdd0
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3320+sha.3624e38/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3321+sha.a0bfdd0/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2112,7 +2112,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3320+sha.3624e38',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3321+sha.a0bfdd0',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -18834,7 +18834,10 @@ function createDateInputType(type, regexp, parseDate, format) {
     });
 
     ctrl.$formatters.push(function(value) {
-      if (isDate(value)) {
+      if (!ctrl.$isEmpty(value)) {
+        if (!isDate(value)) {
+          throw $ngModelMinErr('datefmt', 'Expected `{0}` to be a date', value);
+        }
         return $filter('date')(value, format, timezone);
       }
       return '';
@@ -18861,6 +18864,11 @@ function createDateInputType(type, regexp, parseDate, format) {
         ctrl.$validate();
       });
     }
+    // Override the standard $isEmpty to detect invalid dates as well
+    ctrl.$isEmpty = function(value) {
+      // Invalid Date: getTime() returns NaN
+      return !value || (value.getTime && value.getTime() !== value.getTime());
+    };
 
     function parseObservedDateValue(val) {
       return isDefined(val) ? (isDate(val) ? val : parseDate(val)) : undefined;
