@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3328+sha.8da08a1
+ * @license AngularJS v1.3.0-build.3329+sha.86c7d12
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3328+sha.8da08a1/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3329+sha.86c7d12/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2112,7 +2112,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3328+sha.8da08a1',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3329+sha.86c7d12',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -17763,7 +17763,8 @@ var formDirectiveFactory = function(isNgForm) {
 
         return {
           pre: function ngFormPreLink(scope, formElement, attr, controller) {
-            if (!attr.action) {
+            // if `action` attr is not present on the form, prevent the default action (submission)
+            if (!('action' in attr)) {
               // we can't use jq events because if a form is destroyed during submission the default
               // action is not prevented. see #1238
               //
