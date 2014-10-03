@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3337+sha.404b95f
+ * @license AngularJS v1.3.0-build.3338+sha.f3539f3
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3337+sha.404b95f/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3338+sha.f3539f3/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2112,7 +2112,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3337+sha.404b95f',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3338+sha.f3539f3',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -6435,27 +6435,28 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
                            maxPriority, ignoreDirective, previousCompileContext);
       compile.$$addScopeClass($compileNodes);
       var namespace = null;
-      var namespaceAdaptedCompileNodes = $compileNodes;
-      var lastCompileNode;
       return function publicLinkFn(scope, cloneConnectFn, transcludeControllers, parentBoundTranscludeFn, futureParentElement){
         assertArg(scope, 'scope');
         if (!namespace) {
           namespace = detectNamespaceForChildElements(futureParentElement);
         }
-        if (namespace !== 'html' && $compileNodes[0] !== lastCompileNode) {
-          namespaceAdaptedCompileNodes = jqLite(
+        var $linkNode;
+        if (namespace !== 'html') {
+          // When using a directive with replace:true and templateUrl the $compileNodes
+          // (or a child element inside of them)
+          // might change, so we need to recreate the namespace adapted compileNodes
+          // for call to the link function.
+          // Note: This will already clone the nodes...
+          $linkNode = jqLite(
             wrapTemplate(namespace, jqLite('<div>').append($compileNodes).html())
           );
+        } else if (cloneConnectFn) {
+          // important!!: we must call our jqLite.clone() since the jQuery one is trying to be smart
+          // and sometimes changes the structure of the DOM.
+          $linkNode = JQLitePrototype.clone.call($compileNodes);
+        } else {
+          $linkNode = $compileNodes;
         }
-        // When using a directive with replace:true and templateUrl the $compileNodes
-        // might change, so we need to recreate the namespace adapted compileNodes.
-        lastCompileNode = $compileNodes[0];
-
-        // important!!: we must call our jqLite.clone() since the jQuery one is trying to be smart
-        // and sometimes changes the structure of the DOM.
-        var $linkNode = cloneConnectFn
-          ? JQLitePrototype.clone.call(namespaceAdaptedCompileNodes) // IMPORTANT!!!
-          : namespaceAdaptedCompileNodes;
 
         if (transcludeControllers) {
           for (var controllerName in transcludeControllers) {
