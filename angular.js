@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3338+sha.f3539f3
+ * @license AngularJS v1.3.0-build.3340+sha.858360b
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3338+sha.f3539f3/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3340+sha.858360b/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2112,7 +2112,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3338+sha.f3539f3',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3340+sha.858360b',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -4495,6 +4495,8 @@ function $$AsyncCallbackProvider(){
   }];
 }
 
+/* global stripHash: true */
+
 /**
  * ! This is a private undocumented service !
  *
@@ -4648,8 +4650,13 @@ function Browser(window, document, $log, $sniffer) {
     // setter
     if (url) {
       if (lastBrowserUrl == url) return;
+      var sameBase = lastBrowserUrl && stripHash(lastBrowserUrl) === stripHash(url);
       lastBrowserUrl = url;
-      if ($sniffer.history) {
+      // Don't use history API if only the hash changed
+      // due to a bug in IE10/IE11 which leads
+      // to not firing a `hashchange` nor `popstate` event
+      // in some cases (see #9143).
+      if (!sameBase && $sniffer.history) {
         if (replace) history.replaceState(null, '', url);
         else {
           history.pushState(null, '', url);
@@ -10623,6 +10630,9 @@ function $LocationProvider(){
 
       if (absHref && !elm.attr('target') && !event.isDefaultPrevented()) {
         if ($location.$$parseLinkUrl(absHref, relHref)) {
+          // We do a preventDefault for all urls that are part of the angular application,
+          // in html5mode and also without, so that we are able to abort navigation without
+          // getting double entries in the location history.
           event.preventDefault();
           // update location manually
           if ($location.absUrl() != $browser.url()) {
@@ -24751,16 +24761,16 @@ var selectDirective = ['$compile', '$parse', function($compile,   $parse) {
         function getSelectedSet() {
           var selectedSet = false;
           if (multiple) {
-            var modelValue = ctrl.$modelValue;
-            if (trackFn && isArray(modelValue)) {
+            var viewValue = ctrl.$viewValue;
+            if (trackFn && isArray(viewValue)) {
               selectedSet = new HashMap([]);
               var locals = {};
-              for (var trackIndex = 0; trackIndex < modelValue.length; trackIndex++) {
-                locals[valueName] = modelValue[trackIndex];
-                selectedSet.put(trackFn(scope, locals), modelValue[trackIndex]);
+              for (var trackIndex = 0; trackIndex < viewValue.length; trackIndex++) {
+                locals[valueName] = viewValue[trackIndex];
+                selectedSet.put(trackFn(scope, locals), viewValue[trackIndex]);
               }
             } else {
-              selectedSet = new HashMap(modelValue);
+              selectedSet = new HashMap(viewValue);
             }
           }
           return selectedSet;
@@ -24785,7 +24795,7 @@ var selectDirective = ['$compile', '$parse', function($compile,   $parse) {
               optionGroup,
               option,
               existingParent, existingOptions, existingOption,
-              modelValue = ctrl.$modelValue,
+              viewValue = ctrl.$viewValue,
               values = valuesFn(scope) || [],
               keys = keyName ? sortedKeys(values) : values,
               key,
@@ -24823,10 +24833,10 @@ var selectDirective = ['$compile', '$parse', function($compile,   $parse) {
             } else {
               if (trackFn) {
                 var modelCast = {};
-                modelCast[valueName] = modelValue;
+                modelCast[valueName] = viewValue;
                 selected = trackFn(scope, modelCast) === trackFn(scope, locals);
               } else {
-                selected = modelValue === valueFn(scope, locals);
+                selected = viewValue === valueFn(scope, locals);
               }
               selectedSet = selectedSet || selected; // see if at least one item is selected
             }
@@ -24842,7 +24852,7 @@ var selectDirective = ['$compile', '$parse', function($compile,   $parse) {
             });
           }
           if (!multiple) {
-            if (nullOption || modelValue === null) {
+            if (nullOption || viewValue === null) {
               // insert null option if we have a placeholder, or the model is null
               optionGroups[''].unshift({id:'', label:'', selected:!selectedSet});
             } else if (!selectedSet) {
