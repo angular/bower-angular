@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.27-build.503+sha.e933993
+ * @license AngularJS v1.2.27-build.504+sha.483d91a
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.27-build.503+sha.e933993/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.27-build.504+sha.483d91a/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1987,7 +1987,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.27-build.503+sha.e933993',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.27-build.504+sha.483d91a',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 27,
@@ -3202,13 +3202,13 @@ HashMap.prototype = {
  * @kind function
  *
  * @description
- * Creates an injector function that can be used for retrieving services as well as for
+ * Creates an injector object that can be used for retrieving services as well as for
  * dependency injection (see {@link guide/di dependency injection}).
  *
 
  * @param {Array.<string|Function>} modules A list of module functions or their aliases. See
  *        {@link angular.module}. The `ng` module must be explicitly added.
- * @returns {function()} Injector function. See {@link auto.$injector $injector}.
+ * @returns {function()} Injector object. See {@link auto.$injector $injector}.
  *
  * @example
  * Typical usage
