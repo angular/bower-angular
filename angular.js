@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3355+sha.40d8da8
+ * @license AngularJS v1.3.0-build.3356+sha.e843ae7
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3355+sha.40d8da8/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3356+sha.e843ae7/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2114,7 +2114,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3355+sha.40d8da8',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3356+sha.e843ae7',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -6649,37 +6649,35 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             var attrEndName = false;
 
             attr = nAttrs[j];
-            if (!msie || msie >= 8 || attr.specified) {
-              name = attr.name;
-              value = trim(attr.value);
+            name = attr.name;
+            value = trim(attr.value);
 
-              // support ngAttr attribute binding
-              ngAttrName = directiveNormalize(name);
-              if (isNgAttr = NG_ATTR_BINDING.test(ngAttrName)) {
-                name = snake_case(ngAttrName.substr(6), '-');
-              }
-
-              var directiveNName = ngAttrName.replace(/(Start|End)$/, '');
-              if (directiveIsMultiElement(directiveNName)) {
-                if (ngAttrName === directiveNName + 'Start') {
-                  attrStartName = name;
-                  attrEndName = name.substr(0, name.length - 5) + 'end';
-                  name = name.substr(0, name.length - 6);
-                }
-              }
-
-              nName = directiveNormalize(name.toLowerCase());
-              attrsMap[nName] = name;
-              if (isNgAttr || !attrs.hasOwnProperty(nName)) {
-                  attrs[nName] = value;
-                  if (getBooleanAttrName(node, nName)) {
-                    attrs[nName] = true; // presence means true
-                  }
-              }
-              addAttrInterpolateDirective(node, directives, value, nName, isNgAttr);
-              addDirective(directives, nName, 'A', maxPriority, ignoreDirective, attrStartName,
-                            attrEndName);
+            // support ngAttr attribute binding
+            ngAttrName = directiveNormalize(name);
+            if (isNgAttr = NG_ATTR_BINDING.test(ngAttrName)) {
+              name = snake_case(ngAttrName.substr(6), '-');
             }
+
+            var directiveNName = ngAttrName.replace(/(Start|End)$/, '');
+            if (directiveIsMultiElement(directiveNName)) {
+              if (ngAttrName === directiveNName + 'Start') {
+                attrStartName = name;
+                attrEndName = name.substr(0, name.length - 5) + 'end';
+                name = name.substr(0, name.length - 6);
+              }
+            }
+
+            nName = directiveNormalize(name.toLowerCase());
+            attrsMap[nName] = name;
+            if (isNgAttr || !attrs.hasOwnProperty(nName)) {
+                attrs[nName] = value;
+                if (getBooleanAttrName(node, nName)) {
+                  attrs[nName] = true; // presence means true
+                }
+            }
+            addAttrInterpolateDirective(node, directives, value, nName, isNgAttr);
+            addDirective(directives, nName, 'A', maxPriority, ignoreDirective, attrStartName,
+                          attrEndName);
           }
 
           // use class as directive
@@ -14065,12 +14063,9 @@ function $$SanitizeUriProvider() {
     return function sanitizeUri(uri, isImage) {
       var regex = isImage ? imgSrcSanitizationWhitelist : aHrefSanitizationWhitelist;
       var normalizedVal;
-      // NOTE: urlResolve() doesn't support IE < 8 so we don't sanitize for that case.
-      if (!msie || msie >= 8 ) {
-        normalizedVal = urlResolve(uri).href;
-        if (normalizedVal !== '' && !normalizedVal.match(regex)) {
-          return 'unsafe:'+normalizedVal;
-        }
+      normalizedVal = urlResolve(uri).href;
+      if (normalizedVal !== '' && !normalizedVal.match(regex)) {
+        return 'unsafe:'+normalizedVal;
       }
       return uri;
     };
@@ -16869,22 +16864,6 @@ function ngDirective(directive) {
 var htmlAnchorDirective = valueFn({
   restrict: 'E',
   compile: function(element, attr) {
-
-    if (msie <= 8) {
-
-      // turn <a href ng-click="..">link</a> into a stylable link in IE
-      // but only if it doesn't have name attribute, in which case it's an anchor
-      if (!attr.href && !attr.name) {
-        attr.$set('href', '');
-      }
-
-      // add a comment node to anchors to workaround IE bug that causes element content to be reset
-      // to new attribute content if attribute is updated with value containing @ and element also
-      // contains value with @
-      // see issue #1949
-      element.append(document.createComment('IE fix'));
-    }
-
     if (!attr.href && !attr.xlinkHref && !attr.name) {
       return function(scope, element) {
         // SVGAElement does not use the href attribute, but rather the 'xlinkHref' attribute.
