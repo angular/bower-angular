@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3356+sha.e843ae7
+ * @license AngularJS v1.3.0-build.3357+sha.a75546a
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3356+sha.e843ae7/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3357+sha.a75546a/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2114,7 +2114,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3356+sha.e843ae7',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3357+sha.a75546a',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -7582,6 +7582,11 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
                   throw $compileMinErr('nodomevents',
                       "Interpolations for HTML DOM event attributes are disallowed.  Please use the " +
                           "ng- versions (such as ng-click instead of onclick) instead.");
+                }
+
+                // If the attribute was removed, then we are done
+                if (!attr[name]) {
+                  return;
                 }
 
                 // we need to interpolate again, in case the attribute value has been updated
