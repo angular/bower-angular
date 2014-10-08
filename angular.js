@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3368+sha.e63f670
+ * @license AngularJS v1.3.0-build.3369+sha.323862f
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3368+sha.e63f670/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3369+sha.323862f/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2111,7 +2111,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3368+sha.e63f670',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3369+sha.323862f',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -5616,7 +5616,8 @@ function $TemplateCacheProvider() {
  *
  * * `true` - transclude the content (i.e. the child nodes) of the directive's element.
  * * `'element'` - transclude the whole of the directive's element including any directives on this
- *   element that defined at a lower priority than this directive.
+ *   element that defined at a lower priority than this directive. When used, the `template`
+ *   property is ignored.
  *
  *
  * #### `compile`
