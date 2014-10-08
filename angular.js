@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3365+sha.74a214c
+ * @license AngularJS v1.3.0-build.3366+sha.1beebee
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3365+sha.74a214c/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3366+sha.1beebee/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2111,7 +2111,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3365+sha.74a214c',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3366+sha.1beebee',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -4750,9 +4750,7 @@ function Browser(window, document, $log, $sniffer) {
       // html5 history api - popstate event
       if ($sniffer.history) jqLite(window).on('popstate', fireUrlChange);
       // hashchange event
-      if ($sniffer.hashchange) jqLite(window).on('hashchange', fireUrlChange);
-      // polling
-      else self.addPollFn(fireUrlChange);
+      jqLite(window).on('hashchange', fireUrlChange);
 
       urlChangeInit = true;
     }
@@ -15244,7 +15242,6 @@ function $SceProvider() {
  * @requires $document
  *
  * @property {boolean} history Does the browser support html5 history api ?
- * @property {boolean} hashchange Does the browser support hashchange event ?
  * @property {boolean} transitions Does the browser support CSS transition events ?
  * @property {boolean} animations Does the browser support CSS animation events ?
  *
@@ -15301,9 +15298,6 @@ function $SnifferProvider() {
       // jshint -W018
       history: !!($window.history && $window.history.pushState && !(android < 4) && !boxee),
       // jshint +W018
-      hashchange: 'onhashchange' in $window &&
-                  // IE8 compatible mode lies
-                  (!documentMode || documentMode > 7),
       hasEvent: function(event) {
         // IE9 implements 'input' event it's so fubared that we rather pretend that it doesn't have
         // it. In particular the event is not fired when backspace or delete key are pressed or
