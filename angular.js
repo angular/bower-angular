@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3398+sha.9e0ab14
+ * @license AngularJS v1.3.0-build.3399+sha.b90f5e5
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3398+sha.9e0ab14/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3399+sha.b90f5e5/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2124,7 +2124,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3398+sha.9e0ab14',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3399+sha.b90f5e5',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -24619,7 +24619,7 @@ var ngOptionsMinErr = minErr('ngOptions');
  * or property name (for object data sources) of the value  within the collection.
  * </div>
  *
- * **Note:** Using `select as` together with `trackexpr` is not possible (and will throw).
+ * **Note:** Using `select as` together with `trackexpr` is not possible (and will throw an error).
  * Reasoning:
  * - Example: &lt;select ng-options="item.subItem as item.label for item in values track by item.id" ng-model="selected"&gt;
  *   values: [{id: 1, label: 'aLabel', subItem: {name: 'aSubItem'}}, {id: 2, label: 'bLabel', subItem: {name: 'bSubItemß'}}],
