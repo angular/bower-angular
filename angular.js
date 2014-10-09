@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3394+sha.a3f44ed
+ * @license AngularJS v1.3.0-build.3395+sha.7b9fddf
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3394+sha.a3f44ed/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3395+sha.7b9fddf/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2124,7 +2124,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3394+sha.a3f44ed',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3395+sha.7b9fddf',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -5582,7 +5582,8 @@ function $TemplateCacheProvider() {
  * #### `terminal`
  * If set to true then the current `priority` will be the last set of directives
  * which will execute (any directives at the current priority will still execute
- * as the order of execution on same `priority` is undefined).
+ * as the order of execution on same `priority` is undefined). Note that expressions
+ * and other directives used in the directive's template will also be excluded from execution.
  *
  * #### `scope`
  * **If set to `true`,** then a new scope will be created for this directive. If multiple directives on the
