@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3383+sha.e15d2fd
+ * @license AngularJS v1.3.0-build.3384+sha.c7a9009
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3383+sha.e15d2fd/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3384+sha.c7a9009/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2121,7 +2121,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3383+sha.e15d2fd',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3384+sha.c7a9009',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -10527,6 +10527,7 @@ var locationPrototype = {
           search = search.toString();
           this.$$search = parseKeyValue(search);
         } else if (isObject(search)) {
+          search = copy(search, {});
           // remove object undefined or null properties
           forEach(search, function(value, key) {
             if (value == null) delete search[key];
