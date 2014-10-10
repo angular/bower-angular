@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3401+sha.6e4955a
+ * @license AngularJS v1.3.0-build.3402+sha.addfff3
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3401+sha.6e4955a/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3402+sha.addfff3/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2124,7 +2124,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3401+sha.6e4955a',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3402+sha.addfff3',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -24944,13 +24944,6 @@ var selectDirective = ['$compile', '$parse', function($compile,   $parse) {
             //re-usable object to represent option's locals
             locals = {};
 
-        if (trackFn && selectAsFn) {
-          throw ngOptionsMinErr('trkslct',
-            "Comprehension expression cannot contain both selectAs '{0}' " +
-            "and trackBy '{1}' expressions.",
-            selectAs, track);
-        }
-
         if (nullOption) {
           // compile the element since there might be bindings in it
           $compile(nullOption)(scope);
@@ -25041,7 +25034,7 @@ var selectDirective = ['$compile', '$parse', function($compile,   $parse) {
         function createIsSelectedFn(viewValue) {
           var selectedSet;
           if (multiple) {
-            if (!selectAs && trackFn && isArray(viewValue)) {
+            if (trackFn && isArray(viewValue)) {
 
               selectedSet = new HashMap([]);
               for (var trackIndex = 0; trackIndex < viewValue.length; trackIndex++) {
@@ -25051,15 +25044,16 @@ var selectDirective = ['$compile', '$parse', function($compile,   $parse) {
             } else {
               selectedSet = new HashMap(viewValue);
             }
-          } else if (!selectAsFn && trackFn) {
+          } else if (trackFn) {
             viewValue = callExpression(trackFn, null, viewValue);
           }
+
           return function isSelected(key, value) {
             var compareValueFn;
-            if (selectAsFn) {
-              compareValueFn = selectAsFn;
-            } else if (trackFn) {
+            if (trackFn) {
               compareValueFn = trackFn;
+            } else if (selectAsFn) {
+              compareValueFn = selectAsFn;
             } else {
               compareValueFn = valueFn;
             }
