@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3402+sha.addfff3
+ * @license AngularJS v1.3.0-build.3403+sha.ea18976
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3402+sha.addfff3/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3403+sha.ea18976/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2124,7 +2124,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3402+sha.addfff3',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3403+sha.ea18976',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -2538,18 +2538,22 @@ function jqLiteOff(element, type, fn, unsupported) {
   if (!type) {
     for (type in events) {
       if (type !== '$destroy') {
-        removeEventListenerFn(element, type, events[type]);
+        removeEventListenerFn(element, type, handle);
       }
       delete events[type];
     }
   } else {
     forEach(type.split(' '), function(type) {
-      if (isUndefined(fn)) {
-        removeEventListenerFn(element, type, events[type]);
-        delete events[type];
-      } else {
-        arrayRemove(events[type] || [], fn);
+      if (isDefined(fn)) {
+        var listenerFns = events[type];
+        arrayRemove(listenerFns || [], fn);
+        if (listenerFns && listenerFns.length > 0) {
+          return;
+        }
       }
+
+      removeEventListenerFn(element, type, handle);
+      delete events[type];
     });
   }
 }
@@ -24619,15 +24623,15 @@ var ngOptionsMinErr = minErr('ngOptions');
  * <div class="alert alert-info">
  * **Note:** Using `select as` will bind the result of the `select as` expression to the model, but
  * the value of the `<select>` and `<option>` html elements will be either the index (for array data sources)
- * or property name (for object data sources) of the value  within the collection.
+ * or property name (for object data sources) of the value within the collection.
  * </div>
  *
- * **Note:** Using `select as` together with `trackexpr` is not possible (and will throw an error).
+ * **Note:** Using `select as` together with `trackexpr` is not recommended.
  * Reasoning:
  * - Example: &lt;select ng-options="item.subItem as item.label for item in values track by item.id" ng-model="selected"&gt;
- *   values: [{id: 1, label: 'aLabel', subItem: {name: 'aSubItem'}}, {id: 2, label: 'bLabel', subItem: {name: 'bSubItemß'}}],
+ *   values: [{id: 1, label: 'aLabel', subItem: {name: 'aSubItem'}}, {id: 2, label: 'bLabel', subItem: {name: 'bSubItem'}}],
  *   $scope.selected = {name: 'aSubItem'};
- * - track by is always applied to `value`, with purpose to preserve the selection,
+ * - track by is always applied to `value`, with the purpose of preserving the selection,
  *   (to `item` in this case)
  * - to calculate whether an item is selected we do the following:
  *   1. apply `track by` to the values in the array, e.g.
