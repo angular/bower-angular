@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3412+sha.57f804a
+ * @license AngularJS v1.3.0-build.3413+sha.874cac8
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3412+sha.57f804a/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3413+sha.874cac8/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2122,7 +2122,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3412+sha.57f804a',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3413+sha.874cac8',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -12478,16 +12478,17 @@ function $ParseProvider() {
     }
 
     function oneTimeLiteralWatchDelegate(scope, listener, objectEquality, parsedExpression) {
-      var unwatch;
+      var unwatch, lastValue;
       return unwatch = scope.$watch(function oneTimeWatch(scope) {
         return parsedExpression(scope);
       }, function oneTimeListener(value, old, scope) {
+        lastValue = value;
         if (isFunction(listener)) {
           listener.call(this, value, old, scope);
         }
         if (isAllDefined(value)) {
           scope.$$postDigest(function () {
-            if(isAllDefined(value)) unwatch();
+            if(isAllDefined(lastValue)) unwatch();
           });
         }
       }, objectEquality);
