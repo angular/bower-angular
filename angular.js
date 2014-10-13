@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3417+sha.28133cb
+ * @license AngularJS v1.3.0-build.3418+sha.4a85512
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3417+sha.28133cb/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3418+sha.4a85512/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2122,7 +2122,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3417+sha.28133cb',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3418+sha.4a85512',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -4966,10 +4966,12 @@ function Browser(window, document, $log, $sniffer) {
 
     // setter
     if (url) {
+      var sameState = lastHistoryState === state;
+
       // Don't change anything if previous and current URLs and states match. This also prevents
       // IE<10 from getting into redirect loop when in LocationHashbangInHtml5Url mode.
       // See https://github.com/angular/angular.js/commit/ffb2701
-      if (lastBrowserUrl === url && (!$sniffer.history || cachedState === state)) {
+      if (lastBrowserUrl === url && (!$sniffer.history || sameState)) {
         return;
       }
       var sameBase = lastBrowserUrl && stripHash(lastBrowserUrl) === stripHash(url);
@@ -4979,9 +4981,10 @@ function Browser(window, document, $log, $sniffer) {
       // due to a bug in IE10/IE11 which leads
       // to not firing a `hashchange` nor `popstate` event
       // in some cases (see #9143).
-      if ($sniffer.history && (!sameBase || cachedState !== state)) {
+      if ($sniffer.history && (!sameBase || !sameState)) {
         history[replace ? 'replaceState' : 'pushState'](state, '', url);
         cacheState();
+        // Do the assignment again so that those two variables are referentially identical.
         lastHistoryState = cachedState;
       } else {
         if (!sameBase) {
