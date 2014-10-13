@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3419+sha.520db0c
+ * @license AngularJS v1.3.0-build.3420+sha.0f6aa10
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3419+sha.520db0c/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3420+sha.0f6aa10/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2122,7 +2122,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3419+sha.520db0c',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3420+sha.0f6aa10',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -16498,15 +16498,15 @@ function filterFilter() {
        <div ng-controller="ExampleController">
          <input type="number" ng-model="amount"> <br>
          default currency symbol ($): <span id="currency-default">{{amount | currency}}</span><br>
-         custom currency identifier (USD$): <span>{{amount | currency:"USD$"}}</span>
-         no fractions (0): <span>{{amount | currency:"USD$":0}}</span>
+         custom currency identifier (USD$): <span id="currency-custom">{{amount | currency:"USD$"}}</span>
+         no fractions (0): <span id="currency-no-fractions">{{amount | currency:"USD$":0}}</span>
        </div>
      </file>
      <file name="protractor.js" type="protractor">
        it('should init with 1234.56', function() {
          expect(element(by.id('currency-default')).getText()).toBe('$1,234.56');
-         expect(element(by.binding('amount | currency:"USD$"')).getText()).toBe('USD$1,234.56');
-         expect(element(by.binding('amount | currency:"USD$":0')).getText()).toBe('USD$1,235');
+         expect(element(by.id('currency-custom')).getText()).toBe('USD$1,234.56');
+         expect(element(by.id('currency-no-fractions')).getText()).toBe('USD$1,235');
        });
        it('should update', function() {
          if (browser.params.browser == 'safari') {
@@ -16517,8 +16517,8 @@ function filterFilter() {
          element(by.model('amount')).clear();
          element(by.model('amount')).sendKeys('-1234');
          expect(element(by.id('currency-default')).getText()).toBe('($1,234.00)');
-         expect(element(by.binding('amount | currency:"USD$"')).getText()).toBe('(USD$1,234.00)');
-         expect(element(by.binding('amount | currency:"USD$":0')).getText()).toBe('(USD$1,234)');
+         expect(element(by.id('currency-custom')).getText()).toBe('(USD$1,234.00)');
+         expect(element(by.id('currency-no-fractions')).getText()).toBe('(USD$1,234)');
        });
      </file>
    </example>
@@ -17056,7 +17056,7 @@ var uppercaseFilter = valueFn(uppercase);
          <p>Output numbers: {{ numbers | limitTo:numLimit }}</p>
          Limit {{letters}} to: <input type="number" step="1" ng-model="letterLimit">
          <p>Output letters: {{ letters | limitTo:letterLimit }}</p>
-         Limit {{longNumber}} to: <input type="integer" ng-model="longNumberLimit">
+         Limit {{longNumber}} to: <input type="number" step="1" ng-model="longNumberLimit">
          <p>Output long number: {{ longNumber | limitTo:longNumberLimit }}</p>
        </div>
      </file>
