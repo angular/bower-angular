@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.0-build.3414+sha.393c1c7
+ * @license AngularJS v1.3.0-build.3415+sha.1efaf3d
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3414+sha.393c1c7/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.0-build.3415+sha.1efaf3d/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2122,7 +2122,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.0-build.3414+sha.393c1c7',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.0-build.3415+sha.1efaf3d',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 0,
@@ -4923,10 +4923,13 @@ function Browser(window, document, $log, $sniffer) {
   // URL API
   //////////////////////////////////////////////////////////////
 
-  var lastBrowserUrl = location.href,
-      lastHistoryState = history.state,
+  var cachedState, lastHistoryState,
+      lastBrowserUrl = location.href,
       baseElement = document.find('base'),
       reloadLocation = null;
+
+  cacheState();
+  lastHistoryState = cachedState;
 
   /**
    * @name $browser#url
@@ -4965,18 +4968,20 @@ function Browser(window, document, $log, $sniffer) {
       // Don't change anything if previous and current URLs and states match. This also prevents
       // IE<10 from getting into redirect loop when in LocationHashbangInHtml5Url mode.
       // See https://github.com/angular/angular.js/commit/ffb2701
-      if (lastBrowserUrl === url && (!$sniffer.history || history.state === state)) {
+      if (lastBrowserUrl === url && (!$sniffer.history || cachedState === state)) {
         return;
       }
       var sameBase = lastBrowserUrl && stripHash(lastBrowserUrl) === stripHash(url);
       lastBrowserUrl = url;
+      lastHistoryState = state;
       // Don't use history API if only the hash changed
       // due to a bug in IE10/IE11 which leads
       // to not firing a `hashchange` nor `popstate` event
       // in some cases (see #9143).
-      if ($sniffer.history && (!sameBase || history.state !== state)) {
+      if ($sniffer.history && (!sameBase || cachedState !== state)) {
         history[replace ? 'replaceState' : 'pushState'](state, '', url);
-        lastHistoryState = history.state;
+        cacheState();
+        lastHistoryState = cachedState;
       } else {
         if (!sameBase) {
           reloadLocation = url;
@@ -5008,20 +5013,40 @@ function Browser(window, document, $log, $sniffer) {
    * @returns {object} state
    */
   self.state = function() {
-    return isUndefined(history.state) ? null : history.state;
+    return cachedState;
   };
 
   var urlChangeListeners = [],
       urlChangeInit = false;
 
+  function cacheStateAndFireUrlChange() {
+    cacheState();
+    fireUrlChange();
+  }
+
+  // This variable should be used *only* inside the cacheState function.
+  var lastCachedState = null;
+  function cacheState() {
+    // This should be the only place in $browser where `history.state` is read.
+    cachedState = window.history.state;
+    cachedState = isUndefined(cachedState) ? null : cachedState;
+
+    // Prevent callbacks fo fire twice if both hashchange & popstate were fired.
+    if (equals(cachedState, lastCachedState)) {
+      cachedState = lastCachedState;
+    }
+    lastCachedState = cachedState;
+  }
+
   function fireUrlChange() {
-    if (lastBrowserUrl === self.url() && lastHistoryState === history.state) {
+    if (lastBrowserUrl === self.url() && lastHistoryState === cachedState) {
       return;
     }
 
     lastBrowserUrl = self.url();
+    lastHistoryState = cachedState;
     forEach(urlChangeListeners, function(listener) {
-      listener(self.url(), history.state);
+      listener(self.url(), cachedState);
     });
   }
 
@@ -5054,9 +5079,9 @@ function Browser(window, document, $log, $sniffer) {
       // changed by push/replaceState
 
       // html5 history api - popstate event
-      if ($sniffer.history) jqLite(window).on('popstate', fireUrlChange);
+      if ($sniffer.history) jqLite(window).on('popstate', cacheStateAndFireUrlChange);
       // hashchange event
-      jqLite(window).on('hashchange', fireUrlChange);
+      jqLite(window).on('hashchange', cacheStateAndFireUrlChange);
 
       urlChangeInit = true;
     }
@@ -11115,9 +11140,10 @@ function $LocationProvider(){
       var oldUrl = $browser.url();
       var oldState = $browser.state();
       var currentReplace = $location.$$replace;
+      var urlOrStateChanged = oldUrl !== $location.absUrl() ||
+        ($location.$$html5 && $sniffer.history && oldState !== $location.$$state);
 
-      if (initializing || oldUrl !== $location.absUrl() ||
-          ($location.$$html5 && $sniffer.history && oldState !== $location.$$state)) {
+      if (initializing || urlOrStateChanged) {
         initializing = false;
 
         $rootScope.$evalAsync(function() {
@@ -11126,8 +11152,10 @@ function $LocationProvider(){
             $location.$$parse(oldUrl);
             $location.$$state = oldState;
           } else {
-            setBrowserUrlWithFallback($location.absUrl(), currentReplace,
-                                      oldState === $location.$$state ? null : $location.$$state);
+            if (urlOrStateChanged) {
+              setBrowserUrlWithFallback($location.absUrl(), currentReplace,
+                                        oldState === $location.$$state ? null : $location.$$state);
+            }
             afterLocationChange(oldUrl, oldState);
           }
         });
