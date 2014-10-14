@@ -17,7 +17,7 @@ npm install angular
 Then add a `<script>` to your `index.html`:
 
 ```html
-<script src="/node_components/angular/angular.js"></script>
+<script src="/node_modules/angular/angular.js"></script>
 ```
 
 Note that this package is not in CommonJS format, so doing `require('angular')` will not work.
