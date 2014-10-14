@@ -8,7 +8,7 @@ Please file issues and pull requests against that repo.
 
 You can install this package either with `npm` or with `bower`.
 
-# npm
+### npm
 
 ```shell
 npm install angular
@@ -20,11 +20,12 @@ Then add a `<script>` to your `index.html`:
 <script src="/node_modules/angular/angular.js"></script>
 ```
 
-Note that this package is not in CommonJS format, so doing `require('angular')` will not work.
+Note that this package is not in CommonJS format, so doing `require('angular')` will return `undefined`.
 If you're using [Browserify](https://github.com/substack/node-browserify), you can use
-[exposify](https://github.com/thlorenz/exposify) to fix this.
+[exposify](https://github.com/thlorenz/exposify) to have `require('angular')` return the `angular`
+global.
 
-# bower
+### bower
 
 ```shell
 bower install angular
