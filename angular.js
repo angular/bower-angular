@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.1-build.3432+sha.49d03a5
+ * @license AngularJS v1.3.1-build.3433+sha.fc70a98
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.1-build.3432+sha.49d03a5/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.1-build.3433+sha.fc70a98/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2136,7 +2136,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.1-build.3432+sha.49d03a5',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.1-build.3433+sha.fc70a98',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 1,
@@ -6376,8 +6376,8 @@ $CompileProvider.$inject = ['$provide', '$$sanitizeUriProvider'];
 function $CompileProvider($provide, $$sanitizeUriProvider) {
   var hasDirectives = {},
       Suffix = 'Directive',
-      COMMENT_DIRECTIVE_REGEXP = /^\s*directive\:\s*([\d\w_\-]+)\s+(.*)$/,
-      CLASS_DIRECTIVE_REGEXP = /(([\d\w_\-]+)(?:\:([^;]+))?;?)/,
+      COMMENT_DIRECTIVE_REGEXP = /^\s*directive\:\s*([\w\-]+)\s+(.*)$/,
+      CLASS_DIRECTIVE_REGEXP = /(([\w\-]+)(?:\:([^;]+))?;?)/,
       ALL_OR_NOTHING_ATTRS = makeMap('ngSrc,ngSrcset,src,srcset'),
       REQUIRE_PREFIX_REGEXP = /^(?:(\^\^?)?(\?)?(\^\^?)?)?/;
 
@@ -8130,7 +8130,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
   }];
 }
 
-var PREFIX_REGEXP = /^(x[\:\-_]|data[\:\-_])/i;
+var PREFIX_REGEXP = /^((?:x|data)[\:\-_])/i;
 /**
  * Converts all accepted directives format into proper directive name.
  * All of these will become 'myDirective':
