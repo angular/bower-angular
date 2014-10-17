@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.1-build.3442+sha.c2edef8
+ * @license AngularJS v1.3.1-build.3443+sha.6cba9c5
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.1-build.3442+sha.c2edef8/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.1-build.3443+sha.6cba9c5/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2136,7 +2136,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.1-build.3442+sha.c2edef8',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.1-build.3443+sha.6cba9c5',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 1,
@@ -15329,7 +15329,7 @@ function $SceProvider() {
                 $document,   $parse,   $sceDelegate) {
     // Prereq: Ensure that we're not running in IE<11 quirks mode.  In that mode, IE < 11 allow
     // the "expression(javascript expression)" syntax which is insecure.
-    if (enabled && $document[0].documentMode < 8) {
+    if (enabled && msie < 8) {
       throw $sceMinErr('iequirks',
         'Strict Contextual Escaping does not support Internet Explorer version < 11 in quirks ' +
         'mode.  You can fix this by adding the text <!doctype html> to the top of your HTML ' +
