@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.1-build.3443+sha.6cba9c5
+ * @license AngularJS v1.3.1-build.3444+sha.502bb64
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.1-build.3443+sha.6cba9c5/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.1-build.3444+sha.502bb64/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2136,7 +2136,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.1-build.3443+sha.6cba9c5',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.1-build.3444+sha.502bb64',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 1,
@@ -10314,7 +10314,7 @@ function $LocaleProvider(){
         SHORTDAY: 'Sun,Mon,Tue,Wed,Thu,Fri,Sat'.split(','),
         AMPMS: ['AM','PM'],
         medium: 'MMM d, y h:mm:ss a',
-        short: 'M/d/yy h:mm a',
+        'short': 'M/d/yy h:mm a',
         fullDate: 'EEEE, MMMM d, y',
         longDate: 'MMMM d, y',
         mediumDate: 'MMM d, y',
