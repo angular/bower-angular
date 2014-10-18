@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.1-build.3447+sha.fe58238
+ * @license AngularJS v1.3.1-build.3448+sha.1785251
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.1-build.3447+sha.fe58238/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.1-build.3448+sha.1785251/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2136,7 +2136,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.1-build.3447+sha.fe58238',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.1-build.3448+sha.1785251',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 1,
@@ -15327,8 +15327,8 @@ function $SceProvider() {
    * sce.js and sceSpecs.js would need to be aware of this detail.
    */
 
-  this.$get = ['$document', '$parse', '$sceDelegate', function(
-                $document,   $parse,   $sceDelegate) {
+  this.$get = ['$parse', '$sceDelegate', function(
+                $parse,   $sceDelegate) {
     // Prereq: Ensure that we're not running in IE<11 quirks mode.  In that mode, IE < 11 allow
     // the "expression(javascript expression)" syntax which is insecure.
     if (enabled && msie < 8) {
