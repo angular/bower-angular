@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.1-build.3452+sha.7fa6634
+ * @license AngularJS v1.3.1-build.3453+sha.ed3f799
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.1-build.3452+sha.7fa6634/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.1-build.3453+sha.ed3f799/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2137,7 +2137,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.1-build.3452+sha.7fa6634',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.1-build.3453+sha.ed3f799',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 1,
@@ -2271,7 +2271,7 @@ function publishExternalAPI(angular){
         $timeout: $TimeoutProvider,
         $window: $WindowProvider,
         $$rAF: $$RAFProvider,
-        $$asyncCallback : $$AsyncCallbackProvider
+        $$asyncCallback: $$AsyncCallbackProvider
       });
     }
   ]);
@@ -2399,7 +2399,7 @@ function jqNextId() { return ++jqId; }
 
 var SPECIAL_CHARS_REGEXP = /([\:\-\_]+(.))/g;
 var MOZ_HACK_REGEXP = /^moz([A-Z])/;
-var MOUSE_EVENT_MAP= { mouseleave : "mouseout", mouseenter : "mouseover"};
+var MOUSE_EVENT_MAP= { mouseleave: "mouseout", mouseenter: "mouseover"};
 var jqLiteMinErr = minErr('jqLite');
 
 /**
@@ -2798,11 +2798,11 @@ forEach('input,select,option,textarea,button,form,details'.split(','), function(
   BOOLEAN_ELEMENTS[value] = true;
 });
 var ALIASED_ATTR = {
-  'ngMinlength' : 'minlength',
-  'ngMaxlength' : 'maxlength',
-  'ngMin' : 'min',
-  'ngMax' : 'max',
-  'ngPattern' : 'pattern'
+  'ngMinlength': 'minlength',
+  'ngMaxlength': 'maxlength',
+  'ngMin': 'min',
+  'ngMax': 'max',
+  'ngPattern': 'pattern'
 };
 
 function getBooleanAttrName(element, name) {
@@ -4630,7 +4630,7 @@ var $AnimateProvider = ['$provide', function($provide) {
      * page}.
      */
     return {
-      animate : function(element, from, to) {
+      animate: function(element, from, to) {
         applyStyles(element, { from: from, to: to });
         return asyncPromise();
       },
@@ -4651,7 +4651,7 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @param {object=} options an optional collection of styles that will be applied to the element.
        * @return {Promise} the animation callback promise
        */
-      enter : function(element, parent, after, options) {
+      enter: function(element, parent, after, options) {
         applyStyles(element, options);
         after ? after.after(element)
               : parent.prepend(element);
@@ -4669,7 +4669,7 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @param {object=} options an optional collection of options that will be applied to the element.
        * @return {Promise} the animation callback promise
        */
-      leave : function(element, options) {
+      leave: function(element, options) {
         element.remove();
         return asyncPromise();
       },
@@ -4692,7 +4692,7 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @param {object=} options an optional collection of options that will be applied to the element.
        * @return {Promise} the animation callback promise
        */
-      move : function(element, parent, after, options) {
+      move: function(element, parent, after, options) {
         // Do not remove element before insert. Removing will cause data associated with the
         // element to be dropped. Insert will implicitly do the remove.
         return this.enter(element, parent, after, options);
@@ -4711,11 +4711,11 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @param {object=} options an optional collection of options that will be applied to the element.
        * @return {Promise} the animation callback promise
        */
-      addClass : function(element, className, options) {
+      addClass: function(element, className, options) {
         return this.setClass(element, className, [], options);
       },
 
-      $$addClassImmediately : function(element, className, options) {
+      $$addClassImmediately: function(element, className, options) {
         element = jqLite(element);
         className = !isString(className)
                         ? (isArray(className) ? className.join(' ') : '')
@@ -4740,11 +4740,11 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @param {object=} options an optional collection of options that will be applied to the element.
        * @return {Promise} the animation callback promise
        */
-      removeClass : function(element, className, options) {
+      removeClass: function(element, className, options) {
         return this.setClass(element, [], className, options);
       },
 
-      $$removeClassImmediately : function(element, className, options) {
+      $$removeClassImmediately: function(element, className, options) {
         element = jqLite(element);
         className = !isString(className)
                         ? (isArray(className) ? className.join(' ') : '')
@@ -4770,7 +4770,7 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @param {object=} options an optional collection of options that will be applied to the element.
        * @return {Promise} the animation callback promise
        */
-      setClass : function(element, add, remove, options) {
+      setClass: function(element, add, remove, options) {
         var self = this;
         var STORAGE_KEY = '$$animateClasses';
         var createdCache = false;
@@ -4780,7 +4780,7 @@ var $AnimateProvider = ['$provide', function($provide) {
         if (!cache) {
           cache = {
             classes: {},
-            options : options
+            options: options
           };
           createdCache = true;
         } else if (options && cache.options) {
@@ -4817,15 +4817,15 @@ var $AnimateProvider = ['$provide', function($provide) {
         return cache.promise;
       },
 
-      $$setClassImmediately : function(element, add, remove, options) {
+      $$setClassImmediately: function(element, add, remove, options) {
         add && this.$$addClassImmediately(element, add);
         remove && this.$$removeClassImmediately(element, remove);
         applyStyles(element, options);
         return asyncPromise();
       },
 
-      enabled : noop,
-      cancel : noop
+      enabled: noop,
+      cancel: noop
     };
   }];
 }];
@@ -6594,7 +6594,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
        *
        * @param {string} classVal The className value that will be added to the element
        */
-      $addClass : function(classVal) {
+      $addClass: function(classVal) {
         if (classVal && classVal.length > 0) {
           $animate.addClass(this.$$element, classVal);
         }
@@ -6611,7 +6611,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
        *
        * @param {string} classVal The className value that will be removed from the element
        */
-      $removeClass : function(classVal) {
+      $removeClass: function(classVal) {
         if (classVal && classVal.length > 0) {
           $animate.removeClass(this.$$element, classVal);
         }
@@ -6629,7 +6629,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
        * @param {string} newClasses The current CSS className value
        * @param {string} oldClasses The former CSS className value
        */
-      $updateClass : function(newClasses, oldClasses) {
+      $updateClass: function(newClasses, oldClasses) {
         var toAdd = tokenDifference(newClasses, oldClasses);
         if (toAdd && toAdd.length) {
           $animate.addClass(this.$$element, toAdd);
@@ -9523,7 +9523,7 @@ function $HttpProvider() {
           status: status,
           headers: headersGetter(headers),
           config: config,
-          statusText : statusText
+          statusText: statusText
         });
       }
 
@@ -14188,7 +14188,7 @@ function $RootScopeProvider(){
         asyncQueue.push({scope: this, expression: expr});
       },
 
-      $$postDigest : function(fn) {
+      $$postDigest: function(fn) {
         postDigestQueue.push(fn);
       },
 
@@ -15736,8 +15736,8 @@ function $SnifferProvider() {
       },
       csp: csp(),
       vendorPrefix: vendorPrefix,
-      transitions : transitions,
-      animations : animations,
+      transitions: transitions,
+      animations: animations,
       android: android
     };
   }];
@@ -24356,7 +24356,7 @@ var ngShowDirective = ['$animate', function($animate) {
         // to have a global/greedy CSS selector that breaks when other animations are run.
         // Read: https://github.com/angular/angular.js/issues/9103#issuecomment-58335845
         $animate[value ? 'removeClass' : 'addClass'](element, NG_HIDE_CLASS, {
-          tempClasses : NG_HIDE_IN_PROGRESS_CLASS
+          tempClasses: NG_HIDE_IN_PROGRESS_CLASS
         });
       });
     }
@@ -24515,7 +24515,7 @@ var ngHideDirective = ['$animate', function($animate) {
         // The comment inside of the ngShowDirective explains why we add and
         // remove a temporary class for the show/hide animation
         $animate[value ? 'addClass' : 'removeClass'](element,NG_HIDE_CLASS, {
-          tempClasses : NG_HIDE_IN_PROGRESS_CLASS
+          tempClasses: NG_HIDE_IN_PROGRESS_CLASS
         });
       });
     }
