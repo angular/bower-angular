@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.27-build.530+sha.efedc64
+ * @license AngularJS v1.2.27-build.531+sha.1fa2d56
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.27-build.530+sha.efedc64/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.27-build.531+sha.1fa2d56/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1987,7 +1987,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.27-build.530+sha.efedc64',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.27-build.531+sha.1fa2d56',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 27,
@@ -7523,9 +7523,18 @@ function $HttpProvider() {
   };
 
   /**
-   * Are ordered by request, i.e. they are applied in the same order as the
+   * @ngdoc property
+   * @name $httpProvider#interceptors
+   * @description
+   *
+   * Array containing service factories for all synchronous or asynchronous {@link ng.$http $http}
+   * pre-processing of request or postprocessing of responses.
+   *
+   * These service factories are ordered by request, i.e. they are applied in the same order as the
    * array, on request, but reverse order, on response.
-   */
+   *
+   * {@link ng.$http#interceptors Interceptors detailed info}
+   **/
   var interceptorFactories = this.interceptors = [];
 
   /**
