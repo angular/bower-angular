@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.1-build.3503+sha.d7a78e4
+ * @license AngularJS v1.3.1-build.3504+sha.ce20dd0
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.1-build.3503+sha.d7a78e4/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.1-build.3504+sha.ce20dd0/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2089,7 +2089,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.1-build.3503+sha.d7a78e4',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.1-build.3504+sha.ce20dd0',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 1,
@@ -21112,9 +21112,9 @@ var CONSTANT_VALUE_REGEXP = /^(true|false|\d+)$/;
  * @name ngValue
  *
  * @description
- * Binds the given expression to the value of `input[select]` or `input[radio]`, so
- * that when the element is selected, the `ngModel` of that element is set to the
- * bound value.
+ * Binds the given expression to the value of `option` or `input[radio]`, so
+ * that when the element is selected, the `ngModel` of that element is set to
+ * the bound value.
  *
  * `ngValue` is useful when dynamically generating lists of radio buttons using `ng-repeat`, as
  * shown below.
