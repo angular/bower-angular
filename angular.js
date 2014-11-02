@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.2-build.3513+sha.0b16d10
+ * @license AngularJS v1.3.2-build.3514+sha.d906ed3
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.2-build.3513+sha.0b16d10/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.2-build.3514+sha.d906ed3/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2089,7 +2089,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.2-build.3513+sha.0b16d10',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.2-build.3514+sha.d906ed3',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 2,
@@ -18540,7 +18540,7 @@ var inputType = {
 
    /**
     * @ngdoc input
-    * @name input[dateTimeLocal]
+    * @name input[datetime-local]
     *
     * @description
     * Input with datetime validation and transformation. In browsers that do not yet support
@@ -20630,7 +20630,7 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
  *    - {@link input[email] email}
  *    - {@link input[url] url}
  *    - {@link input[date] date}
- *    - {@link input[dateTimeLocal] dateTimeLocal}
+ *    - {@link input[datetime-local] datetime-local}
  *    - {@link input[time] time}
  *    - {@link input[month] month}
  *    - {@link input[week] week}
