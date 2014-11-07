@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.2-build.3529+sha.e057a9a
+ * @license AngularJS v1.3.2-build.3530+sha.ed99821
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.2-build.3529+sha.e057a9a/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.2-build.3530+sha.ed99821/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2089,7 +2089,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.2-build.3529+sha.e057a9a',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.2-build.3530+sha.ed99821',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 2,
@@ -12650,7 +12650,7 @@ function $ParseProvider() {
         var result = interceptorFn(value, scope, locals);
         // we only return the interceptor's result if the
         // initial value is defined (for bind-once)
-        return isDefined(value) ? result : value;
+        return isDefined(value) || interceptorFn.$stateful ? result : value;
       };
 
       // Propagate $$watchDelegates other then inputsWatchDelegate
@@ -13824,6 +13824,9 @@ function $RootScopeProvider() {
         function $watchCollectionInterceptor(_value) {
           newValue = _value;
           var newLength, key, bothNaN, newItem, oldItem;
+
+          // If the new value is undefined, then return undefined as the watch may be a one-time watch
+          if (isUndefined(newValue)) return;
 
           if (!isObject(newValue)) { // if primitive
             if (oldValue !== newValue) {
