@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.2-build.3530+sha.ed99821
+ * @license AngularJS v1.3.2-build.3531+sha.9e30594
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.2-build.3530+sha.ed99821/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.2-build.3531+sha.9e30594/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -2089,7 +2089,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.2-build.3530+sha.ed99821',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.2-build.3531+sha.9e30594',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 2,
@@ -25437,7 +25437,7 @@ var selectDirective = ['$compile', '$parse', function($compile,   $parse) {
             if (multiple) {
               return isDefined(selectedSet.remove(callExpression(compareValueFn, key, value)));
             } else {
-              return viewValue == callExpression(compareValueFn, key, value);
+              return viewValue === callExpression(compareValueFn, key, value);
             }
           };
         }
