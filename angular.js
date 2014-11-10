@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.3-build.3539+sha.f157d02
+ * @license AngularJS v1.3.3-build.3540+sha.2abea75
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.3-build.3539+sha.f157d02/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.3-build.3540+sha.2abea75/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -2089,7 +2089,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.3-build.3539+sha.f157d02',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.3-build.3540+sha.2abea75',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 3,
@@ -24979,7 +24979,7 @@ var ngOptionsMinErr = minErr('ngOptions');
  * In many cases, `ngRepeat` can be used on `<option>` elements instead of `ngOptions` to achieve a
  * similar result. However, the `ngOptions` provides some benefits such as reducing memory and
  * increasing speed by not creating a new scope for each repeated instance, as well as providing
- * more flexibility in how the `select`'s model is assigned via `select as`. `ngOptions should be
+ * more flexibility in how the `select`'s model is assigned via `select as`. `ngOptions` should be
  * used when the `select` model needs to be bound to a non-string value. This is because an option
  * element can only be bound to string values at present.
  *
