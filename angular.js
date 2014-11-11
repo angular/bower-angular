@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.3-build.3550+sha.0db573b
+ * @license AngularJS v1.3.3-build.3551+sha.8582088
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.3-build.3550+sha.0db573b/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.3-build.3551+sha.8582088/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -2089,7 +2089,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.3-build.3550+sha.0db573b',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.3-build.3551+sha.8582088',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 3,
@@ -12817,10 +12817,6 @@ function $ParseProvider() {
  *   clean-up that needs to be done whether the promise was rejected or resolved. See the [full
  *   specification](https://github.com/kriskowal/q/wiki/API-Reference#promisefinallycallback) for
  *   more information.
- *
- *   Because `finally` is a reserved word in JavaScript and reserved keywords are not supported as
- *   property names by ES3, you'll need to invoke the method like `promise['finally'](callback)` to
- *   make your code IE8 and Android 2.x compatible.
  *
  * # Chaining promises
  *
