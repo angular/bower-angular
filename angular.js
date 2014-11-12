@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.3-build.3552+sha.b7afd11
+ * @license AngularJS v1.3.3-build.3553+sha.7e233eb
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.3-build.3552+sha.b7afd11/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.3-build.3553+sha.7e233eb/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -2089,7 +2089,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.3-build.3552+sha.b7afd11',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.3-build.3553+sha.7e233eb',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 3,
@@ -12821,7 +12821,7 @@ function $ParseProvider() {
  *
  * - `catch(errorCallback)` – shorthand for `promise.then(null, errorCallback)`
  *
- * - `finally(callback)` – allows you to observe either the fulfillment or rejection of a promise,
+ * - `finally(callback, notifyCallback)` – allows you to observe either the fulfillment or rejection of a promise,
  *   but to do so without modifying the final value. This is useful to release resources or do some
  *   clean-up that needs to be done whether the promise was rejected or resolved. See the [full
  *   specification](https://github.com/kriskowal/q/wiki/API-Reference#promisefinallycallback) for
