@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.3-build.3566+sha.f30163e
+ * @license AngularJS v1.3.3-build.3567+sha.6f19a6f
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -71,7 +71,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.3-build.3566+sha.f30163e/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.3-build.3567+sha.6f19a6f/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -2089,7 +2089,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.3-build.3566+sha.f30163e',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.3-build.3567+sha.6f19a6f',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 3,
@@ -8475,7 +8475,7 @@ function defaultHttpResponseTransform(data, headers) {
     // strip json vulnerability protection prefix
     data = data.replace(JSON_PROTECTION_PREFIX, '');
     var contentType = headers('Content-Type');
-    if ((contentType && contentType.indexOf(APPLICATION_JSON) === 0) ||
+    if ((contentType && contentType.indexOf(APPLICATION_JSON) === 0 && data.trim()) ||
         (JSON_START.test(data) && JSON_END.test(data))) {
       data = fromJson(data);
     }
