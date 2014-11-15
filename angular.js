@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.27-build.554+sha.2a8a4e7
+ * @license AngularJS v1.2.27-build.555+sha.16833d0
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68,7 +68,7 @@ function minErr(module) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.2.27-build.554+sha.2a8a4e7/' +
+    message = message + '\nhttp://errors.angularjs.org/1.2.27-build.555+sha.16833d0/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i-2) + '=' +
@@ -1987,7 +1987,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.27-build.554+sha.2a8a4e7',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.27-build.555+sha.16833d0',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 27,
@@ -21978,6 +21978,7 @@ var selectDirective = ['$compile', '$parse', function($compile,   $parse) {
                 lastElement = existingOption.element;
                 if (existingOption.label !== option.label) {
                   lastElement.text(existingOption.label = option.label);
+                  lastElement.prop('label', existingOption.label);
                 }
                 if (existingOption.id !== option.id) {
                   lastElement.val(existingOption.id = option.id);
@@ -22007,6 +22008,7 @@ var selectDirective = ['$compile', '$parse', function($compile,   $parse) {
                       .val(option.id)
                       .prop('selected', option.selected)
                       .attr('selected', option.selected)
+                      .prop('label', option.label)
                       .text(option.label);
                 }
 
