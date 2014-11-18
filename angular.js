@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.4-build.3578+sha.f7fde93
+ * @license AngularJS v1.3.4-build.3579+sha.637c020
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -54,7 +54,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.4-build.3578+sha.f7fde93/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.4-build.3579+sha.637c020/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -2100,7 +2100,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.4-build.3578+sha.f7fde93',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.4-build.3579+sha.637c020',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 4,
@@ -8501,7 +8501,7 @@ function defaultHttpResponseTransform(data, headers) {
  * @returns {Object} Parsed headers as key value object
  */
 function parseHeaders(headers) {
-  var parsed = {}, key, val, i;
+  var parsed = createMap(), key, val, i;
 
   if (!headers) return parsed;
 
@@ -8538,7 +8538,11 @@ function headersGetter(headers) {
     if (!headersObj) headersObj =  parseHeaders(headers);
 
     if (name) {
-      return headersObj[lowercase(name)] || null;
+      var value = headersObj[lowercase(name)];
+      if (value === void 0) {
+        value = null;
+      }
+      return value;
     }
 
     return headersObj;
