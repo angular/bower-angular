@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.3-build.3574+sha.e3764e3
+ * @license AngularJS v1.3.3-build.3575+sha.4f4ff5f
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -54,7 +54,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.3-build.3574+sha.e3764e3/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.3-build.3575+sha.4f4ff5f/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -2100,7 +2100,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.3-build.3574+sha.e3764e3',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.3-build.3575+sha.4f4ff5f',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 3,
@@ -20153,7 +20153,7 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
     function($scope, $exceptionHandler, $attr, $element, $parse, $animate, $timeout, $rootScope, $q, $interpolate) {
   this.$viewValue = Number.NaN;
   this.$modelValue = Number.NaN;
-  this.$rawModelValue = undefined; // stores the parsed modelValue / model set from scope regardless of validity.
+  this.$$rawModelValue = undefined; // stores the parsed modelValue / model set from scope regardless of validity.
   this.$validators = {};
   this.$asyncValidators = {};
   this.$parsers = [];
