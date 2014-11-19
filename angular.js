@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.4-build.3582+sha.e8941c0
+ * @license AngularJS v1.3.4-build.3583+sha.dc9775d
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -54,7 +54,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.4-build.3582+sha.e8941c0/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.4-build.3583+sha.dc9775d/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -2100,7 +2100,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.4-build.3582+sha.e8941c0',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.4-build.3583+sha.dc9775d',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 4,
@@ -20062,7 +20062,9 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
  * DOM events. Such DOM related logic should be provided by other directives which make use of
  * `NgModelController` for data-binding.
  *
- * ## Custom Control Example
+ *
+ * @example
+ * ### Custom Control Example
  * This example shows how to use `NgModelController` with a custom control to achieve
  * data-binding. Notice how different directives (`contenteditable`, `ng-model`, and `required`)
  * collaborate together to achieve the desired result.
