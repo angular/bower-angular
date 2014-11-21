@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.4-build.3593+sha.16c8f29
+ * @license AngularJS v1.3.4-build.3595+sha.95f8a8b
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -54,7 +54,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.4-build.3593+sha.16c8f29/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.4-build.3595+sha.95f8a8b/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -2100,7 +2100,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.4-build.3593+sha.16c8f29',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.4-build.3595+sha.95f8a8b',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 4,
@@ -21802,12 +21802,11 @@ var ngBindTemplateDirective = ['$interpolate', '$compile', function($interpolate
  * @name ngBindHtml
  *
  * @description
- * Creates a binding that will innerHTML the result of evaluating the `expression` into the current
- * element in a secure way.  By default, the innerHTML-ed content will be sanitized using the {@link
- * ngSanitize.$sanitize $sanitize} service.  To utilize this functionality, ensure that `$sanitize`
- * is available, for example, by including {@link ngSanitize} in your module's dependencies (not in
- * core Angular). In order to use {@link ngSanitize} in your module's dependencies, you need to
- * include "angular-sanitize.js" in your application.
+ * Evaluates the expression and inserts the resulting HTML into the element in a secure way. By default,
+ * the resulting HTML content will be sanitized using the {@link ngSanitize.$sanitize $sanitize} service.
+ * To utilize this functionality, ensure that `$sanitize` is available, for example, by including {@link
+ * ngSanitize} in your module's dependencies (not in core Angular). In order to use {@link ngSanitize}
+ * in your module's dependencies, you need to include "angular-sanitize.js" in your application.
  *
  * You may also bypass sanitization for values you know are safe. To do so, bind to
  * an explicitly trusted value via {@link ng.$sce#trustAsHtml $sce.trustAsHtml}.  See the example
