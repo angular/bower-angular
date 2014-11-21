@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.4-build.3592+sha.d3fb8dd
+ * @license AngularJS v1.3.4-build.3593+sha.16c8f29
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -54,7 +54,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.4-build.3592+sha.d3fb8dd/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.4-build.3593+sha.16c8f29/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -2100,7 +2100,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.4-build.3592+sha.d3fb8dd',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.4-build.3593+sha.16c8f29',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 4,
@@ -24403,17 +24403,17 @@ var NG_HIDE_IN_PROGRESS_CLASS = 'ng-hide-animate';
  *
  * ### Overriding `.ng-hide`
  *
- * By default, the `.ng-hide` class will style the element with `display:none!important`. If you wish to change
+ * By default, the `.ng-hide` class will style the element with `display: none!important`. If you wish to change
  * the hide behavior with ngShow/ngHide then this can be achieved by restating the styles for the `.ng-hide`
  * class in CSS:
  *
  * ```css
  * .ng-hide {
  *   /&#42; this is just another form of hiding an element &#42;/
- *   display:block!important;
- *   position:absolute;
- *   top:-9999px;
- *   left:-9999px;
+ *   display: block!important;
+ *   position: absolute;
+ *   top: -9999px;
+ *   left: -9999px;
  * }
  * ```
  *
@@ -24433,13 +24433,13 @@ var NG_HIDE_IN_PROGRESS_CLASS = 'ng-hide-animate';
  * .my-element.ng-hide-add, .my-element.ng-hide-remove {
  *   /&#42; this is required as of 1.3x to properly
  *      apply all styling in a show/hide animation &#42;/
- *   transition:0s linear all;
+ *   transition: 0s linear all;
  * }
  *
  * .my-element.ng-hide-add-active,
  * .my-element.ng-hide-remove-active {
  *   /&#42; the transition is defined in the active class &#42;/
- *   transition:1s linear all;
+ *   transition: 1s linear all;
  * }
  *
  * .my-element.ng-hide-add { ... }
@@ -24481,29 +24481,29 @@ var NG_HIDE_IN_PROGRESS_CLASS = 'ng-hide-animate';
     </file>
     <file name="animations.css">
       .animate-show {
-        line-height:20px;
-        opacity:1;
-        padding:10px;
-        border:1px solid black;
-        background:white;
+        line-height: 20px;
+        opacity: 1;
+        padding: 10px;
+        border: 1px solid black;
+        background: white;
       }
 
       .animate-show.ng-hide-add.ng-hide-add-active,
       .animate-show.ng-hide-remove.ng-hide-remove-active {
-        -webkit-transition:all linear 0.5s;
-        transition:all linear 0.5s;
+        -webkit-transition: all linear 0.5s;
+        transition: all linear 0.5s;
       }
 
       .animate-show.ng-hide {
-        line-height:0;
-        opacity:0;
-        padding:0 10px;
+        line-height: 0;
+        opacity: 0;
+        padding: 0 10px;
       }
 
       .check-element {
-        padding:10px;
-        border:1px solid black;
-        background:white;
+        padding: 10px;
+        border: 1px solid black;
+        background: white;
       }
     </file>
     <file name="protractor.js" type="protractor">
@@ -24577,17 +24577,17 @@ var ngShowDirective = ['$animate', function($animate) {
  *
  * ### Overriding `.ng-hide`
  *
- * By default, the `.ng-hide` class will style the element with `display:none!important`. If you wish to change
+ * By default, the `.ng-hide` class will style the element with `display: none!important`. If you wish to change
  * the hide behavior with ngShow/ngHide then this can be achieved by restating the styles for the `.ng-hide`
  * class in CSS:
  *
  * ```css
  * .ng-hide {
  *   /&#42; this is just another form of hiding an element &#42;/
- *   display:block!important;
- *   position:absolute;
- *   top:-9999px;
- *   left:-9999px;
+ *   display: block!important;
+ *   position: absolute;
+ *   top: -9999px;
+ *   left: -9999px;
  * }
  * ```
  *
@@ -24604,7 +24604,7 @@ var ngShowDirective = ['$animate', function($animate) {
  * //a working example can be found at the bottom of this page
  * //
  * .my-element.ng-hide-add, .my-element.ng-hide-remove {
- *   transition:0.5s linear all;
+ *   transition: 0.5s linear all;
  * }
  *
  * .my-element.ng-hide-add { ... }
@@ -24646,25 +24646,25 @@ var ngShowDirective = ['$animate', function($animate) {
     </file>
     <file name="animations.css">
       .animate-hide {
-        -webkit-transition:all linear 0.5s;
-        transition:all linear 0.5s;
-        line-height:20px;
-        opacity:1;
-        padding:10px;
-        border:1px solid black;
-        background:white;
+        -webkit-transition: all linear 0.5s;
+        transition: all linear 0.5s;
+        line-height: 20px;
+        opacity: 1;
+        padding: 10px;
+        border: 1px solid black;
+        background: white;
       }
 
       .animate-hide.ng-hide {
-        line-height:0;
-        opacity:0;
-        padding:0 10px;
+        line-height: 0;
+        opacity: 0;
+        padding: 0 10px;
       }
 
       .check-element {
-        padding:10px;
-        border:1px solid black;
-        background:white;
+        padding: 10px;
+        border: 1px solid black;
+        background: white;
       }
     </file>
     <file name="protractor.js" type="protractor">
