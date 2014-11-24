@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.4-build.3616+sha.bf6a79c
+ * @license AngularJS v1.3.4-build.3617+sha.09a9832
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -54,7 +54,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.4-build.3616+sha.bf6a79c/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.4-build.3617+sha.09a9832/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -689,7 +689,7 @@ function makeMap(str) {
 
 
 function nodeName_(element) {
-  return lowercase(element.nodeName || element[0].nodeName);
+  return lowercase(element.nodeName || (element[0] && element[0].nodeName));
 }
 
 function includes(array, obj) {
@@ -2100,7 +2100,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.4-build.3616+sha.bf6a79c',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.4-build.3617+sha.09a9832',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 4,
