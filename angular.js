@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.5-build.3629+sha.655ac64
+ * @license AngularJS v1.3.5-build.3630+sha.30694c8
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -54,7 +54,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.5-build.3629+sha.655ac64/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.5-build.3630+sha.30694c8/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -2100,7 +2100,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.5-build.3629+sha.655ac64',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.5-build.3630+sha.30694c8',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 5,
@@ -25825,18 +25825,23 @@ var selectDirective = ['$compile', '$parse', function($compile,   $parse) {
               updateLabelMap(labelMap, option.label, false);
               option.element.remove();
             }
-            forEach(labelMap, function(count, label) {
-              if (count > 0) {
-                selectCtrl.addOption(label);
-              } else if (count < 0) {
-                selectCtrl.removeOption(label);
-              }
-            });
           }
           // remove any excessive OPTGROUPs from select
           while (optionGroupsCache.length > groupIndex) {
-            optionGroupsCache.pop()[0].element.remove();
+            // remove all the labels in the option group
+            optionGroup = optionGroupsCache.pop();
+            for (index = 1; index < optionGroup.length; ++index) {
+              updateLabelMap(labelMap, optionGroup[index].label, false);
+            }
+            optionGroup[0].element.remove();
           }
+          forEach(labelMap, function(count, label) {
+            if (count > 0) {
+              selectCtrl.addOption(label);
+            } else if (count < 0) {
+              selectCtrl.removeOption(label);
+            }
+          });
         }
       }
     }
