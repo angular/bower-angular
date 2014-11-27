@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.5-build.3624+sha.8f05ca5
+ * @license AngularJS v1.3.5-build.3626+sha.9b3d965
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -54,7 +54,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.5-build.3624+sha.8f05ca5/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.5-build.3626+sha.9b3d965/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -2100,7 +2100,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.5-build.3624+sha.8f05ca5',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.5-build.3626+sha.9b3d965',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 5,
@@ -6467,7 +6467,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
    * Retrieves or overrides the default regular expression that is used for whitelisting of safe
    * urls during a[href] sanitization.
    *
-   * The sanitization is a security measure aimed at prevent XSS attacks via html links.
+   * The sanitization is a security measure aimed at preventing XSS attacks via html links.
    *
    * Any url about to be assigned to a[href] via data-binding is first normalized and turned into
    * an absolute url. Afterwards, the url is matched against the `aHrefSanitizationWhitelist`
@@ -12230,8 +12230,13 @@ Parser.prototype = {
       ensureSafeObject(context, expressionText);
       ensureSafeFunction(fn, expressionText);
 
-      return ensureSafeObject(fn.apply(context, args), expressionText);
-    };
+      // IE doesn't have apply for some native functions
+      var v = fn.apply
+            ? fn.apply(context, args)
+            : fn(args[0], args[1], args[2], args[3], args[4]);
+
+      return ensureSafeObject(v, expressionText);
+      };
   },
 
   // This is used with json array declaration
