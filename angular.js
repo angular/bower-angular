@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.5-build.3639+sha.ab25311
+ * @license AngularJS v1.3.5-build.3640+sha.f645882
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -54,7 +54,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.5-build.3639+sha.ab25311/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.5-build.3640+sha.f645882/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -2100,7 +2100,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.5-build.3639+sha.ab25311',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.5-build.3640+sha.f645882',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 5,
@@ -15940,12 +15940,12 @@ function $TemplateRequestProvider() {
           return html;
         }, handleError);
 
-      function handleError() {
+      function handleError(resp) {
         self.totalPendingRequests--;
         if (!ignoreRequestError) {
           throw $compileMinErr('tpload', 'Failed to load template: {0}', tpl);
         }
-        return $q.reject();
+        return $q.reject(resp);
       }
     }
 
