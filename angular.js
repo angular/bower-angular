@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.6-build.3658+sha.ed1243f
+ * @license AngularJS v1.3.6-build.3659+sha.228281e
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -54,7 +54,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.6-build.3658+sha.ed1243f/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.6-build.3659+sha.228281e/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -2104,7 +2104,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.6-build.3658+sha.ed1243f',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.6-build.3659+sha.228281e',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 6,
@@ -10962,7 +10962,7 @@ var locationPrototype = {
    *
    *
    * ```js
-   * // given url http://example.com/some/path?foo=bar&baz=xoxo#hashValue
+   * // given url http://example.com/#/some/path?foo=bar&baz=xoxo#hashValue
    * var hash = $location.hash();
    * // => "hashValue"
    * ```
