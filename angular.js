@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.6-build.3656+sha.015111f
+ * @license AngularJS v1.3.6-build.3657+sha.3aa5752
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -54,7 +54,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.6-build.3656+sha.015111f/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.6-build.3657+sha.3aa5752/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -2104,7 +2104,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.6-build.3656+sha.015111f',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.6-build.3657+sha.3aa5752',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 6,
@@ -17525,12 +17525,29 @@ function orderByFilter($parse) {
     function compare(v1, v2) {
       var t1 = typeof v1;
       var t2 = typeof v2;
-      if (t1 == t2) {
-        if (isDate(v1) && isDate(v2)) {
-          v1 = v1.valueOf();
-          v2 = v2.valueOf();
+      // Prepare values for Abstract Relational Comparison
+      // (http://www.ecma-international.org/ecma-262/5.1/#sec-11.8.5):
+      // If the resulting values are identical, return 0 to prevent
+      // incorrect re-ordering.
+      if (t1 === t2 && t1 === "object") {
+        // If types are both numbers, emulate abstract ToPrimitive() operation
+        // in order to get primitive values suitable for comparison
+        t1 = typeof (v1.valueOf ? v1 = v1.valueOf() : v1);
+        t2 = typeof (v2.valueOf ? v2 = v2.valueOf() : v2);
+        if (t1 === t2 && t1 === "object") {
+          // Object.prototype.valueOf will return the original object, by
+          // default. If we do not receive a primitive value, use ToString()
+          // instead.
+          t1 = typeof (v1.toString ? v1 = v1.toString() : v1);
+          t2 = typeof (v2.toString ? v2 = v2.toString() : v2);
+
+          // If the end result of toString() for each item is the same, do not
+          // perform relational comparison, and do not re-order objects.
+          if (t1 === t2 && v1 === v2 || t1 === "object") return 0;
         }
-        if (t1 == "string") {
+      }
+      if (t1 === t2) {
+        if (t1 === "string") {
            v1 = v1.toLowerCase();
            v2 = v2.toLowerCase();
         }
