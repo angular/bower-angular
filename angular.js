@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.8-build.3705+sha.fb2c585
+ * @license AngularJS v1.3.8-build.3706+sha.cd77c08
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -54,7 +54,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.8-build.3705+sha.fb2c585/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.8-build.3706+sha.cd77c08/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -2118,7 +2118,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.8-build.3705+sha.fb2c585',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.8-build.3706+sha.cd77c08',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 8,
@@ -17421,8 +17421,7 @@ function limitToFilter() {
       }
     }
 
-    var out = [],
-      i, n;
+    var i, n;
 
     // if abs(limit) exceeds maximum length, trim it
     if (limit > input.length)
@@ -17434,15 +17433,14 @@ function limitToFilter() {
       i = 0;
       n = limit;
     } else {
+      // zero and NaN check on limit - return empty array
+      if (!limit) return [];
+
       i = input.length + limit;
       n = input.length;
     }
 
-    for (; i < n; i++) {
-      out.push(input[i]);
-    }
-
-    return out;
+    return input.slice(i, n);
   };
 }
 
@@ -17576,9 +17574,7 @@ function orderByFilter($parse) {
         }
         if (predicate === '') {
           // Effectively no predicate was passed so we compare identity
-          return reverseComparator(function(a, b) {
-            return compare(a, b);
-          }, descending);
+          return reverseComparator(compare, descending);
         }
         get = $parse(predicate);
         if (get.constant) {
