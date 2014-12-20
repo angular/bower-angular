@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.8
+ * @license AngularJS v1.3.9-build.3718+sha.eae848a
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -54,7 +54,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.8/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.9-build.3718+sha.eae848a/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -2118,11 +2118,11 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.8',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.9-build.3718+sha.eae848a',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
-  dot: 8,
-  codeName: 'prophetic-narwhal'
+  dot: 9,
+  codeName: 'snapshot'
 };
 
 
@@ -8927,7 +8927,7 @@ function $HttpProvider() {
      *
      * Both requests and responses can be transformed using transformation functions: `transformRequest`
      * and `transformResponse`. These properties can be a single function that returns
-     * the transformed value (`{function(data, headersGetter, status)`) or an array of such transformation functions,
+     * the transformed value (`function(data, headersGetter, status)`) or an array of such transformation functions,
      * which allows you to `push` or `unshift` a new transformation function into the transformation chain.
      *
      * ### Default Transformations
