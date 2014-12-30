@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.9-build.3741+sha.1e5e527
+ * @license AngularJS v1.3.9-build.6+sha.b839f73
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -54,7 +54,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.9-build.3741+sha.1e5e527/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.9-build.6+sha.b839f73/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -92,7 +92,7 @@ function minErr(module, ErrorConstructor) {
   nextUid: true,
   setHashKey: true,
   extend: true,
-  toInt: true,
+  int: true,
   inherit: true,
   noop: true,
   identity: true,
@@ -421,7 +421,7 @@ function extend(dst) {
   return dst;
 }
 
-function toInt(str) {
+function int(str) {
   return parseInt(str, 10);
 }
 
@@ -2118,7 +2118,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.9-build.3741+sha.1e5e527',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.9-build.6+sha.b839f73',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 9,
@@ -5474,13 +5474,13 @@ function $CacheFactoryProvider() {
          * @returns {*} the value stored.
          */
         put: function(key, value) {
-          if (isUndefined(value)) return;
           if (capacity < Number.MAX_VALUE) {
             var lruEntry = lruHash[key] || (lruHash[key] = {key: key});
 
             refresh(lruEntry);
           }
 
+          if (isUndefined(value)) return;
           if (!(key in data)) size++;
           data[key] = value;
 
@@ -6192,7 +6192,7 @@ function $TemplateCacheProvider() {
  *
  * <div class="alert alert-info">
  * **Best Practice**: if you intend to add and remove transcluded content manually in your directive
- * (by calling the transclude function to get the DOM and calling `element.remove()` to remove it),
+ * (by calling the transclude function to get the DOM and and calling `element.remove()` to remove it),
  * then you are also responsible for calling `$destroy` on the transclusion scope.
  * </div>
  *
@@ -8893,7 +8893,7 @@ function $HttpProvider() {
      * To add or overwrite these defaults, simply add or remove a property from these configuration
      * objects. To add headers for an HTTP method other than POST or PUT, simply add a new object
      * with the lowercased HTTP method name as the key, e.g.
-     * `$httpProvider.defaults.headers.get = { 'My-Header' : 'value' }`.
+     * `$httpProvider.defaults.headers.get = { 'My-Header' : 'value' }.
      *
      * The defaults can also be set at runtime via the `$http.defaults` object in the same
      * fashion. For example:
@@ -10506,7 +10506,7 @@ function parseAbsoluteUrl(absoluteUrl, locationObj) {
 
   locationObj.$$protocol = parsedUrl.protocol;
   locationObj.$$host = parsedUrl.hostname;
-  locationObj.$$port = toInt(parsedUrl.port) || DEFAULT_PORTS[parsedUrl.protocol] || null;
+  locationObj.$$port = int(parsedUrl.port) || DEFAULT_PORTS[parsedUrl.protocol] || null;
 }
 
 
@@ -15918,7 +15918,7 @@ function $SnifferProvider() {
   this.$get = ['$window', '$document', function($window, $document) {
     var eventSupport = {},
         android =
-          toInt((/android (\d+)/.exec(lowercase(($window.navigator || {}).userAgent)) || [])[1]),
+          int((/android (\d+)/.exec(lowercase(($window.navigator || {}).userAgent)) || [])[1]),
         boxee = /Boxee/i.test(($window.navigator || {}).userAgent),
         document = $document[0] || {},
         vendorPrefix,
@@ -16002,7 +16002,7 @@ var $compileMinErr = minErr('$compile');
  * @param {string} tpl The HTTP request template URL
  * @param {boolean=} ignoreRequestError Whether or not to ignore the exception when the request fails or the template is empty
  *
- * @return {Promise} a promise for the the HTTP response data of the given URL.
+ * @return {Promise} the HTTP Promise for the given.
  *
  * @property {number} totalPendingRequests total amount of pending template requests being downloaded.
  */
@@ -17200,13 +17200,13 @@ function dateFilter($locale) {
           timeSetter = match[8] ? date.setUTCHours : date.setHours;
 
       if (match[9]) {
-        tzHour = toInt(match[9] + match[10]);
-        tzMin = toInt(match[9] + match[11]);
+        tzHour = int(match[9] + match[10]);
+        tzMin = int(match[9] + match[11]);
       }
-      dateSetter.call(date, toInt(match[1]), toInt(match[2]) - 1, toInt(match[3]));
-      var h = toInt(match[4] || 0) - tzHour;
-      var m = toInt(match[5] || 0) - tzMin;
-      var s = toInt(match[6] || 0);
+      dateSetter.call(date, int(match[1]), int(match[2]) - 1, int(match[3]));
+      var h = int(match[4] || 0) - tzHour;
+      var m = int(match[5] || 0) - tzMin;
+      var s = int(match[6] || 0);
       var ms = Math.round(parseFloat('0.' + (match[7] || 0)) * 1000);
       timeSetter.call(date, h, m, s, ms);
       return date;
@@ -17223,7 +17223,7 @@ function dateFilter($locale) {
     format = format || 'mediumDate';
     format = $locale.DATETIME_FORMATS[format] || format;
     if (isString(date)) {
-      date = NUMBER_STRING.test(date) ? toInt(date) : jsonStringToDate(date);
+      date = NUMBER_STRING.test(date) ? int(date) : jsonStringToDate(date);
     }
 
     if (isNumber(date)) {
@@ -17337,8 +17337,7 @@ var uppercaseFilter = valueFn(uppercase);
  * @param {string|number} limit The length of the returned array or string. If the `limit` number
  *     is positive, `limit` number of items from the beginning of the source array/string are copied.
  *     If the number is negative, `limit` number  of items from the end of the source array/string
- *     are copied. The `limit` will be trimmed if it exceeds `array.length`. If `limit` is undefined,
- *     the input will be returned unchanged.
+ *     are copied. The `limit` will be trimmed if it exceeds `array.length`
  * @returns {Array|string} A new sub-array or substring of length `limit` or less if input array
  *     had less than `limit` elements.
  *
@@ -17411,17 +17410,21 @@ var uppercaseFilter = valueFn(uppercase);
 */
 function limitToFilter() {
   return function(input, limit) {
-    if (Math.abs(Number(limit)) === Infinity) {
-      limit = Number(limit);
-    } else {
-      limit = toInt(limit);
-    }
-    if (isNaN(limit)) return input;
-
     if (isNumber(input)) input = input.toString();
     if (!isArray(input) && !isString(input)) return input;
 
-    return limit >= 0 ? input.slice(0, limit) : input.slice(limit);
+    if (Math.abs(Number(limit)) === Infinity) {
+      limit = Number(limit);
+    } else {
+      limit = int(limit);
+    }
+
+    //NaN check on limit
+    if (limit) {
+      return limit > 0 ? input.slice(0, limit) : input.slice(limit);
+    } else {
+      return isString(input) ? "" : [];
+    }
   };
 }
 
@@ -19125,7 +19128,7 @@ var inputType = {
         }]);
      </script>
      <form name="myForm" ng-controller="DateController as dateCtrl">
-       Pick a month in 2013:
+       Pick a month int 2013:
        <input id="exampleInput" type="month" name="input" ng-model="value"
           placeholder="yyyy-MM" min="2013-01" max="2013-12" required />
        <span class="error" ng-show="myForm.input.$error.required">
@@ -21978,7 +21981,7 @@ var ngIfDirective = ['$animate', function($animate) {
        <select ng-model="template" ng-options="t.name for t in templates">
         <option value="">(blank)</option>
        </select>
-       url of the template: <tt>{{template.url}}</tt>
+       url of the template: <code>{{template.url}}</code>
        <hr/>
        <div class="slide-animate-container">
          <div class="slide-animate" ng-include="template.url"></div>
@@ -26004,7 +26007,7 @@ var maxlengthDirective = function() {
 
       var maxlength = -1;
       attr.$observe('maxlength', function(value) {
-        var intVal = toInt(value);
+        var intVal = int(value);
         maxlength = isNaN(intVal) ? -1 : intVal;
         ctrl.$validate();
       });
@@ -26024,7 +26027,7 @@ var minlengthDirective = function() {
 
       var minlength = 0;
       attr.$observe('minlength', function(value) {
-        minlength = toInt(value) || 0;
+        minlength = int(value) || 0;
         ctrl.$validate();
       });
       ctrl.$validators.minlength = function(modelValue, viewValue) {
