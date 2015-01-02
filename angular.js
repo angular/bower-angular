@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.9-build.3744+sha.66ceecc
+ * @license AngularJS v1.3.9-build.3745+sha.c66b4b6
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -54,7 +54,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.9-build.3744+sha.66ceecc/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.9-build.3745+sha.c66b4b6/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -2118,7 +2118,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.9-build.3744+sha.66ceecc',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.9-build.3745+sha.c66b4b6',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 9,
@@ -23837,6 +23837,9 @@ var ngNonBindableDirective = ngDirective({ terminal: true, priority: 1000 });
  * <span ng-non-bindable>`{{personCount}}`</span>. The closed braces `{}` is a placeholder
  * for <span ng-non-bindable>{{numberExpression}}</span>.
  *
+ * If no rule is defined for a category, then an empty string is displayed and a warning is generated.
+ * Note that some locales define more categories than `one` and `other`. For example, fr-fr defines `few` and `many`.
+ *
  * # Configuring ngPluralize with offset
  * The `offset` attribute allows further customization of pluralized text, which can result in
  * a better user experience. For example, instead of the message "4 people are viewing this document",
@@ -23955,7 +23958,7 @@ var ngNonBindableDirective = ngDirective({ terminal: true, priority: 1000 });
       </file>
     </example>
  */
-var ngPluralizeDirective = ['$locale', '$interpolate', function($locale, $interpolate) {
+var ngPluralizeDirective = ['$locale', '$interpolate', '$log', function($locale, $interpolate, $log) {
   var BRACE = /{}/g,
       IS_WHEN = /^when(Minus)?(.+)$/;
 
@@ -23999,7 +24002,14 @@ var ngPluralizeDirective = ['$locale', '$interpolate', function($locale, $interp
         // In JS `NaN !== NaN`, so we have to exlicitly check.
         if ((count !== lastCount) && !(countIsNaN && isNaN(lastCount))) {
           watchRemover();
-          watchRemover = scope.$watch(whensExpFns[count], updateElementText);
+          var whenExpFn = whensExpFns[count];
+          if (isUndefined(whenExpFn)) {
+            $log.debug("ngPluralize: no rule defined for '" + count + "' in " + whenExp);
+            watchRemover = noop;
+            updateElementText();
+          } else {
+            watchRemover = scope.$watch(whenExpFn, updateElementText);
+          }
           lastCount = count;
         }
       });
