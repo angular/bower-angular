@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.9-build.3749+sha.d2a9a16
+ * @license AngularJS v1.3.9-build.3750+sha.1334b8c
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -54,7 +54,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.9-build.3749+sha.d2a9a16/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.9-build.3750+sha.1334b8c/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -2118,7 +2118,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.9-build.3749+sha.d2a9a16',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.9-build.3750+sha.1334b8c',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 9,
@@ -17230,7 +17230,7 @@ function dateFilter($locale) {
       date = new Date(date);
     }
 
-    if (!isDate(date)) {
+    if (!isDate(date) || !isFinite(date.getTime())) {
       return date;
     }
 
