@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.9-build.3756+sha.e079111
+ * @license AngularJS v1.3.9-build.3757+sha.51d6774
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -54,7 +54,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.9-build.3756+sha.e079111/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.9-build.3757+sha.51d6774/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -2118,7 +2118,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.9-build.3756+sha.e079111',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.9-build.3757+sha.51d6774',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 9,
@@ -16853,6 +16853,8 @@ function currencyFilter($locale) {
  *
  * If the input is not a number an empty string is returned.
  *
+ * If the input is an infinite (Infinity/-Infinity) the Infinity symbol '∞' is returned.
+ *
  * @param {number|string} number Number to format.
  * @param {(number|string)=} fractionSize Number of decimal places to round the number to.
  * If this is not provided then the fraction size is computed from the current locale's number
@@ -16909,16 +16911,22 @@ function numberFilter($locale) {
 
 var DECIMAL_SEP = '.';
 function formatNumber(number, pattern, groupSep, decimalSep, fractionSize) {
-  if (!isFinite(number) || isObject(number)) return '';
+  if (isObject(number)) return '';
 
   var isNegative = number < 0;
   number = Math.abs(number);
+
+  var isInfinity = number === Infinity;
+  if (!isInfinity && !isFinite(number)) return '';
+
   var numStr = number + '',
       formatedText = '',
+      hasExponent = false,
       parts = [];
 
-  var hasExponent = false;
-  if (numStr.indexOf('e') !== -1) {
+  if (isInfinity) formatedText = '\u221e';
+
+  if (!isInfinity && numStr.indexOf('e') !== -1) {
     var match = numStr.match(/([\d\.]+)e(-?)(\d+)/);
     if (match && match[2] == '-' && match[3] > fractionSize + 1) {
       number = 0;
@@ -16928,7 +16936,7 @@ function formatNumber(number, pattern, groupSep, decimalSep, fractionSize) {
     }
   }
 
-  if (!hasExponent) {
+  if (!isInfinity && !hasExponent) {
     var fractionLen = (numStr.split(DECIMAL_SEP)[1] || '').length;
 
     // determine fractionSize if it is not specified
