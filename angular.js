@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.9-build.3755+sha.e1132f5
+ * @license AngularJS v1.3.9-build.3756+sha.e079111
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -54,7 +54,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.9-build.3755+sha.e1132f5/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.9-build.3756+sha.e079111/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -2118,7 +2118,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.9-build.3755+sha.e1132f5',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.9-build.3756+sha.e079111',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 9,
@@ -18012,22 +18012,34 @@ var htmlAnchorDirective = valueFn({
 
 var ngAttributeAliasDirectives = {};
 
-
 // boolean attrs are evaluated
 forEach(BOOLEAN_ATTR, function(propName, attrName) {
   // binding to multiple is not supported
   if (propName == "multiple") return;
 
+  function defaultLinkFn(scope, element, attr) {
+    scope.$watch(attr[normalized], function ngBooleanAttrWatchAction(value) {
+      attr.$set(attrName, !!value);
+    });
+  }
+
   var normalized = directiveNormalize('ng-' + attrName);
+  var linkFn = defaultLinkFn;
+
+  if (propName === 'checked') {
+    linkFn = function(scope, element, attr) {
+      // ensuring ngChecked doesn't interfere with ngModel when both are set on the same input
+      if (attr.ngModel !== attr[normalized]) {
+        defaultLinkFn(scope, element, attr);
+      }
+    };
+  }
+
   ngAttributeAliasDirectives[normalized] = function() {
     return {
       restrict: 'A',
       priority: 100,
-      link: function(scope, element, attr) {
-        scope.$watch(attr[normalized], function ngBooleanAttrWatchAction(value) {
-          attr.$set(attrName, !!value);
-        });
-      }
+      link: linkFn
     };
   };
 });
