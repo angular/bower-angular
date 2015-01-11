@@ -1,6 +1,6 @@
 /**
- * @license AngularJS v1.3.9-build.3768+sha.b5e00cf
- * (c) 2010-2014 Google, Inc. http://angularjs.org
+ * @license AngularJS v1.3.9-build.3769+sha.e24f22b
+ * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
 (function(window, document, undefined) {'use strict';
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.3.9-build.3768+sha.b5e00cf/' +
+    message += '\nhttp://errors.angularjs.org/1.3.9-build.3769+sha.e24f22b/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2123,7 +2123,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.9-build.3768+sha.b5e00cf',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.9-build.3769+sha.e24f22b',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 9,
@@ -16041,7 +16041,8 @@ function $TemplateRequestProvider() {
       function handleError(resp) {
         self.totalPendingRequests--;
         if (!ignoreRequestError) {
-          throw $compileMinErr('tpload', 'Failed to load template: {0}', tpl);
+          throw $compileMinErr('tpload', 'Failed to load template: {0} (HTTP status: {1} {2})',
+            tpl, resp.status, resp.statusText);
         }
         return $q.reject(resp);
       }
