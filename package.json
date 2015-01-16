@@ -1,6 +1,6 @@
 {
   "name": "angular",
-  "version": "1.4.0-build.3788+sha.b7117af",
+  "version": "1.4.0-build.3789+sha.1bf1a62",
   "description": "HTML enhanced for web apps",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
