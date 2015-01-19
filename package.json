@@ -2,6 +2,7 @@
   "name": "angular",
   "version": "1.4.0-build.3797+sha.0db5b21",
   "description": "HTML enhanced for web apps",
+  "main": "angular.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
