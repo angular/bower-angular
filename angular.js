@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.3.10-build.26+sha.7a9e336
+ * @license AngularJS v1.3.10-build.27+sha.d01cae2
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -54,7 +54,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message = message + '\nhttp://errors.angularjs.org/1.3.10-build.26+sha.7a9e336/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.10-build.27+sha.d01cae2/' +
       (module ? module + '/' : '') + code;
     for (i = 2; i < arguments.length; i++) {
       message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
@@ -1402,7 +1402,7 @@ function angularInit(element, bootstrap) {
  * @param {DOMElement} element DOM element which is the root of angular application.
  * @param {Array<String|Function|Array>=} modules an array of modules to load into the application.
  *     Each item in the array should be the name of a predefined module or a (DI annotated)
- *     function that will be invoked by the injector as a run block.
+ *     function that will be invoked by the injector as a `config` block.
  *     See: {@link angular.module modules}
  * @param {Object=} config an object for defining configuration options for the application. The
  *     following keys are supported:
@@ -2118,7 +2118,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.3.10-build.26+sha.7a9e336',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.3.10-build.27+sha.d01cae2',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 3,
   dot: 10,
@@ -4186,7 +4186,7 @@ function createInjector(modulesToLoad, strictDi) {
       // Check if Type is annotated and use just the given function at n-1 as parameter
       // e.g. someModule.factory('greeter', ['$window', function(renamed$window) {}]);
       // Object creation: http://jsperf.com/create-constructor/2
-      var instance = Object.create((isArray(Type) ? Type[Type.length - 1] : Type).prototype);
+      var instance = Object.create((isArray(Type) ? Type[Type.length - 1] : Type).prototype || null);
       var returnedValue = invoke(Type, instance, locals, serviceName);
 
       return isObject(returnedValue) || isFunction(returnedValue) ? returnedValue : instance;
@@ -8435,7 +8435,7 @@ function $ControllerProvider() {
         // Object creation: http://jsperf.com/create-constructor/2
         var controllerPrototype = (isArray(expression) ?
           expression[expression.length - 1] : expression).prototype;
-        instance = Object.create(controllerPrototype);
+        instance = Object.create(controllerPrototype || null);
 
         if (identifier) {
           addIdentifier(locals, identifier, instance, constructor || expression.name);
@@ -16014,8 +16014,7 @@ var $compileMinErr = minErr('$compile');
 function $TemplateRequestProvider() {
   this.$get = ['$templateCache', '$http', '$q', function($templateCache, $http, $q) {
     function handleRequestFn(tpl, ignoreRequestError) {
-      var self = handleRequestFn;
-      self.totalPendingRequests++;
+      handleRequestFn.totalPendingRequests++;
 
       var transformResponse = $http.defaults && $http.defaults.transformResponse;
 
@@ -16033,13 +16032,14 @@ function $TemplateRequestProvider() {
       };
 
       return $http.get(tpl, httpOptions)
+        .finally(function() {
+          handleRequestFn.totalPendingRequests--;
+        })
         .then(function(response) {
-          self.totalPendingRequests--;
           return response.data;
         }, handleError);
 
       function handleError(resp) {
-        self.totalPendingRequests--;
         if (!ignoreRequestError) {
           throw $compileMinErr('tpload', 'Failed to load template: {0}', tpl);
         }
@@ -20646,8 +20646,9 @@ function classDirective(name, selector) {
  * new classes are added.
  *
  * @animations
- * add - happens just before the class is applied to the element
- * remove - happens just before the class is removed from the element
+ * **add** - happens just before the class is applied to the elements
+ *
+ * **remove** - happens just before the class is removed from the element
  *
  * @element ANY
  * @param {expression} ngClass {@link guide/expression Expression} to eval. The result
@@ -24313,7 +24314,7 @@ var ngRepeatDirective = ['$parse', '$animate', function($parse, $animate) {
       var keyIdentifier = match[2];
 
       if (aliasAs && (!/^[$a-zA-Z_][$a-zA-Z0-9_]*$/.test(aliasAs) ||
-          /^(null|undefined|this|\$index|\$first|\$middle|\$last|\$even|\$odd|\$parent)$/.test(aliasAs))) {
+          /^(null|undefined|this|\$index|\$first|\$middle|\$last|\$even|\$odd|\$parent|\$root|\$id)$/.test(aliasAs))) {
         throw ngRepeatMinErr('badident', "alias '{0}' is invalid --- must be a valid JS identifier which is not a reserved name.",
           aliasAs);
       }
