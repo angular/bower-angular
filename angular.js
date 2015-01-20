@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.0-beta.1
+ * @license AngularJS v1.4.0-build.3803+sha.331cac2
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.0-beta.1/' +
+    message += '\nhttp://errors.angularjs.org/1.4.0-build.3803+sha.331cac2/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2123,11 +2123,11 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.0-beta.1',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.0-build.3803+sha.331cac2',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 0,
-  codeName: 'trepidatious-salamander'
+  codeName: 'snapshot'
 };
 
 
@@ -22286,7 +22286,7 @@ var ngIncludeFillContentDirective = ['$compile',
  * **Note**: If you have assignment in `ngInit` along with {@link ng.$filter `$filter`}, make
  * sure you have parenthesis for correct precedence:
  * <pre class="prettyprint">
- *   <div ng-init="test1 = (data | orderBy:'name')"></div>
+ * `<div ng-init="test1 = (data | orderBy:'name')"></div>`
  * </pre>
  * </div>
  *
