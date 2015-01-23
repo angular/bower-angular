@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.0-build.3805+sha.301e7aa
+ * @license AngularJS v1.4.0-build.3806+sha.31a5b83
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.0-build.3805+sha.301e7aa/' +
+    message += '\nhttp://errors.angularjs.org/1.4.0-build.3806+sha.31a5b83/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -331,7 +331,7 @@ function forEach(obj, iterator, context) {
         obj.forEach(iterator, context, obj);
     } else {
       for (key in obj) {
-        if (obj.hasOwnProperty(key)) {
+        if (hasOwnProperty.call(obj, key)) {
           iterator.call(context, obj[key], key, obj);
         }
       }
@@ -2118,7 +2118,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.0-build.3805+sha.301e7aa',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.0-build.3806+sha.31a5b83',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 0,
@@ -18196,8 +18196,8 @@ function FormController(element, attrs, $scope, $animate, $interpolate) {
   var parentForm = form.$$parentForm = element.parent().controller('form') || nullFormCtrl;
 
   // init state
-  form.$error = {};
-  form.$$success = {};
+  form.$error = createMap();
+  form.$$success = createMap();
   form.$pending = undefined;
   form.$name = $interpolate(attrs.name || attrs.ngForm || '')($scope);
   form.$dirty = false;
@@ -22688,8 +22688,8 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
   this.$dirty = false;
   this.$valid = true;
   this.$invalid = false;
-  this.$error = {}; // keep invalid keys here
-  this.$$success = {}; // keep valid keys here
+  this.$error = createMap(); // keep invalid keys here
+  this.$$success = createMap(); // keep valid keys here
   this.$pending = undefined; // keep pending keys here
   this.$name = $interpolate($attr.name || '', false)($scope);
 
