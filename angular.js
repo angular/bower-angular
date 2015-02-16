@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.0-build.3833+sha.fa0aa83
+ * @license AngularJS v1.4.0-build.3834+sha.75725b4
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.0-build.3833+sha.fa0aa83/' +
+    message += '\nhttp://errors.angularjs.org/1.4.0-build.3834+sha.75725b4/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2195,7 +2195,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.0-build.3833+sha.fa0aa83',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.0-build.3834+sha.75725b4',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 0,
@@ -7407,7 +7407,6 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
       var terminalPriority = -Number.MAX_VALUE,
           newScopeDirective,
           controllerDirectives = previousCompileContext.controllerDirectives,
-          controllers,
           newIsolateScopeDirective = previousCompileContext.newIsolateScopeDirective,
           templateDirective = previousCompileContext.templateDirective,
           nonTlbTranscludeDirective = previousCompileContext.nonTlbTranscludeDirective,
@@ -7697,8 +7696,6 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
         }
 
         if (controllerDirectives) {
-          // TODO: merge `controllers` and `elementControllers` into single object.
-          controllers = {};
           elementControllers = {};
           forEach(controllerDirectives, function(directive) {
             var locals = {
@@ -7724,8 +7721,6 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             if (!hasElementTranscludeDirective) {
               $element.data('$' + directive.name + 'Controller', controllerInstance.instance);
             }
-
-            controllers[directive.name] = controllerInstance;
           });
         }
 
@@ -7740,14 +7735,14 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
                                       isolateScope.$$isolateBindings,
                                       newIsolateScopeDirective, isolateScope);
         }
-        if (controllers) {
+        if (elementControllers) {
           // Initialize bindToController bindings for new/isolate scopes
           var scopeDirective = newIsolateScopeDirective || newScopeDirective;
           var bindings;
           var controllerForBindings;
-          if (scopeDirective && controllers[scopeDirective.name]) {
+          if (scopeDirective && elementControllers[scopeDirective.name]) {
             bindings = scopeDirective.$$bindings.bindToController;
-            controller = controllers[scopeDirective.name];
+            controller = elementControllers[scopeDirective.name];
 
             if (controller && controller.identifier && bindings) {
               controllerForBindings = controller;
@@ -7756,7 +7751,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
                                               bindings, scopeDirective);
             }
           }
-          forEach(controllers, function(controller) {
+          forEach(elementControllers, function(controller) {
             var result = controller();
             if (result !== controller.instance &&
                 controller === controllerForBindings) {
@@ -7767,7 +7762,6 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
                                               bindings, scopeDirective);
             }
           });
-          controllers = null;
         }
 
         // PRELINKING
