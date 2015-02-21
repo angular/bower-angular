@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.0-build.3843+sha.7fe139a
+ * @license AngularJS v1.4.0-build.3844+sha.910de49
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.0-build.3843+sha.7fe139a/' +
+    message += '\nhttp://errors.angularjs.org/1.4.0-build.3844+sha.910de49/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2195,7 +2195,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.0-build.3843+sha.7fe139a',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.0-build.3844+sha.910de49',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 0,
@@ -26595,7 +26595,6 @@ var ngStyleDirective = ngDirective(function(scope, element, attr) {
  */
 var ngSwitchDirective = ['$animate', function($animate) {
   return {
-    restrict: 'EA',
     require: 'ngSwitch',
 
     // asks for $scope to fool the BC controller module
