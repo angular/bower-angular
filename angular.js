@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.0-build.3871+sha.4501da3
+ * @license AngularJS v1.4.0-build.3872+sha.f591776
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.0-build.3871+sha.4501da3/' +
+    message += '\nhttp://errors.angularjs.org/1.4.0-build.3872+sha.f591776/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2197,7 +2197,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.0-build.3871+sha.4501da3',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.0-build.3872+sha.f591776',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 0,
@@ -17405,6 +17405,9 @@ function $FilterProvider($provide) {
  *   - `false|undefined`: A short hand for a function which will look for a substring match in case
  *     insensitive way.
  *
+ *     Primitive values are converted to strings. Objects are not compared against primitives,
+ *     unless they have a custom `toString` method (e.g. `Date` objects).
+ *
  * @example
    <example>
      <file name="index.html">
@@ -17507,6 +17510,10 @@ function filterFilter() {
   };
 }
 
+function hasCustomToString(obj) {
+  return isFunction(obj.toString) && obj.toString !== Object.prototype.toString;
+}
+
 // Helper functions for `filterFilter`
 function createPredicateFn(expression, comparator, matchAgainstAnyProp) {
   var shouldMatchPrimitives = isObject(expression) && ('$' in expression);
@@ -17516,8 +17523,8 @@ function createPredicateFn(expression, comparator, matchAgainstAnyProp) {
     comparator = equals;
   } else if (!isFunction(comparator)) {
     comparator = function(actual, expected) {
-      if (isObject(actual) || isObject(expected)) {
-        // Prevent an object to be considered equal to a string like `'[object'`
+      if (isObject(expected) || (isObject(actual) && !hasCustomToString(actual))) {
+        // Should not compare primitives against objects, unless they have custom `toString` method
         return false;
       }
 
