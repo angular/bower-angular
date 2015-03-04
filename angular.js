@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.0-build.3878+sha.caa0b9d
+ * @license AngularJS v1.4.0-build.3879+sha.4374f89
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.0-build.3878+sha.caa0b9d/' +
+    message += '\nhttp://errors.angularjs.org/1.4.0-build.3879+sha.4374f89/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2260,7 +2260,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.0-build.3878+sha.caa0b9d',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.0-build.3879+sha.4374f89',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 0,
@@ -4827,6 +4827,7 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @return {Promise} the animation callback promise
        */
       leave: function(element, options) {
+        applyStyles(element, options);
         element.remove();
         return asyncPromise();
       },
