@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.0-build.3937+sha.171b9f7
+ * @license AngularJS v1.4.0-build.3939+sha.50bd705
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.0-build.3937+sha.171b9f7/' +
+    message += '\nhttp://errors.angularjs.org/1.4.0-build.3939+sha.50bd705/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2282,7 +2282,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.0-build.3937+sha.171b9f7',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.0-build.3939+sha.50bd705',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 0,
@@ -26749,12 +26749,12 @@ var ngHideDirective = ['$animate', function($animate) {
    </example>
  */
 var ngStyleDirective = ngDirective(function(scope, element, attr) {
-  scope.$watchCollection(attr.ngStyle, function ngStyleWatchAction(newStyles, oldStyles) {
+  scope.$watch(attr.ngStyle, function ngStyleWatchAction(newStyles, oldStyles) {
     if (oldStyles && (newStyles !== oldStyles)) {
       forEach(oldStyles, function(val, style) { element.css(style, '');});
     }
     if (newStyles) element.css(newStyles);
-  });
+  }, true);
 });
 
 /**
