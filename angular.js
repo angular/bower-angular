@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.0-build.3942+sha.c55a494
+ * @license AngularJS v1.4.0-build.3943+sha.10ae33b
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.0-build.3942+sha.c55a494/' +
+    message += '\nhttp://errors.angularjs.org/1.4.0-build.3943+sha.10ae33b/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2282,7 +2282,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.0-build.3942+sha.c55a494',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.0-build.3943+sha.10ae33b',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 0,
@@ -12636,7 +12636,7 @@ ASTCompiler.prototype = {
       self.state.computing = fnKey;
       var intoId = self.nextId();
       self.recurse(watch, intoId);
-      self.return(intoId);
+      self.return_(intoId);
       self.state.inputs.push(fnKey);
       watch.watchId = key;
     });
@@ -12723,7 +12723,7 @@ ASTCompiler.prototype = {
     recursionFn = recursionFn || noop;
     if (!skipWatchIdCheck && isDefined(ast.watchId)) {
       intoId = intoId || this.nextId();
-      this.if('i',
+      this.if_('i',
         this.lazyAssign(intoId, this.computedMember('i', ast.watchId)),
         this.lazyRecurse(ast, intoId, nameId, recursionFn, create, true)
       );
@@ -12736,7 +12736,7 @@ ASTCompiler.prototype = {
         if (pos !== ast.body.length - 1) {
           self.current().body.push(right, ';');
         } else {
-          self.return(right);
+          self.return_(right);
         }
       });
       break;
@@ -12767,13 +12767,13 @@ ASTCompiler.prototype = {
     case AST.LogicalExpression:
       intoId = intoId || this.nextId();
       self.recurse(ast.left, intoId);
-      self.if(ast.operator === '&&' ? intoId : self.not(intoId), self.lazyRecurse(ast.right, intoId));
+      self.if_(ast.operator === '&&' ? intoId : self.not(intoId), self.lazyRecurse(ast.right, intoId));
       recursionFn(intoId);
       break;
     case AST.ConditionalExpression:
       intoId = intoId || this.nextId();
       self.recurse(ast.test, intoId);
-      self.if(intoId, self.lazyRecurse(ast.alternate, intoId), self.lazyRecurse(ast.consequent, intoId));
+      self.if_(intoId, self.lazyRecurse(ast.alternate, intoId), self.lazyRecurse(ast.consequent, intoId));
       recursionFn(intoId);
       break;
     case AST.Identifier:
@@ -12784,11 +12784,11 @@ ASTCompiler.prototype = {
         nameId.name = ast.name;
       }
       ensureSafeMemberName(ast.name);
-      self.if(self.stage === 'inputs' || self.not(self.getHasOwnProperty('l', ast.name)),
+      self.if_(self.stage === 'inputs' || self.not(self.getHasOwnProperty('l', ast.name)),
         function() {
-          self.if(self.stage === 'inputs' || 's', function() {
+          self.if_(self.stage === 'inputs' || 's', function() {
             if (create && create !== 1) {
-              self.if(
+              self.if_(
                 self.not(self.nonComputedMember('s', ast.name)),
                 self.lazyAssign(self.nonComputedMember('s', ast.name), '{}'));
             }
@@ -12805,13 +12805,13 @@ ASTCompiler.prototype = {
       left = nameId && (nameId.context = this.nextId()) || this.nextId();
       intoId = intoId || this.nextId();
       self.recurse(ast.object, left, undefined, function() {
-        self.if(self.notNull(left), function() {
+        self.if_(self.notNull(left), function() {
           if (ast.computed) {
             right = self.nextId();
             self.recurse(ast.property, right);
             self.addEnsureSafeMemberName(right);
             if (create && create !== 1) {
-              self.if(self.not(self.computedMember(left, right)), self.lazyAssign(self.computedMember(left, right), '{}'));
+              self.if_(self.not(self.computedMember(left, right)), self.lazyAssign(self.computedMember(left, right), '{}'));
             }
             expression = self.ensureSafeObject(self.computedMember(left, right));
             self.assign(intoId, expression);
@@ -12822,7 +12822,7 @@ ASTCompiler.prototype = {
           } else {
             ensureSafeMemberName(ast.property.name);
             if (create && create !== 1) {
-              self.if(self.not(self.nonComputedMember(left, ast.property.name)), self.lazyAssign(self.nonComputedMember(left, ast.property.name), '{}'));
+              self.if_(self.not(self.nonComputedMember(left, ast.property.name)), self.lazyAssign(self.nonComputedMember(left, ast.property.name), '{}'));
             }
             expression = self.nonComputedMember(left, ast.property.name);
             if (self.state.expensiveChecks || isPossiblyDangerousMemberName(ast.property.name)) {
@@ -12856,7 +12856,7 @@ ASTCompiler.prototype = {
         left = {};
         args = [];
         self.recurse(ast.callee, right, left, function() {
-          self.if(self.notNull(right), function() {
+          self.if_(self.notNull(right), function() {
             self.addEnsureSafeFunction(right);
             forEach(ast.arguments, function(expr) {
               self.recurse(expr, self.nextId(), undefined, function(argument) {
@@ -12885,7 +12885,7 @@ ASTCompiler.prototype = {
         throw $parseMinErr('lval', 'Trying to assing a value to a non l-value');
       }
       this.recurse(ast.left, undefined, left, function() {
-        self.if(self.notNull(left.context), function() {
+        self.if_(self.notNull(left.context), function() {
           self.recurse(ast.right, right);
           self.addEnsureSafeObject(self.member(left.context, left.name, left.computed));
           expression = self.member(left.context, left.name, left.computed) + ast.operator + right;
@@ -12960,11 +12960,11 @@ ASTCompiler.prototype = {
     return 'plus(' + left + ',' + right + ')';
   },
 
-  'return': function(id) {
+  return_: function(id) {
     this.current().body.push('return ', id, ';');
   },
 
-  'if': function(test, alternate, consequent) {
+  if_: function(test, alternate, consequent) {
     if (test === true) {
       alternate();
     } else {
