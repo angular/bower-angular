@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.0-build.3966+sha.8a45064
+ * @license AngularJS v1.4.0-build.3967+sha.dd8b157
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.0-build.3966+sha.8a45064/' +
+    message += '\nhttp://errors.angularjs.org/1.4.0-build.3967+sha.dd8b157/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2286,7 +2286,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.0-build.3966+sha.8a45064',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.0-build.3967+sha.dd8b157',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 0,
@@ -8930,7 +8930,7 @@ function $HttpParamSerializerJQLikeProvider() {
    * @name $httpParamSerializerJQLike
    * @description
    *
-   * Alternative $http params serializer that follows jQuerys `param()` method {http://api.jquery.com/jquery.param/} logic.
+   * Alternative $http params serializer that follows jQuery's [`param()`](http://api.jquery.com/jquery.param/) method logic.
    * */
   this.$get = function() {
     return paramSerializerFactory(true);
@@ -9083,8 +9083,8 @@ function $HttpProvider() {
    *
    * - **`defaults.paramSerializer`** - {string|function(Object<string,string>):string} - A function used to prepare string representation
    * of request parameters (specified as an object).
-   * Is specified as string, it is interpreted as function registered in with the {$injector}.
-   * Defaults to {$httpParamSerializer}.
+   * If specified as string, it is interpreted as a function registered with the {@link auto.$injector $injector}.
+   * Defaults to {@link ng.$httpParamSerializer $httpParamSerializer}.
    *
    **/
   var defaults = this.defaults = {
