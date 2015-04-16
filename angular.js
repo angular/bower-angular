@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.0-build.3973+sha.89f081e
+ * @license AngularJS v1.4.0-build.3974+sha.e41faaa
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.0-build.3973+sha.89f081e/' +
+    message += '\nhttp://errors.angularjs.org/1.4.0-build.3974+sha.e41faaa/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2286,7 +2286,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.0-build.3973+sha.89f081e',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.0-build.3974+sha.e41faaa',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 0,
@@ -4746,6 +4746,7 @@ var $$CoreAnimateQueueProvider = function() {
       enabled: noop,
       on: noop,
       off: noop,
+      pin: noop,
 
       push: function(element, event, options, domOperation) {
         domOperation        && domOperation();
@@ -4946,6 +4947,25 @@ var $AnimateProvider = ['$provide', function($provide) {
       // be interpreted as null within the sub enabled function
       on: $$animateQueue.on,
       off: $$animateQueue.off,
+
+      /**
+       * @ngdoc method
+       * @name $animate#pin
+       * @kind function
+       * @description Associates the provided element with a host parent element to allow the element to be animated even if it exists
+       *    outside of the DOM structure of the Angular application. By doing so, any animation triggered via `$animate` can be issued on the
+       *    element despite being outside the realm of the application or within another application. Say for example if the application
+       *    was bootstrapped on an element that is somewhere inside of the `<body>` tag, but we wanted to allow for an element to be situated
+       *    as a direct child of `document.body`, then this can be achieved by pinning the element via `$animate.pin(element)`. Keep in mind
+       *    that calling `$animate.pin(element, parentElement)` will not actually insert into the DOM anywhere; it will just create the association.
+       *
+       *    Note that this feature is only active when the `ngAnimate` module is used.
+       *
+       * @param {DOMElement} element the external element that will be pinned
+       * @param {DOMElement} parentElement the host parent element that will be associated with the external element
+       */
+      pin: $$animateQueue.pin,
+
       enabled: $$animateQueue.enabled,
 
       cancel: function(runner) {
