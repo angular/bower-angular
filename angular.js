@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.0-build.9+sha.e203264
+ * @license AngularJS v1.4.0-build.3995+sha.0681a54
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.0-build.9+sha.e203264/' +
+    message += '\nhttp://errors.angularjs.org/1.4.0-build.3995+sha.0681a54/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2332,7 +2332,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.0-build.9+sha.e203264',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.0-build.3995+sha.0681a54',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 0,
@@ -27042,18 +27042,18 @@ var NG_HIDE_IN_PROGRESS_CLASS = 'ng-hide-animate';
       <div>
         Show:
         <div class="check-element animate-show" ng-show="checked">
-          <span class="fa fa-thumbs-o-up"></span> I show up when your checkbox is checked.
+          <span class="glyphicon glyphicon-thumbs-up"></span> I show up when your checkbox is checked.
         </div>
       </div>
       <div>
         Hide:
         <div class="check-element animate-show" ng-hide="checked">
-          <span class="fa fa-thumbs-o-down"></span> I hide when your checkbox is checked.
+          <span class="glyphicon glyphicon-thumbs-down"></span> I hide when your checkbox is checked.
         </div>
       </div>
     </file>
-    <file name="font-awesome.css">
-      @import url(../../font-awesome/css/font-awesome.css);
+    <file name="glyphicons.css">
+      @import url(../../components/bootstrap-3.1.1/css/bootstrap.css);
     </file>
     <file name="animations.css">
       .animate-show {
@@ -27083,8 +27083,8 @@ var NG_HIDE_IN_PROGRESS_CLASS = 'ng-hide-animate';
       }
     </file>
     <file name="protractor.js" type="protractor">
-      var thumbsUp = element(by.css('span.fa-thumbs-o-up'));
-      var thumbsDown = element(by.css('span.fa-thumbs-o-down'));
+      var thumbsUp = element(by.css('span.glyphicon-thumbs-up'));
+      var thumbsDown = element(by.css('span.glyphicon-thumbs-down'));
 
       it('should check ng-show / ng-hide', function() {
         expect(thumbsUp.isDisplayed()).toBeFalsy();
@@ -27207,18 +27207,18 @@ var ngShowDirective = ['$animate', function($animate) {
       <div>
         Show:
         <div class="check-element animate-hide" ng-show="checked">
-          <span class="fa fa-thumbs-o-up"></span> I show up when your checkbox is checked.
+          <span class="glyphicon glyphicon-thumbs-up"></span> I show up when your checkbox is checked.
         </div>
       </div>
       <div>
         Hide:
         <div class="check-element animate-hide" ng-hide="checked">
-          <span class="fa fa-thumbs-o-down"></span> I hide when your checkbox is checked.
+          <span class="glyphicon glyphicon-thumbs-down"></span> I hide when your checkbox is checked.
         </div>
       </div>
     </file>
-    <file name="font-awesome.css">
-      @import url(../../font-awesome/css/font-awesome.css);
+    <file name="glyphicons.css">
+      @import url(../../components/bootstrap-3.1.1/css/bootstrap.css);
     </file>
     <file name="animations.css">
       .animate-hide {
@@ -27244,8 +27244,8 @@ var ngShowDirective = ['$animate', function($animate) {
       }
     </file>
     <file name="protractor.js" type="protractor">
-      var thumbsUp = element(by.css('span.fa-thumbs-o-up'));
-      var thumbsDown = element(by.css('span.fa-thumbs-o-down'));
+      var thumbsUp = element(by.css('span.glyphicon-thumbs-up'));
+      var thumbsDown = element(by.css('span.glyphicon-thumbs-down'));
 
       it('should check ng-show / ng-hide', function() {
         expect(thumbsUp.isDisplayed()).toBeFalsy();
