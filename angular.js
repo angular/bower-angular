@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.0-build.4003+sha.5b18250
+ * @license AngularJS v1.4.0-build.4004+sha.4090491
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.0-build.4003+sha.5b18250/' +
+    message += '\nhttp://errors.angularjs.org/1.4.0-build.4004+sha.4090491/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2332,7 +2332,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.0-build.4003+sha.5b18250',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.0-build.4004+sha.4090491',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 0,
@@ -27731,7 +27731,7 @@ var SelectController =
       $element.val(value);
       if (value === '') self.emptyOption.prop('selected', true); // to make IE9 happy
     } else {
-      if (isUndefined(value) && self.emptyOption) {
+      if (value == null && self.emptyOption) {
         self.removeUnknownOption();
         $element.val('');
       } else {
