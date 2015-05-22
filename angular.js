@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.0-build.4011+sha.19ec993
+ * @license AngularJS v1.4.0-build.4012+sha.462f444
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.0-build.4011+sha.19ec993/' +
+    message += '\nhttp://errors.angularjs.org/1.4.0-build.4012+sha.462f444/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2332,7 +2332,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.0-build.4011+sha.19ec993',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.0-build.4012+sha.462f444',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 0,
@@ -4725,13 +4725,6 @@ var $animateMinErr = minErr('$animate');
 var ELEMENT_NODE = 1;
 var NG_ANIMATE_CLASSNAME = 'ng-animate';
 
-
-function assertNoCallback(param) {
-  if (isFunction(param)) {
-    throw $animateMinErr('nocb', 'Do not pass a callback to animate methods');
-  }
-}
-
 function mergeClasses(a,b) {
   if (!a && !b) return '';
   if (!a) return b;
@@ -5144,7 +5137,6 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @return {Promise} the animation callback promise
        */
       enter: function(element, parent, after, options) {
-        assertNoCallback(options);
         parent = parent && jqLite(parent);
         after = after && jqLite(after);
         parent = parent || after.parent();
@@ -5171,7 +5163,6 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @return {Promise} the animation callback promise
        */
       move: function(element, parent, after, options) {
-        assertNoCallback(options);
         parent = parent && jqLite(parent);
         after = after && jqLite(after);
         parent = parent || after.parent();
@@ -5193,7 +5184,6 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @return {Promise} the animation callback promise
        */
       leave: function(element, options) {
-        assertNoCallback(options);
         return $$animateQueue.push(element, 'leave', options, function() {
           element.remove();
         });
@@ -5218,7 +5208,6 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @return {Promise} the animation callback promise
        */
       addClass: function(element, className, options) {
-        assertNoCallback(options);
         options = options || {};
         options.addClass = mergeClasses(options.addclass, className);
         return $$animateQueue.push(element, 'addClass', options);
@@ -5243,7 +5232,6 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @return {Promise} the animation callback promise
        */
       removeClass: function(element, className, options) {
-        assertNoCallback(options);
         options = options || {};
         options.removeClass = mergeClasses(options.removeClass, className);
         return $$animateQueue.push(element, 'removeClass', options);
@@ -5269,7 +5257,6 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @return {Promise} the animation callback promise
        */
       setClass: function(element, add, remove, options) {
-        assertNoCallback(options);
         options = options || {};
         options.addClass = mergeClasses(options.addClass, add);
         options.removeClass = mergeClasses(options.removeClass, remove);
@@ -5298,7 +5285,6 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @return {Promise} the animation callback promise
        */
       animate: function(element, from, to, className, options) {
-        assertNoCallback(options);
         options = options || {};
         options.from = options.from ? extend(options.from, from) : from;
         options.to   = options.to   ? extend(options.to, to)     : to;
