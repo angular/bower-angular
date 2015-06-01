@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.1-build.4022+sha.a6339d3
+ * @license AngularJS v1.4.1-build.4023+sha.b6389ee
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.1-build.4022+sha.a6339d3/' +
+    message += '\nhttp://errors.angularjs.org/1.4.1-build.4023+sha.b6389ee/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2345,7 +2345,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.1-build.4022+sha.a6339d3',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.1-build.4023+sha.b6389ee',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 1,
@@ -4258,7 +4258,7 @@ function createInjector(modulesToLoad, strictDi) {
           }));
 
 
-  forEach(loadModules(modulesToLoad), function(fn) { instanceInjector.invoke(fn || noop); });
+  forEach(loadModules(modulesToLoad), function(fn) { if (fn) instanceInjector.invoke(fn); });
 
   return instanceInjector;
 
