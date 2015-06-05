@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.1-build.4036+sha.41385f0
+ * @license AngularJS v1.4.1-build.4037+sha.2c3cd81
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.1-build.4036+sha.41385f0/' +
+    message += '\nhttp://errors.angularjs.org/1.4.1-build.4037+sha.2c3cd81/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2345,7 +2345,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.1-build.4036+sha.41385f0',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.1-build.4037+sha.2c3cd81',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 1,
@@ -9782,6 +9782,9 @@ function $HttpProvider() {
      * The name of the headers can be specified using the xsrfHeaderName and xsrfCookieName
      * properties of either $httpProvider.defaults at config-time, $http.defaults at run-time,
      * or the per-request config object.
+     *
+     * In order to prevent collisions in environments where multiple Angular apps share the
+     * same domain or subdomain, we recommend that each application uses unique cookie name.
      *
      *
      * @param {object} config Object describing the request to be made and how it should be
