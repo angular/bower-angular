@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.1-build.4053+sha.571bee7
+ * @license AngularJS v1.4.1-build.4054+sha.0934b76
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.1-build.4053+sha.571bee7/' +
+    message += '\nhttp://errors.angularjs.org/1.4.1-build.4054+sha.0934b76/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2341,7 +2341,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.1-build.4053+sha.571bee7',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.1-build.4054+sha.0934b76',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 1,
@@ -25568,7 +25568,9 @@ function addSetValidityMethod(context) {
 function isObjectEmpty(obj) {
   if (obj) {
     for (var prop in obj) {
-      return false;
+      if (obj.hasOwnProperty(prop)) {
+        return false;
+      }
     }
   }
   return true;
