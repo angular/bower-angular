@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.2-build.4065+sha.720012e
+ * @license AngularJS v1.4.2-build.4066+sha.f81ff3b
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.2-build.4065+sha.720012e/' +
+    message += '\nhttp://errors.angularjs.org/1.4.2-build.4066+sha.f81ff3b/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2341,7 +2341,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.2-build.4065+sha.720012e',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.2-build.4066+sha.f81ff3b',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 2,
@@ -5401,7 +5401,7 @@ function Browser(window, document, $log, $sniffer) {
 
   function getHash(url) {
     var index = url.indexOf('#');
-    return index === -1 ? '' : url.substr(index + 1);
+    return index === -1 ? '' : url.substr(index);
   }
 
   /**
