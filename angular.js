@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.4-build.4113+sha.44ce9c8
+ * @license AngularJS v1.4.4-build.4114+sha.8ed6829
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.4-build.4113+sha.44ce9c8/' +
+    message += '\nhttp://errors.angularjs.org/1.4.4-build.4114+sha.8ed6829/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2365,7 +2365,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.4-build.4113+sha.44ce9c8',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.4-build.4114+sha.8ed6829',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 4,
@@ -5345,16 +5345,6 @@ var $AnimateProvider = ['$provide', function($provide) {
     };
   }];
 }];
-
-function $$AsyncCallbackProvider() {
-  this.$get = ['$$rAF', '$timeout', function($$rAF, $timeout) {
-    return $$rAF.supported
-      ? function(fn) { return $$rAF(fn); }
-      : function(fn) {
-        return $timeout(fn, 0, false);
-      };
-  }];
-}
 
 /* global stripHash: true */
 
