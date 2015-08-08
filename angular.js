@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.4-build.4155+sha.a268c29
+ * @license AngularJS v1.4.4-build.4156+sha.ed3a33a
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.4-build.4155+sha.a268c29/' +
+    message += '\nhttp://errors.angularjs.org/1.4.4-build.4156+sha.ed3a33a/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2373,7 +2373,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.4-build.4155+sha.a268c29',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.4-build.4156+sha.ed3a33a',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 4,
@@ -19236,6 +19236,10 @@ function orderByFilter($parse) {
     if (sortPredicate.length === 0) { sortPredicate = ['+']; }
 
     var predicates = processPredicates(sortPredicate, reverseOrder);
+    // Add a predicate at the end that evaluates to the element index. This makes the
+    // sort stable as it works as a tie-breaker when all the input predicates cannot
+    // distinguish between two elements.
+    predicates.push({ get: function() { return {}; }, descending: reverseOrder ? -1 : 1});
 
     // The next three lines are a version of a Swartzian Transform idiom from Perl
     // (sometimes called the Decorate-Sort-Undecorate idiom)
