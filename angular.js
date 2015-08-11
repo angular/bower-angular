@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.4-build.4160+sha.0827e88
+ * @license AngularJS v1.4.4-build.4161+sha.c11a7d6
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.4-build.4160+sha.0827e88/' +
+    message += '\nhttp://errors.angularjs.org/1.4.4-build.4161+sha.c11a7d6/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2373,7 +2373,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.4-build.4160+sha.0827e88',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.4-build.4161+sha.c11a7d6',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 4,
@@ -26271,7 +26271,7 @@ var ngOptionsDirective = ['$compile', '$parse', function($compile, $parse) {
 
           forEach(selectedValues, function(value) {
             var option = options.selectValueMap[value];
-            if (!option.disabled) selections.push(options.getViewValueFromOption(option));
+            if (option && !option.disabled) selections.push(options.getViewValueFromOption(option));
           });
 
           return selections;
