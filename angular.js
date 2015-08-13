@@ -1374,10 +1374,7 @@ function toKeyValue(obj) {
  *                     / "*" / "+" / "," / ";" / "="
  */
 function encodeUriSegment(val) {
-  return encodeUriQuery(val, true).
-             replace(/%26/gi, '&').
-             replace(/%3D/gi, '=').
-             replace(/%2B/gi, '+');
+  return encodeUriQuery(val);
 }
 
 
@@ -1393,13 +1390,7 @@ function encodeUriSegment(val) {
  *                     / "*" / "+" / "," / ";" / "="
  */
 function encodeUriQuery(val, pctEncodeSpaces) {
-  return encodeURIComponent(val).
-             replace(/%40/gi, '@').
-             replace(/%3A/gi, ':').
-             replace(/%24/g, '$').
-             replace(/%2C/gi, ',').
-             replace(/%3B/gi, ';').
-             replace(/%20/g, (pctEncodeSpaces ? '%20' : '+'));
+  return encodeURIComponent(val);
 }
 
 var ngAttrPrefixes = ['ng-', 'data-ng-', 'ng:', 'x-ng-'];
