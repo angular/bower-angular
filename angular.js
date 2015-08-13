@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.4-build.4171+sha.b497f3e
+ * @license AngularJS v1.4.4
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.4-build.4171+sha.b497f3e/' +
+    message += '\nhttp://errors.angularjs.org/1.4.4/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2374,11 +2374,11 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.4-build.4171+sha.b497f3e',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.4',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 4,
-  codeName: 'snapshot'
+  codeName: 'pylon-requirement'
 };
 
 
