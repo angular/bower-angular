@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.5-build.4181+sha.dc48aad
+ * @license AngularJS v1.4.5-build.4182+sha.1cc9c9c
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.5-build.4181+sha.dc48aad/' +
+    message += '\nhttp://errors.angularjs.org/1.4.5-build.4182+sha.1cc9c9c/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2374,7 +2374,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.5-build.4181+sha.dc48aad',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.5-build.4182+sha.1cc9c9c',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 5,
@@ -5392,10 +5392,10 @@ var $CoreAnimateCssProvider = function() {
         return this.getPromise().then(f1,f2);
       },
       'catch': function(f1) {
-        return this.getPromise().catch(f1);
+        return this.getPromise()['catch'](f1);
       },
       'finally': function(f1) {
-        return this.getPromise().finally(f1);
+        return this.getPromise()['finally'](f1);
       }
     };
 
