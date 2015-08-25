@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.5-build.4187+sha.0e00108
+ * @license AngularJS v1.4.5-build.4188+sha.7e67e52
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.5-build.4187+sha.0e00108/' +
+    message += '\nhttp://errors.angularjs.org/1.4.5-build.4188+sha.7e67e52/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2374,7 +2374,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.5-build.4187+sha.0e00108',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.5-build.4188+sha.7e67e52',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 5,
@@ -2583,7 +2583,7 @@ function publishExternalAPI(angular) {
  * - [`html()`](http://api.jquery.com/html/)
  * - [`next()`](http://api.jquery.com/next/) - Does not support selectors
  * - [`on()`](http://api.jquery.com/on/) - Does not support namespaces, selectors or eventData
- * - [`off()`](http://api.jquery.com/off/) - Does not support namespaces or selectors
+ * - [`off()`](http://api.jquery.com/off/) - Does not support namespaces, selectors or event object as parameter
  * - [`one()`](http://api.jquery.com/one/) - Does not support namespaces or selectors
  * - [`parent()`](http://api.jquery.com/parent/) - Does not support selectors
  * - [`prepend()`](http://api.jquery.com/prepend/)
@@ -2597,7 +2597,7 @@ function publishExternalAPI(angular) {
  * - [`text()`](http://api.jquery.com/text/)
  * - [`toggleClass()`](http://api.jquery.com/toggleClass/)
  * - [`triggerHandler()`](http://api.jquery.com/triggerHandler/) - Passes a dummy event object to handlers.
- * - [`unbind()`](http://api.jquery.com/unbind/) - Does not support namespaces
+ * - [`unbind()`](http://api.jquery.com/unbind/) - Does not support namespaces or event object as parameter
  * - [`val()`](http://api.jquery.com/val/)
  * - [`wrap()`](http://api.jquery.com/wrap/)
  *
