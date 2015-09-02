@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.6-build.4206+sha.c71d414
+ * @license AngularJS v1.4.6-build.4207+sha.c3a654b
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.6-build.4206+sha.c71d414/' +
+    message += '\nhttp://errors.angularjs.org/1.4.6-build.4207+sha.c3a654b/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2374,7 +2374,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.6-build.4206+sha.c71d414',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.6-build.4207+sha.c3a654b',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 6,
@@ -4872,61 +4872,66 @@ var $$CoreAnimateQueueProvider = function() {
       }
     };
 
-    function addRemoveClassesPostDigest(element, add, remove) {
-      var classVal, data = postDigestQueue.get(element);
 
-      if (!data) {
-        postDigestQueue.put(element, data = {});
-        postDigestElements.push(element);
-      }
-
-      var updateData = function(classes, value) {
-        var changed = false;
-        if (classes) {
-          classes = isString(classes) ? classes.split(' ') :
-                    isArray(classes) ? classes : [];
-          forEach(classes, function(className) {
-            if (className) {
-              changed = true;
-              data[className] = value;
-            }
-          });
-        }
-        return changed;
-      };
-
-      var classesAdded = updateData(add, true);
-      var classesRemoved = updateData(remove, false);
-      if ((!classesAdded && !classesRemoved) || postDigestElements.length > 1) return;
-
-      $rootScope.$$postDigest(function() {
-        forEach(postDigestElements, function(element) {
-          var data = postDigestQueue.get(element);
-          if (data) {
-            var existing = splitClasses(element.attr('class'));
-            var toAdd = '';
-            var toRemove = '';
-            forEach(data, function(status, className) {
-              var hasClass = !!existing[className];
-              if (status !== hasClass) {
-                if (status) {
-                  toAdd += (toAdd.length ? ' ' : '') + className;
-                } else {
-                  toRemove += (toRemove.length ? ' ' : '') + className;
-                }
-              }
-            });
-
-            forEach(element, function(elm) {
-              toAdd    && jqLiteAddClass(elm, toAdd);
-              toRemove && jqLiteRemoveClass(elm, toRemove);
-            });
-            postDigestQueue.remove(element);
+    function updateData(data, classes, value) {
+      var changed = false;
+      if (classes) {
+        classes = isString(classes) ? classes.split(' ') :
+                  isArray(classes) ? classes : [];
+        forEach(classes, function(className) {
+          if (className) {
+            changed = true;
+            data[className] = value;
           }
         });
+      }
+      return changed;
+    }
 
-        postDigestElements.length = 0;
+    function handleCSSClassChanges() {
+      forEach(postDigestElements, function(element) {
+        var data = postDigestQueue.get(element);
+        if (data) {
+          var existing = splitClasses(element.attr('class'));
+          var toAdd = '';
+          var toRemove = '';
+          forEach(data, function(status, className) {
+            var hasClass = !!existing[className];
+            if (status !== hasClass) {
+              if (status) {
+                toAdd += (toAdd.length ? ' ' : '') + className;
+              } else {
+                toRemove += (toRemove.length ? ' ' : '') + className;
+              }
+            }
+          });
+
+          forEach(element, function(elm) {
+            toAdd    && jqLiteAddClass(elm, toAdd);
+            toRemove && jqLiteRemoveClass(elm, toRemove);
+          });
+          postDigestQueue.remove(element);
+        }
       });
+      postDigestElements.length = 0;
+    }
+
+
+    function addRemoveClassesPostDigest(element, add, remove) {
+      var data = postDigestQueue.get(element) || {};
+
+      var classesAdded = updateData(data, add, true);
+      var classesRemoved = updateData(data, remove, false);
+
+      if (classesAdded || classesRemoved) {
+
+        postDigestQueue.put(element, data);
+        postDigestElements.push(element);
+
+        if (postDigestElements.length === 1) {
+          $rootScope.$$postDigest(handleCSSClassChanges);
+        }
+      }
     }
   }];
 };
