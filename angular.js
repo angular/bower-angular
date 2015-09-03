@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.6-build.4207+sha.c3a654b
+ * @license AngularJS v1.4.6-build.4208+sha.6f39f10
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.6-build.4207+sha.c3a654b/' +
+    message += '\nhttp://errors.angularjs.org/1.4.6-build.4208+sha.6f39f10/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2374,7 +2374,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.6-build.4207+sha.c3a654b',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.6-build.4208+sha.6f39f10',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 6,
@@ -10662,7 +10662,7 @@ function createHttpBackend($browser, createXhr, $browserDefer, callbacks, rawDoc
         }
       }
 
-      xhr.send(post);
+      xhr.send(isUndefined(post) ? null : post);
     }
 
     if (timeout > 0) {
