@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.6-build.4209+sha.6f39f10
+ * @license AngularJS v1.4.6-build.4211+sha.ebba426
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.6-build.4209+sha.6f39f10/' +
+    message += '\nhttp://errors.angularjs.org/1.4.6-build.4211+sha.ebba426/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2374,7 +2374,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.6-build.4209+sha.6f39f10',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.6-build.4211+sha.ebba426',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 6,
@@ -6397,7 +6397,7 @@ function $TemplateCacheProvider() {
  *
  * #### `controller`
  * Controller constructor function. The controller is instantiated before the
- * pre-linking phase and it is shared with other directives (see
+ * pre-linking phase and can be accessed by other directives (see
  * `require` attribute). This allows the directives to communicate with each other and augment
  * each other's behavior. The controller is injectable (and supports bracket notation) with the following locals:
  *
@@ -19956,8 +19956,6 @@ function FormController(element, attrs, $scope, $animate, $interpolate) {
   var form = this,
       controls = [];
 
-  var parentForm = form.$$parentForm = element.parent().controller('form') || nullFormCtrl;
-
   // init state
   form.$error = {};
   form.$$success = {};
@@ -19968,8 +19966,7 @@ function FormController(element, attrs, $scope, $animate, $interpolate) {
   form.$valid = true;
   form.$invalid = false;
   form.$submitted = false;
-
-  parentForm.$addControl(form);
+  form.$$parentForm = nullFormCtrl;
 
   /**
    * @ngdoc method
@@ -20008,11 +20005,23 @@ function FormController(element, attrs, $scope, $animate, $interpolate) {
   /**
    * @ngdoc method
    * @name form.FormController#$addControl
+   * @param {object} control control object, either a {@link form.FormController} or an
+   * {@link ngModel.NgModelController}
    *
    * @description
-   * Register a control with the form.
+   * Register a control with the form. Input elements using ngModelController do this automatically
+   * when they are linked.
    *
-   * Input elements using ngModelController do this automatically when they are linked.
+   * Note that the current state of the control will not be reflected on the new parent form. This
+   * is not an issue with normal use, as freshly compiled and linked controls are in a `$pristine`
+   * state.
+   *
+   * However, if the method is used programmatically, for example by adding dynamically created controls,
+   * or controls that have been previously removed without destroying their corresponding DOM element,
+   * it's the developers responsiblity to make sure the current state propagates to the parent form.
+   *
+   * For example, if an input control is added that is already `$dirty` and has `$error` properties,
+   * calling `$setDirty()` and `$validate()` afterwards will propagate the state to the parent form.
    */
   form.$addControl = function(control) {
     // Breaking change - before, inputs whose name was "hasOwnProperty" were quietly ignored
@@ -20023,6 +20032,8 @@ function FormController(element, attrs, $scope, $animate, $interpolate) {
     if (control.$name) {
       form[control.$name] = control;
     }
+
+    control.$$parentForm = form;
   };
 
   // Private API: rename a form control
@@ -20039,11 +20050,18 @@ function FormController(element, attrs, $scope, $animate, $interpolate) {
   /**
    * @ngdoc method
    * @name form.FormController#$removeControl
+   * @param {object} control control object, either a {@link form.FormController} or an
+   * {@link ngModel.NgModelController}
    *
    * @description
    * Deregister a control from the form.
    *
    * Input elements using ngModelController do this automatically when they are destroyed.
+   *
+   * Note that only the removed control's validation state (`$errors`etc.) will be removed from the
+   * form. `$dirty`, `$submitted` states will not be changed, because the expected behavior can be
+   * different from case to case. For example, removing the only `$dirty` control from a form may or
+   * may not mean that the form is still `$dirty`.
    */
   form.$removeControl = function(control) {
     if (control.$name && form[control.$name] === control) {
@@ -20060,6 +20078,7 @@ function FormController(element, attrs, $scope, $animate, $interpolate) {
     });
 
     arrayRemove(controls, control);
+    control.$$parentForm = nullFormCtrl;
   };
 
 
@@ -20096,7 +20115,6 @@ function FormController(element, attrs, $scope, $animate, $interpolate) {
         delete object[property];
       }
     },
-    parentForm: parentForm,
     $animate: $animate
   });
 
@@ -20115,7 +20133,7 @@ function FormController(element, attrs, $scope, $animate, $interpolate) {
     $animate.addClass(element, DIRTY_CLASS);
     form.$dirty = true;
     form.$pristine = false;
-    parentForm.$setDirty();
+    form.$$parentForm.$setDirty();
   };
 
   /**
@@ -20171,7 +20189,7 @@ function FormController(element, attrs, $scope, $animate, $interpolate) {
   form.$setSubmitted = function() {
     $animate.addClass(element, SUBMITTED_CLASS);
     form.$submitted = true;
-    parentForm.$setSubmitted();
+    form.$$parentForm.$setSubmitted();
   };
 }
 
@@ -20345,6 +20363,7 @@ var formDirectiveFactory = function(isNgForm) {
     var formDirective = {
       name: 'form',
       restrict: isNgForm ? 'EAC' : 'E',
+      require: ['form', '^^?form'], //first is the form's own ctrl, second is an optional parent form
       controller: FormController,
       compile: function ngFormCompile(formElement, attr) {
         // Setup initial state of the control
@@ -20353,7 +20372,9 @@ var formDirectiveFactory = function(isNgForm) {
         var nameAttr = attr.name ? 'name' : (isNgForm && attr.ngForm ? 'ngForm' : false);
 
         return {
-          pre: function ngFormPreLink(scope, formElement, attr, controller) {
+          pre: function ngFormPreLink(scope, formElement, attr, ctrls) {
+            var controller = ctrls[0];
+
             // if `action` attr is not present on the form, prevent the default action (submission)
             if (!('action' in attr)) {
               // we can't use jq events because if a form is destroyed during submission the default
@@ -20382,7 +20403,9 @@ var formDirectiveFactory = function(isNgForm) {
               });
             }
 
-            var parentFormCtrl = controller.$$parentForm;
+            var parentFormCtrl = ctrls[1] || controller.$$parentForm;
+            parentFormCtrl.$addControl(controller);
+
             var setter = nameAttr ? getSetter(controller.$name) : noop;
 
             if (nameAttr) {
@@ -20390,13 +20413,13 @@ var formDirectiveFactory = function(isNgForm) {
               attr.$observe(nameAttr, function(newValue) {
                 if (controller.$name === newValue) return;
                 setter(scope, undefined);
-                parentFormCtrl.$$renameControl(controller, newValue);
+                controller.$$parentForm.$$renameControl(controller, newValue);
                 setter = getSetter(controller.$name);
                 setter(scope, controller);
               });
             }
             formElement.on('$destroy', function() {
-              parentFormCtrl.$removeControl(controller);
+              controller.$$parentForm.$removeControl(controller);
               setter(scope, undefined);
               extend(controller, nullFormCtrl); //stop propagating child destruction handlers upwards
             });
@@ -24687,7 +24710,7 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
   this.$$success = {}; // keep valid keys here
   this.$pending = undefined; // keep pending keys here
   this.$name = $interpolate($attr.name || '', false)($scope);
-
+  this.$$parentForm = nullFormCtrl;
 
   var parsedNgModel = $parse($attr.ngModel),
       parsedNgModelAssign = parsedNgModel.assign,
@@ -24767,8 +24790,7 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
     return isUndefined(value) || value === '' || value === null || value !== value;
   };
 
-  var parentForm = $element.inheritedData('$formController') || nullFormCtrl,
-      currentValidationRunId = 0;
+  var currentValidationRunId = 0;
 
   /**
    * @ngdoc method
@@ -24801,7 +24823,6 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
     unset: function(object, property) {
       delete object[property];
     },
-    parentForm: parentForm,
     $animate: $animate
   });
 
@@ -24839,7 +24860,7 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
     ctrl.$pristine = false;
     $animate.removeClass($element, PRISTINE_CLASS);
     $animate.addClass($element, DIRTY_CLASS);
-    parentForm.$setDirty();
+    ctrl.$$parentForm.$setDirty();
   };
 
   /**
@@ -25482,7 +25503,7 @@ var ngModelDirective = ['$rootScope', function($rootScope) {
       return {
         pre: function ngModelPreLink(scope, element, attr, ctrls) {
           var modelCtrl = ctrls[0],
-              formCtrl = ctrls[1] || nullFormCtrl;
+              formCtrl = ctrls[1] || modelCtrl.$$parentForm;
 
           modelCtrl.$$setOptions(ctrls[2] && ctrls[2].$options);
 
@@ -25491,12 +25512,12 @@ var ngModelDirective = ['$rootScope', function($rootScope) {
 
           attr.$observe('name', function(newValue) {
             if (modelCtrl.$name !== newValue) {
-              formCtrl.$$renameControl(modelCtrl, newValue);
+              modelCtrl.$$parentForm.$$renameControl(modelCtrl, newValue);
             }
           });
 
           scope.$on('$destroy', function() {
-            formCtrl.$removeControl(modelCtrl);
+            modelCtrl.$$parentForm.$removeControl(modelCtrl);
           });
         },
         post: function ngModelPostLink(scope, element, attr, ctrls) {
@@ -25714,7 +25735,6 @@ function addSetValidityMethod(context) {
       classCache = {},
       set = context.set,
       unset = context.unset,
-      parentForm = context.parentForm,
       $animate = context.$animate;
 
   classCache[INVALID_CLASS] = !(classCache[VALID_CLASS] = $element.hasClass(VALID_CLASS));
@@ -25766,7 +25786,7 @@ function addSetValidityMethod(context) {
     }
 
     toggleValidationCss(validationErrorKey, combinedState);
-    parentForm.$setValidity(validationErrorKey, combinedState, ctrl);
+    ctrl.$$parentForm.$setValidity(validationErrorKey, combinedState, ctrl);
   }
 
   function createAndSet(name, value, controller) {
