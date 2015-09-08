@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.6-build.4222+sha.681affe
+ * @license AngularJS v1.4.6-build.4223+sha.80a2176
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.6-build.4222+sha.681affe/' +
+    message += '\nhttp://errors.angularjs.org/1.4.6-build.4223+sha.80a2176/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2376,7 +2376,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.4.6-build.4222+sha.681affe',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.4.6-build.4223+sha.80a2176',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 4,
   dot: 6,
@@ -6351,9 +6351,10 @@ function $TemplateCacheProvider() {
  *
  * * **falsy:** No scope will be created for the directive. The directive will use its parent's scope.
  *
- * * **`true`:** A new scope will be created for the directive's element. If multiple directives on the
- * same element request a new scope, only one new scope is created. The new scope rule does not apply
- * for the root of the template since the root of the template always gets a new scope.
+ * * **`true`:** A new child scope that prototypically inherits from its parent will be created for
+ * the directive's element. If multiple directives on the same element request a new scope,
+ * only one new scope is created. The new scope rule does not apply for the root of the template
+ * since the root of the template always gets a new scope.
  *
  * * **`{...}` (an object hash):** A new "isolate" scope is created for the directive's element. The
  * 'isolate' scope differs from normal scope in that it does not prototypically inherit from its parent
@@ -6458,9 +6459,10 @@ function $TemplateCacheProvider() {
  *
  * #### `controllerAs`
  * Identifier name for a reference to the controller in the directive's scope.
- * This allows the controller to be referenced from the directive template. The directive
- * needs to define a scope for this configuration to be used. Useful in the case when
- * directive is used as component.
+ * This allows the controller to be referenced from the directive template. This is especially
+ * useful when a directive is used as component, i.e. with an `isolate` scope. It's also possible
+ * to use it in a directive without an `isolate` / `new` scope, but you need to be aware that the
+ * `controllerAs` reference might overwrite a property that already exists on the parent scope.
  *
  *
  * #### `restrict`
