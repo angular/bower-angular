@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4244+sha.f8cf28a
+ * @license AngularJS v1.5.0-build.4245+sha.658a865
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4244+sha.f8cf28a/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4245+sha.658a865/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2378,7 +2378,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4244+sha.f8cf28a',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4245+sha.658a865',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -18657,6 +18657,7 @@ function formatNumber(number, pattern, groupSep, decimalSep, fractionSize) {
     if (fractionSize > 0 && number < 1) {
       formatedText = number.toFixed(fractionSize);
       number = parseFloat(formatedText);
+      formatedText = formatedText.replace(DECIMAL_SEP, decimalSep);
     }
   }
 
