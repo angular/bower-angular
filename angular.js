@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4250+sha.76c2491
+ * @license AngularJS v1.5.0-build.4251+sha.b366f03
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4250+sha.76c2491/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4251+sha.b366f03/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2379,7 +2379,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4250+sha.76c2491',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4251+sha.b366f03',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -21848,11 +21848,7 @@ function badInputChecker(scope, element, attr, ctrl) {
   if (nativeValidation) {
     ctrl.$parsers.push(function(value) {
       var validity = element.prop(VALIDITY_STATE_PROPERTY) || {};
-      // Detect bug in FF35 for input[email] (https://bugzilla.mozilla.org/show_bug.cgi?id=1064430):
-      // - also sets validity.badInput (should only be validity.typeMismatch).
-      // - see http://www.whatwg.org/specs/web-apps/current-work/multipage/forms.html#e-mail-state-(type=email)
-      // - can ignore this case as we can still read out the erroneous email...
-      return validity.badInput && !validity.typeMismatch ? undefined : value;
+      return validity.badInput || validity.typeMismatch ? undefined : value;
     });
   }
 }
