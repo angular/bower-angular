@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4254+sha.20cf7d5
+ * @license AngularJS v1.5.0-build.4255+sha.652b83e
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4254+sha.20cf7d5/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4255+sha.652b83e/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2379,7 +2379,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4254+sha.20cf7d5',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4255+sha.652b83e',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -7857,6 +7857,37 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
     }
 
     /**
+     * A function generator that is used to support both eager and lazy compilation
+     * linking function.
+     * @param eager
+     * @param $compileNodes
+     * @param transcludeFn
+     * @param maxPriority
+     * @param ignoreDirective
+     * @param previousCompileContext
+     * @returns {Function}
+     */
+    function compilationGenerator(eager, $compileNodes, transcludeFn, maxPriority, ignoreDirective, previousCompileContext) {
+        if (eager) {
+            return compile($compileNodes, transcludeFn, maxPriority, ignoreDirective, previousCompileContext);
+        }
+
+        var compiled;
+
+        return function() {
+            if (!compiled) {
+                compiled = compile($compileNodes, transcludeFn, maxPriority, ignoreDirective, previousCompileContext);
+
+                // Null out all of these references in order to make them eligible for garbage collection
+                // since this is a potentially long lived closure
+                $compileNodes = transcludeFn = previousCompileContext = null;
+            }
+
+            return compiled.apply(this, arguments);
+        };
+    }
+
+    /**
      * Once the directives have been collected, their compile functions are executed. This method
      * is responsible for inlining directive templates as well as terminating the application
      * of the directives if the terminal directive has been reached.
@@ -7900,6 +7931,8 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
           replaceDirective = originalReplaceDirective,
           childTranscludeFn = transcludeFn,
           linkFn,
+          didScanForMultipleTransclusion = false,
+          mightHaveMultipleTransclusionError = false,
           directiveValue;
 
       // executes all directives on the current element
@@ -7942,6 +7975,27 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
         directiveName = directive.name;
 
+        // If we encounter a condition that can result in transclusion on the directive,
+        // then scan ahead in the remaining directives for others that may cause a multiple
+        // transclusion error to be thrown during the compilation process.  If a matching directive
+        // is found, then we know that when we encounter a transcluded directive, we need to eagerly
+        // compile the `transclude` function rather than doing it lazily in order to throw
+        // exceptions at the correct time
+        if (!didScanForMultipleTransclusion && ((directive.replace && (directive.templateUrl || directive.template))
+            || (directive.transclude && !directive.$$tlb))) {
+                var candidateDirective;
+
+                for (var scanningIndex = i + 1; candidateDirective = directives[scanningIndex++];) {
+                    if ((candidateDirective.transclude && !candidateDirective.$$tlb)
+                        || (candidateDirective.replace && (candidateDirective.templateUrl || candidateDirective.template))) {
+                        mightHaveMultipleTransclusionError = true;
+                        break;
+                    }
+                }
+
+                didScanForMultipleTransclusion = true;
+        }
+
         if (!directive.templateUrl && directive.controller) {
           directiveValue = directive.controller;
           controllerDirectives = controllerDirectives || createMap();
@@ -7971,7 +8025,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             compileNode = $compileNode[0];
             replaceWith(jqCollection, sliceArgs($template), compileNode);
 
-            childTranscludeFn = compile($template, transcludeFn, terminalPriority,
+            childTranscludeFn = compilationGenerator(mightHaveMultipleTransclusionError, $template, transcludeFn, terminalPriority,
                                         replaceDirective && replaceDirective.name, {
                                           // Don't pass in:
                                           // - controllerDirectives - otherwise we'll create duplicates controllers
@@ -7985,7 +8039,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
           } else {
             $template = jqLite(jqLiteClone(compileNode)).contents();
             $compileNode.empty(); // clear contents
-            childTranscludeFn = compile($template, transcludeFn);
+            childTranscludeFn = compilationGenerator(mightHaveMultipleTransclusionError, $template, transcludeFn);
           }
         }
 
