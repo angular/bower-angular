@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4255+sha.652b83e
+ * @license AngularJS v1.5.0-build.4260+sha.befeeb3
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4255+sha.652b83e/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4260+sha.befeeb3/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2330,6 +2330,7 @@ function toDebugString(obj) {
   $BrowserProvider,
   $CacheFactoryProvider,
   $ControllerProvider,
+  $DateProvider,
   $DocumentProvider,
   $ExceptionHandlerProvider,
   $FilterProvider,
@@ -2355,6 +2356,7 @@ function toDebugString(obj) {
   $TemplateCacheProvider,
   $TemplateRequestProvider,
   $$TestabilityProvider,
+  $TimeProvider,
   $TimeoutProvider,
   $$RAFProvider,
   $WindowProvider,
@@ -2379,7 +2381,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4255+sha.652b83e',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4260+sha.befeeb3',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -2513,6 +2515,7 @@ function publishExternalAPI(angular) {
         $templateCache: $TemplateCacheProvider,
         $templateRequest: $TemplateRequestProvider,
         $$testability: $$TestabilityProvider,
+        $date: $DateProvider,
         $timeout: $TimeoutProvider,
         $window: $WindowProvider,
         $$rAF: $$RAFProvider,
@@ -4297,6 +4300,8 @@ function createInjector(modulesToLoad, strictDi) {
 
 
   forEach(loadModules(modulesToLoad), function(fn) { if (fn) instanceInjector.invoke(fn); });
+
+  instanceInjector.strictDi = strictDi;
 
   return instanceInjector;
 
@@ -17834,6 +17839,50 @@ function $$TestabilityProvider() {
   }];
 }
 
+/**
+ * @ngdoc service
+ * @name $date
+ * @requires $window
+ *
+ * @description
+ * Simple service for accessing date.
+ *
+ * The main purpose of this service is to simplify mocking date in tests.
+ *
+ * @example
+   <example module="dateExample">
+     <file name="script.js">
+       angular.module('dateExample', [])
+         .controller('TimeController', ['$scope', '$date', function($scope, $date) {
+           $scope.now = $date.now();
+         }]);
+     </file>
+     <file name="index.html">
+       <div ng-controller="TimeController">
+         <p>Time when the page was created: {{now | date}}</p>
+       </div>
+     </file>
+   </example>
+ */
+function $DateProvider() {
+  var self = this;
+
+  this.$get = ['$window', function($window) {
+    return {
+      /**
+       * @ngdoc method
+       * @name $date#now
+       *
+       * @description
+       * Return Date object representing current date
+       */
+      now: function() {
+        return $window.Date();
+      }
+    };
+  }];
+}
+
 function $TimeoutProvider() {
   this.$get = ['$rootScope', '$browser', '$q', '$$q', '$exceptionHandler',
        function($rootScope,   $browser,   $q,   $$q,   $exceptionHandler) {
@@ -26656,7 +26705,7 @@ var ngOptionsDirective = ['$compile', '$parse', function($compile, $parse) {
           var groupElement;
           var optionElement;
 
-          if (option.group) {
+          if (isDefined(option.group)) {
 
             // This option is to live in a group
             // See if we have already created this group
