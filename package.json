@@ -1,6 +1,6 @@
 {
   "name": "angular",
-  "version": "1.5.0-build.4272+sha.8366622",
+  "version": "1.5.0-build.4273+sha.8b27c3f",
   "description": "HTML enhanced for web apps",
   "main": "index.js",
   "scripts": {
