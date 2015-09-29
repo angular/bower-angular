@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4291+sha.693021c
+ * @license AngularJS v1.5.0-build.4294+sha.6b123a0
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4291+sha.693021c/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4294+sha.6b123a0/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2380,7 +2380,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4291+sha.693021c',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4294+sha.6b123a0',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -10864,6 +10864,14 @@ $interpolateMinErr.interr = function(text, err) {
  *
  * Used for configuring the interpolation markup. Defaults to `{{` and `}}`.
  *
+ * <div class="alert alert-danger">
+ * This feature is sometimes used to mix different markup languages, e.g. to wrap an Angular
+ * template within a Python Jinja template (or any other template language). Mixing templating
+ * languages is **very dangerous**. The embedding template language will not safely escape Angular
+ * expressions, so any user-controlled values in the template will cause Cross Site Scripting (XSS)
+ * security bugs!
+ * </div>
+ *
  * @example
 <example module="customInterpolationApp">
 <file name="index.html">
@@ -16868,6 +16876,11 @@ function $SceDelegateProvider() {
      * Takes the result of a {@link ng.$sceDelegate#trustAs `$sceDelegate.trustAs`} call and
      * returns the originally supplied value if the queried context type is a supertype of the
      * created type.  If this condition isn't satisfied, throws an exception.
+     *
+     * <div class="alert alert-danger">
+     * Disabling auto-escaping is extremely dangerous, it usually creates a Cross Site Scripting
+     * (XSS) vulnerability in your application.
+     * </div>
      *
      * @param {string} type The kind of context in which this value is to be used.
      * @param {*} maybeTrusted The result of a prior {@link ng.$sceDelegate#trustAs
