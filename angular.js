@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4306+sha.ecf9304
+ * @license AngularJS v1.5.0-build.4307+sha.2d40507
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4306+sha.ecf9304/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4307+sha.2d40507/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2380,7 +2380,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4306+sha.ecf9304',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4307+sha.2d40507',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -5065,7 +5065,7 @@ var $AnimateProvider = ['$provide', function($provide) {
      * when an animation is detected (and animations are enabled), $animate will do the heavy lifting
      * to ensure that animation runs with the triggered DOM operation.
      *
-     * By default $animate doesn't trigger an animations. This is because the `ngAnimate` module isn't
+     * By default $animate doesn't trigger any animations. This is because the `ngAnimate` module isn't
      * included and only when it is active then the animation hooks that `$animate` triggers will be
      * functional. Once active then all structural `ng-` directives will trigger animations as they perform
      * their DOM-related operations (enter, leave and move). Other directives such as `ngClass`,
