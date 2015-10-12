@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4319+sha.40c974a
+ * @license AngularJS v1.5.0-build.4320+sha.a4ada8b
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4319+sha.40c974a/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4320+sha.a4ada8b/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2380,7 +2380,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4319+sha.40c974a',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4320+sha.a4ada8b',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -7704,6 +7704,13 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
         });
       };
 
+      // We need  to attach the transclusion slots onto the `boundTranscludeFn`
+      // so that they are available inside the `controllersBoundTransclude` function
+      var boundSlots = boundTranscludeFn.$$slots = createMap();
+      for (var slotName in transcludeFn.$$slots) {
+        boundSlots[slotName] = createBoundTranscludeFn(scope, transcludeFn.$$slots[slotName], previousBoundTranscludeFn);
+      }
+
       return boundTranscludeFn;
     }
 
@@ -8045,9 +8052,56 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
                                           nonTlbTranscludeDirective: nonTlbTranscludeDirective
                                         });
           } else {
+
+            var slots = createMap();
             $template = jqLite(jqLiteClone(compileNode)).contents();
+
+            if (isObject(directiveValue)) {
+
+              // We have transclusion slots - collect them up and compile them and store their
+              // transclusion functions
+              $template = [];
+              var slotNames = createMap();
+              var filledSlots = createMap();
+
+              // Parse the slot names: if they start with a ? then they are optional
+              forEach(directiveValue, function(slotName, key) {
+                var optional = (slotName.charAt(0) === '?');
+                slotName = optional ? slotName.substring(1) : slotName;
+                slotNames[key] = slotName;
+                slots[slotName] = [];
+                // filledSlots contains `true` for all slots that are either optional or have been
+                // filled. This is used to check that we have not missed any required slots
+                filledSlots[slotName] = optional;
+              });
+
+              // Add the matching elements into their slot
+              forEach($compileNode.children(), function(node) {
+                var slotName = slotNames[directiveNormalize(nodeName_(node))];
+                var slot = $template;
+                if (slotName) {
+                  filledSlots[slotName] = true;
+                  slots[slotName].push(node);
+                } else {
+                  $template.push(node);
+                }
+              });
+
+              // Check for required slots that were not filled
+              forEach(filledSlots, function(filled, slotName) {
+                if (!filled) {
+                  throw $compileMinErr('reqslot', 'Required transclusion slot `{0}` was not filled.', slotName);
+                }
+              });
+
+              forEach(Object.keys(slots), function(slotName) {
+                slots[slotName] = compilationGenerator(mightHaveMultipleTransclusionError, slots[slotName], transcludeFn);
+              });
+            }
+
             $compileNode.empty(); // clear contents
             childTranscludeFn = compilationGenerator(mightHaveMultipleTransclusionError, $template, transcludeFn);
+            childTranscludeFn.$$slots = slots;
           }
         }
 
@@ -8354,11 +8408,11 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
         // This is the function that is injected as `$transclude`.
         // Note: all arguments are optional!
-        function controllersBoundTransclude(scope, cloneAttachFn, futureParentElement) {
+        function controllersBoundTransclude(scope, cloneAttachFn, futureParentElement, slotName) {
           var transcludeControllers;
-
           // No scope passed in:
           if (!isScope(scope)) {
+            slotName = futureParentElement;
             futureParentElement = cloneAttachFn;
             cloneAttachFn = scope;
             scope = undefined;
@@ -8369,6 +8423,16 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
           }
           if (!futureParentElement) {
             futureParentElement = hasElementTranscludeDirective ? $element.parent() : $element;
+          }
+          if (slotName) {
+            var slotTranscludeFn = boundTranscludeFn.$$slots[slotName];
+            if (!slotTranscludeFn) {
+              throw $compileMinErr('noslot',
+               'No parent directive that requires a transclusion with slot name "{0}". ' +
+               'Element: {1}',
+               slotName, startingTag($element));
+            }
+            return slotTranscludeFn(scope, cloneAttachFn, transcludeControllers, futureParentElement, scopeToChild);
           }
           return boundTranscludeFn(scope, cloneAttachFn, transcludeControllers, futureParentElement, scopeToChild);
         }
@@ -28175,12 +28239,20 @@ var ngSwitchDefaultDirective = ngDirective({
  * @description
  * Directive that marks the insertion point for the transcluded DOM of the nearest parent directive that uses transclusion.
  *
+ * You can specify that you want to insert a named transclusion slot, instead of the default slot, by providing the slot name
+ * as the value of the `ng-transclude` or `ng-transclude-slot` attribute.
+ *
  * Any existing content of the element that this directive is placed on will be removed before the transcluded content is inserted.
  *
  * @element ANY
  *
+ * @param {string} ngTransclude|ngTranscludeSlot the name of the slot to insert at this point. If this is not provided or empty then
+ *                                               the default slot is used.
+ *
  * @example
-   <example module="transcludeExample">
+ * ### Default transclusion
+ * This example demonstrates simple transclusion.
+   <example name="simpleTranscludeExample" module="transcludeExample">
      <file name="index.html">
        <script>
          angular.module('transcludeExample', [])
@@ -28220,22 +28292,72 @@ var ngSwitchDefaultDirective = ngDirective({
      </file>
    </example>
  *
- */
+ * @example
+ * ### Multi-slot transclusion
+   <example name="multiSlotTranscludeExample" module="multiSlotTranscludeExample">
+     <file name="index.html">
+      <div ng-controller="ExampleController">
+        <input ng-model="title" aria-label="title"> <br/>
+        <textarea ng-model="text" aria-label="text"></textarea> <br/>
+        <pane>
+          <pane-title><a ng-href="{{link}}">{{title}}</a></pane-title>
+          <pane-body><p>{{text}}</p></pane-body>
+        </pane>
+      </div>
+     </file>
+     <file name="app.js">
+      angular.module('multiSlotTranscludeExample', [])
+       .directive('pane', function(){
+          return {
+            restrict: 'E',
+            transclude: {
+              'paneTitle': '?title',
+              'paneBody': 'body'
+            },
+            template: '<div style="border: 1px solid black;">' +
+                        '<div ng-transclude="title" style="background-color: gray"></div>' +
+                        '<div ng-transclude="body"></div>' +
+                      '</div>'
+          };
+      })
+      .controller('ExampleController', ['$scope', function($scope) {
+        $scope.title = 'Lorem Ipsum';
+        $scope.link = "https://google.com";
+        $scope.text = 'Neque porro quisquam est qui dolorem ipsum quia dolor...';
+      }]);
+     </file>
+     <file name="protractor.js" type="protractor">
+        it('should have transcluded the title and the body', function() {
+          var titleElement = element(by.model('title'));
+          titleElement.clear();
+          titleElement.sendKeys('TITLE');
+          var textElement = element(by.model('text'));
+          textElement.clear();
+          textElement.sendKeys('TEXT');
+          expect(element(by.binding('title')).getText()).toEqual('TITLE');
+          expect(element(by.binding('text')).getText()).toEqual('TEXT');
+        });
+     </file>
+   </example> */
+var ngTranscludeMinErr = minErr('ngTransclude');
 var ngTranscludeDirective = ngDirective({
   restrict: 'EAC',
   link: function($scope, $element, $attrs, controller, $transclude) {
+
+    function ngTranscludeCloneAttachFn(clone) {
+      $element.empty();
+      $element.append(clone);
+    }
+
     if (!$transclude) {
-      throw minErr('ngTransclude')('orphan',
+      throw ngTranscludeMinErr('orphan',
        'Illegal use of ngTransclude directive in the template! ' +
        'No parent directive that requires a transclusion found. ' +
        'Element: {0}',
        startingTag($element));
     }
 
-    $transclude(function(clone) {
-      $element.empty();
-      $element.append(clone);
-    });
+    $transclude(ngTranscludeCloneAttachFn, null, $attrs.ngTransclude || $attrs.ngTranscludeSlot);
   }
 });
 
