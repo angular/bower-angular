@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4326+sha.33c67ce
+ * @license AngularJS v1.5.0-build.4327+sha.2c8d87e
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4326+sha.33c67ce/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4327+sha.2c8d87e/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -260,6 +260,11 @@ var
 msie = document.documentMode;
 
 
+function isNodeList(obj) {
+  return typeof obj.length == 'number' &&
+         typeof obj.item == 'function';
+}
+
 /**
  * @private
  * @param {*} obj
@@ -267,20 +272,19 @@ msie = document.documentMode;
  *                   String ...)
  */
 function isArrayLike(obj) {
-  if (obj == null || isWindow(obj)) {
-    return false;
-  }
+
+  // `null`, `undefined` and `window` are not array-like
+  if (obj == null || isWindow(obj)) return false;
+
+  // arrays and strings are array like
+  if (isArray(obj) || isString(obj)) return true;
 
   // Support: iOS 8.2 (not reproducible in simulator)
   // "length" in obj used to prevent JIT error (gh-11508)
   var length = "length" in Object(obj) && obj.length;
 
-  if (obj.nodeType === NODE_TYPE_ELEMENT && length) {
-    return true;
-  }
-
-  return isString(obj) || isArray(obj) || length === 0 ||
-         typeof length === 'number' && length > 0 && (length - 1) in obj;
+  // node lists and objects with suitable length characteristics are array-like
+  return (isNumber(length) && length >= 0 && (length - 1) in obj) || isNodeList(obj);
 }
 
 /**
@@ -540,7 +544,7 @@ identity.$inject = [];
 function valueFn(value) {return function() {return value;};}
 
 function hasCustomToString(obj) {
-  return isFunction(obj.toString) && obj.toString !== Object.prototype.toString;
+  return isFunction(obj.toString) && obj.toString !== toString;
 }
 
 
@@ -2391,7 +2395,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4326+sha.33c67ce',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4327+sha.2c8d87e',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
