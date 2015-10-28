@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4339+sha.53cb88a
+ * @license AngularJS v1.5.0-build.4340+sha.395f3ec
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4339+sha.53cb88a/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4340+sha.395f3ec/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2395,7 +2395,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4339+sha.53cb88a',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4340+sha.395f3ec',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -5442,12 +5442,7 @@ var $CoreAnimateCssProvider = function() {
       }
     };
 
-    return function(element, initialOptions) {
-      // we always make a copy of the options since
-      // there should never be any side effects on
-      // the input data when running `$animateCss`.
-      var options = copy(initialOptions);
-
+    return function(element, options) {
       // there is no point in applying the styles since
       // there is no animation that goes on at all in
       // this version of $animateCss.
