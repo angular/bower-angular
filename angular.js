@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4354+sha.91c0b36
+ * @license AngularJS v1.5.0-build.4355+sha.865f606
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4354+sha.91c0b36/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4355+sha.865f606/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2508,7 +2508,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4354+sha.91c0b36',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4355+sha.865f606',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -28797,6 +28797,8 @@ var SelectController =
  *
  * @param {string} ngModel Assignable angular expression to data-bind to.
  * @param {string=} name Property name of the form under which the control is published.
+ * @param {string=} multiple Allows multiple options to be selected. The selected values will be
+ *     bound to the model as an array.
  * @param {string=} required Sets `required` validation error key if the value is not entered.
  * @param {string=} ngRequired Adds required attribute and required validation constraint to
  * the element when the ngRequired expression evaluates to true. Use ngRequired instead of required
