@@ -10756,7 +10756,7 @@ function $HttpProvider() {
       // if we won't have the response in cache, set the xsrf headers and
       // send the request to the backend
       if (isUndefined(cachedResp)) {
-        var xsrfValue = urlIsSameOrigin(config.url)
+          var xsrfValue = urlIsSameOrigin(config.url) && !urlIsFromFile(config.url)
             ? $$cookieReader()[config.xsrfCookieName || defaults.xsrfCookieName]
             : undefined;
         if (xsrfValue) {
@@ -18306,7 +18306,17 @@ function urlIsSameOrigin(requestUrl) {
   return (parsed.protocol === originUrl.protocol &&
           parsed.host === originUrl.host);
 }
-
+/**
+ * Parse a request URL & determine if its file protocol to avoid $$cookieReader of XSRF token in case of file.
+ *
+ * @param {string|object} requestUrl The url of the request as a string that will be resolved
+ * or a parsed URL object.
+ * @returns {boolean} Whether the request is for the same origin as the application document.
+ */
+function urlIsFromFile(requestUrl) {
+    var parsed = (isString(requestUrl)) ? urlResolve(requestUrl) : requestUrl;
+    return parsed.protocol.indexOf('file') > -1;
+}
 /**
  * @ngdoc service
  * @name $window
