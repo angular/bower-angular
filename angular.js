@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4366+sha.17715fa
+ * @license AngularJS v1.5.0-build.4367+sha.4ff6c85
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4366+sha.17715fa/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4367+sha.4ff6c85/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2505,7 +2505,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4366+sha.17715fa',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4367+sha.4ff6c85',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -24465,7 +24465,7 @@ var ngIfDirective = ['$animate', function($animate) {
  *                  **Note:** When using onload on SVG elements in IE11, the browser will try to call
  *                  a function with the name on the window element, which will usually throw a
  *                  "function is undefined" error. To fix this, you can instead use `data-onload` or a
- *                  different form that {@link guide/directives#normalization matches} `onload`.
+ *                  different form that {@link guide/directive#normalization matches} `onload`.
  *                  </div>
    *
  * @param {string=} autoscroll Whether `ngInclude` should call {@link ng.$anchorScroll
@@ -27379,7 +27379,7 @@ var ngPluralizeDirective = ['$locale', '$interpolate', '$log', function($locale,
  * Version 1.4 removed the alphabetic sorting. We now rely on the order returned by the browser
  * when running `for key in myObj`. It seems that browsers generally follow the strategy of providing
  * keys in the order in which they were defined, although there are exceptions when keys are deleted
- * and reinstated. See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/delete#Cross-browser_issues
+ * and reinstated. See the [MDN page on `delete` for more info](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/delete#Cross-browser_notes).
  *
  * If this is not desired, the recommended workaround is to convert your object into an array
  * that is sorted into the order that you prefer before providing it to `ngRepeat`.  You could
