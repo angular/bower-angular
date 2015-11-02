@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4365+sha.96288d0
+ * @license AngularJS v1.5.0-build.4366+sha.17715fa
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4365+sha.96288d0/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4366+sha.17715fa/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -429,6 +429,8 @@ function baseExtend(dst, objs, deep) {
           dst[key] = new Date(src.valueOf());
         } else if (isRegExp(src)) {
           dst[key] = new RegExp(src);
+        } else if (isElement(src)) {
+          dst[key] = src[0] ? jqLite(src).clone()[0] : jqLite(src).clone();
         } else {
           if (!isObject(dst[key])) dst[key] = isArray(src) ? [] : {};
           baseExtend(dst[key], [src], true);
@@ -2503,7 +2505,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4365+sha.96288d0',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4366+sha.17715fa',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
