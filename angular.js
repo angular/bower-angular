@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4369+sha.4daafd3
+ * @license AngularJS v1.5.0-build.4370+sha.7c792f4
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4369+sha.4daafd3/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4370+sha.7c792f4/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2507,7 +2507,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4369+sha.4daafd3',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4370+sha.7c792f4',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -27391,15 +27391,21 @@ var ngPluralizeDirective = ['$locale', '$interpolate', '$log', function($locale,
  *
  * # Tracking and Duplicates
  *
- * When the contents of the collection change, `ngRepeat` makes the corresponding changes to the DOM:
+ * `ngRepeat` uses {@link $rootScope.Scope#$watchCollection $watchCollection} to detect changes in
+ * the collection. When a change happens, ngRepeat then makes the corresponding changes to the DOM:
  *
  * * When an item is added, a new instance of the template is added to the DOM.
  * * When an item is removed, its template instance is removed from the DOM.
  * * When items are reordered, their respective templates are reordered in the DOM.
  *
- * By default, `ngRepeat` does not allow duplicate items in arrays. This is because when
- * there are duplicates, it is not possible to maintain a one-to-one mapping between collection
- * items and DOM elements.
+ * To minimize creation of DOM elements, `ngRepeat` uses a function
+ * to "keep track" of all items in the collection and their corresponding DOM elements.
+ * For example, if an item is added to the collection, ngRepeat will know that all other items
+ * already have DOM elements, and will not re-render them.
+ *
+ * The default tracking function (which tracks items by their identity) does not allow
+ * duplicate items in arrays. This is because when there are duplicates, it is not possible
+ * to maintain a one-to-one mapping between collection items and DOM elements.
  *
  * If you do need to repeat duplicate items, you can substitute the default tracking behavior
  * with your own using the `track by` expression.
@@ -27412,7 +27418,7 @@ var ngPluralizeDirective = ['$locale', '$interpolate', '$log', function($locale,
  *    </div>
  * ```
  *
- * You may use arbitrary expressions in `track by`, including references to custom functions
+ * You may also use arbitrary expressions in `track by`, including references to custom functions
  * on the scope:
  * ```html
  *    <div ng-repeat="n in [42, 42, 43, 43] track by myTrackingFunction(n)">
@@ -27420,10 +27426,14 @@ var ngPluralizeDirective = ['$locale', '$interpolate', '$log', function($locale,
  *    </div>
  * ```
  *
- * If you are working with objects that have an identifier property, you can track
+ * <div class="alert alert-success">
+ * If you are working with objects that have an identifier property, you should track
  * by the identifier instead of the whole object. Should you reload your data later, `ngRepeat`
  * will not have to rebuild the DOM elements for items it has already rendered, even if the
- * JavaScript objects in the collection have been substituted for new ones:
+ * JavaScript objects in the collection have been substituted for new ones. For large collections,
+ * this signifincantly improves rendering performance. If you don't have a unique identifier,
+ * `track by $index` can also provide a performance boost.
+ * </div>
  * ```html
  *    <div ng-repeat="model in collection track by model.id">
  *      {{model.name}}
