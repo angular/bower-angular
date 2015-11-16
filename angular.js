@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4383+sha.f5aa207
+ * @license AngularJS v1.5.0-build.4384+sha.e5e0884
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4383+sha.f5aa207/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4384+sha.e5e0884/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2507,7 +2507,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4383+sha.f5aa207',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4384+sha.e5e0884',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -10072,7 +10072,7 @@ function $HttpProvider() {
      *
      * ```
      * module.run(function($http) {
-     *   $http.defaults.headers.common.Authorization = 'Basic YmVlcDpib29w'
+     *   $http.defaults.headers.common.Authorization = 'Basic YmVlcDpib29w';
      * });
      * ```
      *
