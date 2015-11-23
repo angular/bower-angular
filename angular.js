@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4395+sha.1537651
+ * @license AngularJS v1.5.0-build.4396+sha.596af70
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4395+sha.1537651/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4396+sha.596af70/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2508,7 +2508,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4395+sha.1537651',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4396+sha.596af70',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -29493,6 +29493,20 @@ $provide.value("$locale", {
       "Oct",
       "Nov",
       "Dec"
+    ],
+    "STANDALONEMONTH": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
     ],
     "WEEKENDRANGE": [
       5,
