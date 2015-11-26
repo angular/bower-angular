@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4401+sha.b2a937d
+ * @license AngularJS v1.5.0-build.4402+sha.7ddbc9a
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4401+sha.b2a937d/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4402+sha.7ddbc9a/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2508,7 +2508,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4401+sha.b2a937d',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4402+sha.7ddbc9a',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -28672,8 +28672,8 @@ var ngSwitchDefaultDirective = ngDirective({
  *
  * @element ANY
  *
- * @param {string} ngTransclude|ngTranscludeSlot the name of the slot to insert at this point. If this is not provided or empty then
- *                                               the default slot is used.
+ * @param {string} ngTransclude|ngTranscludeSlot the name of the slot to insert at this point. If this is not provided, is empty
+ *                                               or its value is the same as the name of the attribute then the default slot is used.
  *
  * @example
  * ### Default transclusion
@@ -28769,6 +28769,12 @@ var ngTranscludeMinErr = minErr('ngTransclude');
 var ngTranscludeDirective = ngDirective({
   restrict: 'EAC',
   link: function($scope, $element, $attrs, controller, $transclude) {
+
+    if ($attrs.ngTransclude === $attrs.$attr.ngTransclude) {
+      // If the attribute is of the form: `ng-transclude="ng-transclude"`
+      // then treat it like the default
+      $attrs.ngTransclude = '';
+    }
 
     function ngTranscludeCloneAttachFn(clone) {
       $element.empty();
