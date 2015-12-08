@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4427+sha.da5db4b
+ * @license AngularJS v1.5.0-build.4428+sha.1dd206e
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4427+sha.da5db4b/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4428+sha.1dd206e/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2508,7 +2508,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4427+sha.da5db4b',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4428+sha.1dd206e',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -7007,11 +7007,15 @@ function $TemplateCacheProvider() {
  *
  * **Mult-slot transclusion** is declared by providing an object for the `transclude` property.
  *
- * This object is a map where the keys are the name of the slot to fill and the value is the element selector
- * used to match the HTML to the slot. Only element names are supported for matching. If the element selector
- * is prefixed with a `?` then that slot is optional.
+ * This object is a map where the keys are the name of the slot to fill and the value is an element selector
+ * used to match the HTML to the slot. The element selector should be in normalized form (e.g. `myElement`)
+ * and will match the standard element variants (e.g. `my-element`, `my:element`, `data-my-element`, etc).
  *
- * For example, the transclude object `{ slotA: '?my-custom-element' }` maps `<my-custom-element>` elements to
+ * For further information check out the guide on {@link guide/directive#matching-directives Matching Directives}
+ *
+ * If the element selector is prefixed with a `?` then that slot is optional.
+ *
+ * For example, the transclude object `{ slotA: '?myCustomElement' }` maps `<my-custom-element>` elements to
  * the `slotA` slot, which can be accessed via the `$transclude` function or via the {@link ngTransclude} directive.
  *
  * Slots that are not marked as optional (`?`) will trigger a compile time error if there are no matching elements
@@ -8437,7 +8441,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
               // Add the matching elements into their slot
               forEach($compileNode.contents(), function(node) {
-                var slotName = slotMap[nodeName_(node)];
+                var slotName = slotMap[directiveNormalize(nodeName_(node))];
                 if (slotName) {
                   filledSlots[slotName] = true;
                   slots[slotName] = slots[slotName] || [];
@@ -29012,9 +29016,9 @@ var ngSwitchDefaultDirective = ngDirective({
  *        return {
  *          restrict: 'E',
  *          transclude: {
- *            'title': '?pane-title',
- *            'body': 'pane-body',
- *            'footer': '?pane-footer'
+ *            'title': '?paneTitle',
+ *            'body': 'paneBody',
+ *            'footer': '?paneFooter'
  *          },
  *          template: '<div style="border: 1px solid black;">' +
  *                      '<div class="title" ng-transclude="title">Fallback Title</div>' +
