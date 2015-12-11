@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4440+sha.e57cf13
+ * @license AngularJS v1.5.0-build.4441+sha.c7ed8a3
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4440+sha.e57cf13/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4441+sha.c7ed8a3/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2239,6 +2239,7 @@ function setupModuleLoader(window) {
            * In order to make the definition easier, components enforce best practices like controllerAs
            * and default behaviors like scope isolation, restrict to elements and allow transclusion.
            *
+           * <br />
            * Here are a few examples of how you would usually define components:
            *
            * ```js
@@ -2263,7 +2264,49 @@ function setupModuleLoader(window) {
            *
            * ```
            *
-           * See {@link ng.$compileProvider#directive $compileProvider.directive()}.
+           * <br />
+           * Components are also useful as route templates (e.g. when using
+           * {@link ngRoute ngRoute}):
+           *
+           * ```js
+           *   var myMod = angular.module('myMod', ['ngRoute']);
+           *
+           *   myMod.component('home', {
+           *     template: '<h1>Home</h1><p>Hello, {{ home.user.name }} !</p>',
+           *     controller: function() {
+           *       this.user = {name: 'world'};
+           *     }
+           *   });
+           *
+           *   myMod.config(function($routeProvider) {
+           *     $routeProvider.when('/', {
+           *       template: '<home></home>'
+           *     });
+           *   });
+           * ```
+           *
+           * <br />
+           * When using {@link ngRoute.$routeProvider $routeProvider}, you can often avoid some
+           * boilerplate, by assigning the resolved dependencies directly on the route scope:
+           *
+           * ```js
+           *   var myMod = angular.module('myMod', ['ngRoute']);
+           *
+           *   myMod.component('home', {
+           *     template: '<h1>Home</h1><p>Hello, {{ home.user.name }} !</p>',
+           *     bindings: {user: '='}
+           *   });
+           *
+           *   myMod.config(function($routeProvider) {
+           *     $routeProvider.when('/', {
+           *       template: '<home user="$resolve.user"></home>',
+           *       resolve: {user: function($http) { return $http.get('...'); }}
+           *     });
+           *   });
+           * ```
+           *
+           * <br />
+           * See also {@link ng.$compileProvider#directive $compileProvider.directive()}.
            */
           component: function(name, options) {
             function factory($injector) {
@@ -2508,7 +2551,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4440+sha.e57cf13',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4441+sha.c7ed8a3',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
