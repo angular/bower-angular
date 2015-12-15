@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4446+sha.05d3ed0
+ * @license AngularJS v1.5.0-build.4447+sha.983374c
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4446+sha.05d3ed0/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4447+sha.983374c/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2551,7 +2551,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4446+sha.05d3ed0',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4447+sha.983374c',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -4457,7 +4457,7 @@ function annotate(fn, strictDi, name) {
  * @description
  *
  * Register a **service decorator** with the {@link auto.$injector $injector}. A service decorator
- * intercepts the creation of a service, allowing it to override or modify the behaviour of the
+ * intercepts the creation of a service, allowing it to override or modify the behavior of the
  * service. The object returned by the decorator may be the original service, or a new service
  * object which replaces or wraps and delegates to the original service.
  *
