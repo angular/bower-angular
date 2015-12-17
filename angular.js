@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4454+sha.4bcb307
+ * @license AngularJS v1.5.0-build.4455+sha.9f5d76e
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4454+sha.4bcb307/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4455+sha.9f5d76e/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2551,7 +2551,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4454+sha.4bcb307',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4455+sha.9f5d76e',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -17009,6 +17009,21 @@ function $RootScopeProvider() {
     }
   }];
 }
+
+/**
+ * @ngdoc service
+ * @name $rootElement
+ *
+ * @description
+ * The root element of Angular application. This is either the element where {@link
+ * ng.directive:ngApp ngApp} was declared or the element passed into
+ * {@link angular.bootstrap}. The element represents the root element of application. It is also the
+ * location where the application's {@link auto.$injector $injector} service gets
+ * published, and can be retrieved using `$rootElement.injector()`.
+ */
+
+
+// the implementation is in angular.bootstrap
 
 /**
  * @description
