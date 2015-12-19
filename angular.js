@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4459+sha.dec8a0e
+ * @license AngularJS v1.5.0-build.4460+sha.a6e9174
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4459+sha.dec8a0e/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4460+sha.a6e9174/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2551,7 +2551,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4459+sha.dec8a0e',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4460+sha.a6e9174',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -13110,23 +13110,22 @@ function ensureSafeMemberName(name, fullExpression) {
   return name;
 }
 
-function getStringValue(name, fullExpression) {
-  // From the JavaScript docs:
+function getStringValue(name) {
   // Property names must be strings. This means that non-string objects cannot be used
   // as keys in an object. Any non-string object, including a number, is typecasted
   // into a string via the toString method.
+  // -- MDN, https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors#Property_names
   //
-  // So, to ensure that we are checking the same `name` that JavaScript would use,
-  // we cast it to a string, if possible.
-  // Doing `name + ''` can cause a repl error if the result to `toString` is not a string,
-  // this is, this will handle objects that misbehave.
-  name = name + '';
-  if (!isString(name)) {
-    throw $parseMinErr('iseccst',
-        'Cannot convert object to primitive value! '
-        + 'Expression: {0}', fullExpression);
-  }
-  return name;
+  // So, to ensure that we are checking the same `name` that JavaScript would use, we cast it
+  // to a string. It's not always possible. If `name` is an object and its `toString` method is
+  // 'broken' (doesn't return a string, isn't a function, etc.), an error will be thrown:
+  //
+  // TypeError: Cannot convert object to primitive value
+  //
+  // For performance reasons, we don't catch this error here and allow it to propagate up the call
+  // stack. Note that you'll get the same error in JavaScript if you try to access a property using
+  // such a 'broken' object as a key.
+  return name + '';
 }
 
 function ensureSafeObject(obj, fullExpression) {
@@ -14293,7 +14292,7 @@ ASTCompiler.prototype = {
   },
 
   getStringValue: function(item) {
-    this.assign(item, 'getStringValue(' + item + ',text)');
+    this.assign(item, 'getStringValue(' + item + ')');
   },
 
   ensureSafeAssignContext: function(item) {
