@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4463+sha.7b51243
+ * @license AngularJS v1.5.0-build.4464+sha.986647a
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4463+sha.7b51243/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4464+sha.986647a/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -752,6 +752,10 @@ function isTypedArray(value) {
   return value && isNumber(value.length) && TYPED_ARRAY_REGEXP.test(toString.call(value));
 }
 
+function isArrayBuffer(obj) {
+  return toString.call(obj) === '[object ArrayBuffer]';
+}
+
 
 var trim = function(value) {
   return isString(value) ? value.trim() : value;
@@ -876,7 +880,7 @@ function copy(source, destination) {
   var stackDest = [];
 
   if (destination) {
-    if (isTypedArray(destination)) {
+    if (isTypedArray(destination) || isArrayBuffer(destination)) {
       throw ngMinErr('cpta', "Can't copy! TypedArray destination cannot be mutated.");
     }
     if (source === destination) {
@@ -976,7 +980,16 @@ function copy(source, destination) {
       case '[object Uint8ClampedArray]':
       case '[object Uint16Array]':
       case '[object Uint32Array]':
-        return new source.constructor(source);
+        return new source.constructor(copyElement(source.buffer));
+
+      case '[object ArrayBuffer]':
+        //Support: IE10
+        if (!source.slice) {
+          var copied = new ArrayBuffer(source.byteLength);
+          new Uint8Array(copied).set(new Uint8Array(source));
+          return copied;
+        }
+        return source.slice(0);
 
       case '[object Boolean]':
       case '[object Number]':
@@ -2569,7 +2582,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4463+sha.7b51243',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4464+sha.986647a',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
