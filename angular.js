@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4469+sha.959f2bb
+ * @license AngularJS v1.5.0-build.4470+sha.bca0a1f
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4469+sha.959f2bb/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4470+sha.bca0a1f/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2582,7 +2582,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4469+sha.959f2bb',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4470+sha.bca0a1f',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -4716,10 +4716,6 @@ function createInjector(modulesToLoad, strictDi) {
       return args;
     }
 
-    function isClass(func) {
-      return typeof func === 'function'
-        && /^class\s/.test(Function.prototype.toString.call(func));
-    }
 
     function invoke(fn, self, locals, serviceName) {
       if (typeof locals === 'string') {
@@ -4732,16 +4728,9 @@ function createInjector(modulesToLoad, strictDi) {
         fn = fn[fn.length - 1];
       }
 
-      if (!isClass(fn)) {
-        // http://jsperf.com/angularjs-invoke-apply-vs-switch
-        // #5388
-        return fn.apply(self, args);
-      } else {
-        args.unshift(null);
-        /*jshint -W058 */ // Applying a constructor without immediate parentheses is the point here.
-        return new (Function.prototype.bind.apply(fn, args));
-        /*jshint +W058 */
-      }
+      // http://jsperf.com/angularjs-invoke-apply-vs-switch
+      // #5388
+      return fn.apply(self, args);
     }
 
 
@@ -4751,7 +4740,7 @@ function createInjector(modulesToLoad, strictDi) {
       var ctor = (isArray(Type) ? Type[Type.length - 1] : Type);
       var args = injectionArgs(Type, locals, serviceName);
       // Empty object at position 0 is ignored for invocation with `new`, but required.
-      args.unshift(null);
+      args.unshift({});
       /*jshint -W058 */ // Applying a constructor without immediate parentheses is the point here.
       return new (Function.prototype.bind.apply(ctor, args));
       /*jshint +W058 */
@@ -6832,7 +6821,7 @@ function $TemplateCacheProvider() {
  * #### `bindToController`
  * When an isolate scope is used for a component (see above), and `controllerAs` is used, `bindToController: true` will
  * allow a component to have its properties bound to the controller, rather than to scope. When the controller
- * is instantiated, the initial values of the isolate scope bindings will be available if the controller is not an ES6 class.
+ * is instantiated, the initial values of the isolate scope bindings are already available.
  *
  * #### `controller`
  * Controller constructor function. The controller is instantiated before the
