@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4484+sha.93c7251
+ * @license AngularJS v1.5.0-build.4485+sha.fabc6ab
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4484+sha.93c7251/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4485+sha.fabc6ab/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2584,7 +2584,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4484+sha.93c7251',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4485+sha.fabc6ab',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -4724,8 +4724,10 @@ function createInjector(modulesToLoad, strictDi) {
       if (msie <= 11) {
         return false;
       }
+      // Workaround for MS Edge.
+      // Check https://connect.microsoft.com/IE/Feedback/Details/2211653
       return typeof func === 'function'
-        && /^class\s/.test(Function.prototype.toString.call(func));
+        && /^(?:class\s|constructor\()/.test(Function.prototype.toString.call(func));
     }
 
     function invoke(fn, self, locals, serviceName) {
