@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4489+sha.16ccac9
+ * @license AngularJS v1.5.0-build.4490+sha.d91cf16
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4489+sha.16ccac9/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4490+sha.d91cf16/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2441,7 +2441,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4489+sha.16ccac9',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4490+sha.d91cf16',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -7430,7 +7430,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
    *      registered controller} if passed as a string. An empty `noop` function by default.
    *    - `controllerAs` – `{string=}` – identifier name for to reference the controller in the component's scope.
    *      If present, the controller will be published to scope under the `controllerAs` name.
-   *      If not present, this will default to be the same as the component name.
+   *      If not present, this will default to be `$ctrl`.
    *    - `template` – `{string=|function()=}` – html template as a string or a function that
    *      returns an html template as a string which should be used as the contents of this component.
    *      Empty string by default.
@@ -7455,7 +7455,6 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
    *      See {@link ng.$compile#-bindtocontroller- `bindToController`}.
    *    - `transclude` – `{boolean=}` – whether {@link $compile#transclusion content transclusion} is enabled.
    *      Disabled by default.
-   *    - `isolate` – `{boolean=}` – whether the new scope is isolated. Isolated by default.
    *    - `restrict` - `{string=}` - a string containing one or more characters from {@link ng.$compile#-restrict- EACM},
    *      which restricts the component to specific directive declaration style. If omitted, this defaults to 'E'.
    *    - `$canActivate` – `{function()=}` – TBD.
@@ -7470,21 +7469,21 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
    * directives. Component definitions usually consist only of a template and a controller backing it.
    *
    * In order to make the definition easier, components enforce best practices like use of `controllerAs`,
-   * `bindToController` and default behaviors like **isolate scope** and restriction to elements.
+   * `bindToController`, **isolate scope** and default behaviors like restriction to elements.
    *
    * Here are a few examples of how you would usually define components:
    *
    * ```js
    *   var myMod = angular.module(...);
    *   myMod.component('myComp', {
-   *     template: '<div>My name is {{myComp.name}}</div>',
+   *     template: '<div>My name is {{$ctrl.name}}</div>',
    *     controller: function() {
    *       this.name = 'shahar';
    *     }
    *   });
    *
    *   myMod.component('myComp', {
-   *     template: '<div>My name is {{myComp.name}}</div>',
+   *     template: '<div>My name is {{$ctrl.name}}</div>',
    *     bindings: {name: '@'}
    *   });
    *
@@ -7555,11 +7554,11 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
       var template = (!options.template && !options.templateUrl ? '' : options.template);
       return {
         controller: options.controller || function() {},
-        controllerAs: identifierForController(options.controller) || options.controllerAs || name,
+        controllerAs: identifierForController(options.controller) || options.controllerAs || '$ctrl',
         template: makeInjectable(template),
         templateUrl: makeInjectable(options.templateUrl),
         transclude: options.transclude,
-        scope: options.isolate === false ? true : {},
+        scope: {},
         bindToController: options.bindings || {},
         restrict: options.restrict || 'E'
       };
