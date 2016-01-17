@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4514+sha.b77e14b
+ * @license AngularJS v1.5.0-build.4516+sha.52ea411
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4514+sha.b77e14b/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4516+sha.52ea411/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2441,7 +2441,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4514+sha.b77e14b',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4516+sha.52ea411',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -5530,8 +5530,8 @@ var $$AnimateAsyncRunFactoryProvider = function() {
 };
 
 var $$AnimateRunnerFactoryProvider = function() {
-  this.$get = ['$q', '$sniffer', '$$animateAsyncRun',
-       function($q,   $sniffer,   $$animateAsyncRun) {
+  this.$get = ['$q', '$sniffer', '$$animateAsyncRun', '$document', '$timeout',
+       function($q,   $sniffer,   $$animateAsyncRun,   $document,   $timeout) {
 
     var INITIAL_STATE = 0;
     var DONE_PENDING_STATE = 1;
@@ -5576,8 +5576,19 @@ var $$AnimateRunnerFactoryProvider = function() {
     function AnimateRunner(host) {
       this.setHost(host);
 
+      var rafTick = $$animateAsyncRun();
+      var timeoutTick = function(fn) {
+        $timeout(fn, 0, false);
+      };
+
       this._doneCallbacks = [];
-      this._runInAnimationFrame = $$animateAsyncRun();
+      this._tick = function(fn) {
+        if ($document[0].hidden) {
+          timeoutTick(fn);
+        } else {
+          rafTick(fn);
+        }
+      };
       this._state = 0;
     }
 
@@ -5650,7 +5661,7 @@ var $$AnimateRunnerFactoryProvider = function() {
         var self = this;
         if (self._state === INITIAL_STATE) {
           self._state = DONE_PENDING_STATE;
-          self._runInAnimationFrame(function() {
+          self._tick(function() {
             self._resolve(response);
           });
         }
