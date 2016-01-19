@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4524+sha.1137d91
+ * @license AngularJS v1.5.0-build.4525+sha.2cb1989
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4524+sha.1137d91/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4525+sha.2cb1989/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2421,7 +2421,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4524+sha.1137d91',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4525+sha.2cb1989',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
@@ -5568,7 +5568,11 @@ var $$AnimateRunnerFactoryProvider = function() {
 
       this._doneCallbacks = [];
       this._tick = function(fn) {
-        if ($document[0].hidden) {
+        var doc = $document[0];
+
+        // the document may not be ready or attached
+        // to the module for some internal tests
+        if (doc && doc.hidden) {
           timeoutTick(fn);
         } else {
           rafTick(fn);
