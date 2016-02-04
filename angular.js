@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.0-build.4585+sha.f3c8aa2
+ * @license AngularJS v1.5.0-build.4589+sha.260cfe6
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.0-build.4585+sha.f3c8aa2/' +
+    message += '\nhttp://errors.angularjs.org/1.5.0-build.4589+sha.260cfe6/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -1257,7 +1257,7 @@ function toJsonReplacer(key, value) {
  * @returns {string|undefined} JSON-ified string representing `obj`.
  */
 function toJson(obj, pretty) {
-  if (typeof obj === 'undefined') return undefined;
+  if (isUndefined(obj)) return undefined;
   if (!isNumber(pretty)) {
     pretty = pretty ? 2 : null;
   }
@@ -2424,7 +2424,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.0-build.4585+sha.f3c8aa2',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.0-build.4589+sha.260cfe6',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 0,
