@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.1-build.4652+sha.af0574e
+ * @license AngularJS v1.5.1-build.4653+sha.f1aea54
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.1-build.4652+sha.af0574e/' +
+    message += '\nhttp://errors.angularjs.org/1.5.1-build.4653+sha.f1aea54/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2443,7 +2443,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.1-build.4652+sha.af0574e',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.1-build.4653+sha.f1aea54',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 1,
@@ -25984,7 +25984,7 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
    *   the `$viewValue` are different from last time.
    *
    * Since `ng-model` does not do a deep watch, `$render()` is only invoked if the values of
-   * `$modelValue` and `$viewValue` are actually different from their previous value. If `$modelValue`
+   * `$modelValue` and `$viewValue` are actually different from their previous values. If `$modelValue`
    * or `$viewValue` are objects (rather than a string or number) then `$render()` will not be
    * invoked if you only change a property on the objects.
    */
