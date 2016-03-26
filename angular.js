@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.4-build.4699+sha.bd7d5f6
+ * @license AngularJS v1.5.4-build.4700+sha.5ceb5db
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.4-build.4699+sha.bd7d5f6/' +
+    message += '\nhttp://errors.angularjs.org/1.5.4-build.4700+sha.5ceb5db/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2445,7 +2445,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.4-build.4699+sha.bd7d5f6',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.4-build.4700+sha.5ceb5db',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 4,
@@ -4593,13 +4593,16 @@ function createInjector(modulesToLoad, strictDi) {
 
     function isClass(func) {
       // IE 9-11 do not support classes and IE9 leaks with the code below.
-      if (msie <= 11) {
+      if (msie <= 11 || typeof func !== 'function') {
         return false;
       }
-      // Workaround for MS Edge.
-      // Check https://connect.microsoft.com/IE/Feedback/Details/2211653
-      return typeof func === 'function'
-        && /^(?:class\s|constructor\()/.test(Function.prototype.toString.call(func));
+      var result = func.$$ngIsClass;
+      if (!isBoolean(result)) {
+        // Workaround for MS Edge.
+        // Check https://connect.microsoft.com/IE/Feedback/Details/2211653
+        result = func.$$ngIsClass = /^(?:class\s|constructor\()/.test(Function.prototype.toString.call(func));
+      }
+      return result;
     }
 
     function invoke(fn, self, locals, serviceName) {
