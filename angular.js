@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.3
+ * @license AngularJS v1.5.4-build.4699+sha.bd7d5f6
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.3/' +
+    message += '\nhttp://errors.angularjs.org/1.5.4-build.4699+sha.bd7d5f6/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -264,7 +264,7 @@ function isArrayLike(obj) {
   // NodeList objects (with `item` method) and
   // other objects with suitable length characteristics are array-like
   return isNumber(length) &&
-    (length >= 0 && ((length - 1) in obj || obj instanceof Array) || typeof obj.item == 'function');
+    (length >= 0 && ((length - 1) in obj || obj instanceof Array) || typeof obj.item === 'function');
 
 }
 
@@ -310,7 +310,9 @@ function forEach(obj, iterator, context) {
       for (key in obj) {
         // Need to check if hasOwnProperty exists,
         // as on IE8 the result of querySelectorAll is an object without a hasOwnProperty function
-        if (key != 'prototype' && key != 'length' && key != 'name' && (!obj.hasOwnProperty || obj.hasOwnProperty(key))) {
+        if (key !== 'prototype' && key !== 'length' && key !== 'name' &&
+          (!obj.hasOwnProperty || obj.hasOwnProperty(key))
+        ) {
           iterator.call(context, obj[key], key, obj);
         }
       }
@@ -787,7 +789,7 @@ function nodeName_(element) {
 }
 
 function includes(array, obj) {
-  return Array.prototype.indexOf.call(array, obj) != -1;
+  return Array.prototype.indexOf.call(array, obj) !== -1;
 }
 
 function arrayRemove(array, value) {
@@ -1053,10 +1055,10 @@ function equals(o1, o2) {
   if (o1 === null || o2 === null) return false;
   if (o1 !== o1 && o2 !== o2) return true; // NaN === NaN
   var t1 = typeof o1, t2 = typeof o2, length, key, keySet;
-  if (t1 == t2 && t1 == 'object') {
+  if (t1 === t2 && t1 === 'object') {
     if (isArray(o1)) {
       if (!isArray(o2)) return false;
-      if ((length = o1.length) == o2.length) {
+      if ((length = o1.length) === o2.length) {
         for (key = 0; key < length; key++) {
           if (!equals(o1[key], o2[key])) return false;
         }
@@ -1067,7 +1069,7 @@ function equals(o1, o2) {
       return equals(o1.getTime(), o2.getTime());
     } else if (isRegExp(o1)) {
       if (!isRegExp(o2)) return false;
-      return o1.toString() == o2.toString();
+      return o1.toString() === o2.toString();
     } else {
       if (isScope(o1) || isScope(o2) || isWindow(o1) || isWindow(o2) ||
         isArray(o2) || isDate(o2) || isRegExp(o2)) return false;
@@ -2443,11 +2445,11 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.3',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.4-build.4699+sha.bd7d5f6',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
-  dot: 3,
-  codeName: 'diplohaplontic-meiosis'
+  dot: 4,
+  codeName: 'snapshot'
 };
 
 
@@ -2602,8 +2604,6 @@ function publishExternalAPI(angular) {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 /* global JQLitePrototype: true,
-  addEventListenerFn: true,
-  removeEventListenerFn: true,
   BOOLEAN_ATTR: true,
   ALIASED_ATTR: true,
 */
@@ -2711,13 +2711,7 @@ function publishExternalAPI(angular) {
 JQLite.expando = 'ng339';
 
 var jqCache = JQLite.cache = {},
-    jqId = 1,
-    addEventListenerFn = function(element, type, fn) {
-      element.addEventListener(type, fn, false);
-    },
-    removeEventListenerFn = function(element, type, fn) {
-      element.removeEventListener(type, fn, false);
-    };
+    jqId = 1;
 
 /*
  * !!! This is an undocumented "private" function !!!
@@ -2875,7 +2869,7 @@ function JQLite(element) {
     argIsString = true;
   }
   if (!(this instanceof JQLite)) {
-    if (argIsString && element.charAt(0) != '<') {
+    if (argIsString && element.charAt(0) !== '<') {
       throw jqLiteMinErr('nosel', 'Looking up elements via selectors is not supported by jqLite! See: http://docs.angularjs.org/api/angular.element');
     }
     return new JQLite(element);
@@ -2915,7 +2909,7 @@ function jqLiteOff(element, type, fn, unsupported) {
   if (!type) {
     for (type in events) {
       if (type !== '$destroy') {
-        removeEventListenerFn(element, type, handle);
+        element.removeEventListener(type, handle);
       }
       delete events[type];
     }
@@ -2927,7 +2921,7 @@ function jqLiteOff(element, type, fn, unsupported) {
         arrayRemove(listenerFns || [], fn);
       }
       if (!(isDefined(fn) && listenerFns && listenerFns.length > 0)) {
-        removeEventListenerFn(element, type, handle);
+        element.removeEventListener(type, handle);
         delete events[type];
       }
     };
@@ -3070,7 +3064,7 @@ function jqLiteController(element, name) {
 function jqLiteInheritedData(element, name, value) {
   // if element is the document object work with the html element instead
   // this makes $(document).scope() possible
-  if (element.nodeType == NODE_TYPE_DOCUMENT) {
+  if (element.nodeType === NODE_TYPE_DOCUMENT) {
     element = element.documentElement;
   }
   var names = isArray(name) ? name : [name];
@@ -3322,7 +3316,7 @@ forEach({
     // in a way that survives minification.
     // jqLiteEmpty takes no arguments but is a setter.
     if (fn !== jqLiteEmpty &&
-        (isUndefined((fn.length == 2 && (fn !== jqLiteHasClass && fn !== jqLiteController)) ? arg1 : arg2))) {
+        (isUndefined((fn.length === 2 && (fn !== jqLiteHasClass && fn !== jqLiteController)) ? arg1 : arg2))) {
       if (isObject(arg1)) {
 
         // we are a write, but the object properties are the key/values
@@ -3464,7 +3458,7 @@ forEach({
         eventFns = events[type] = [];
         eventFns.specialHandlerWrapper = specialHandlerWrapper;
         if (type !== '$destroy' && !noEventListener) {
-          addEventListenerFn(element, type, handle);
+          element.addEventListener(type, handle);
         }
       }
 
@@ -3706,7 +3700,7 @@ function hashKey(obj, nextUidFn) {
   }
 
   var objType = typeof obj;
-  if (objType == 'function' || (objType == 'object' && obj !== null)) {
+  if (objType === 'function' || (objType === 'object' && obj !== null)) {
     key = obj.$$hashKey = objType + ':' + (nextUidFn || nextUid)();
   } else {
     key = objType + ':' + obj;
@@ -4536,7 +4530,7 @@ function createInjector(modulesToLoad, strictDi) {
         if (isArray(module)) {
           module = module[module.length - 1];
         }
-        if (e.message && e.stack && e.stack.indexOf(e.message) == -1) {
+        if (e.message && e.stack && e.stack.indexOf(e.message) === -1) {
           // Safari & FF's stack traces don't contain error.message content
           // unlike those of Chrome and IE
           // So if stack doesn't contain message, we create a new string that contains both.
@@ -6349,8 +6343,8 @@ function $CacheFactoryProvider() {
 
             if (!lruEntry) return;
 
-            if (lruEntry == freshEnd) freshEnd = lruEntry.p;
-            if (lruEntry == staleEnd) staleEnd = lruEntry.n;
+            if (lruEntry === freshEnd) freshEnd = lruEntry.p;
+            if (lruEntry === staleEnd) staleEnd = lruEntry.n;
             link(lruEntry.n,lruEntry.p);
 
             delete lruHash[key];
@@ -6422,10 +6416,10 @@ function $CacheFactoryProvider() {
        * makes the `entry` the freshEnd of the LRU linked list
        */
       function refresh(entry) {
-        if (entry != freshEnd) {
+        if (entry !== freshEnd) {
           if (!staleEnd) {
             staleEnd = entry;
-          } else if (staleEnd == entry) {
+          } else if (staleEnd === entry) {
             staleEnd = entry.n;
           }
 
@@ -6441,7 +6435,7 @@ function $CacheFactoryProvider() {
        * bidirectionally links two entries of the LRU linked list
        */
       function link(nextEntry, prevEntry) {
-        if (nextEntry != prevEntry) {
+        if (nextEntry !== prevEntry) {
           if (nextEntry) nextEntry.p = prevEntry; //p stands for previous, 'prev' didn't minify
           if (prevEntry) prevEntry.n = nextEntry; //n stands for next, 'next' didn't minify
         }
@@ -8086,7 +8080,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
     var startSymbol = $interpolate.startSymbol(),
         endSymbol = $interpolate.endSymbol(),
-        denormalizeTemplate = (startSymbol == '{{' && endSymbol  == '}}')
+        denormalizeTemplate = (startSymbol === '{{' && endSymbol  === '}}')
             ? identity
             : function denormalizeTemplate(template) {
               return template.replace(/\{\{/g, startSymbol).replace(/}}/g, endSymbol);
@@ -8138,19 +8132,6 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
         // modify it.
         $compileNodes = jqLite($compileNodes);
       }
-
-      var NOT_EMPTY = /\S+/;
-
-      // We can not compile top level text elements since text nodes can be merged and we will
-      // not be able to attach scope data to them, so we will wrap them in <span>
-      for (var i = 0, len = $compileNodes.length; i < len; i++) {
-        var domNode = $compileNodes[i];
-
-        if (domNode.nodeType === NODE_TYPE_TEXT && domNode.nodeValue.match(NOT_EMPTY) /* non-empty */) {
-          jqLiteWrapNode(domNode, $compileNodes[i] = document.createElement('span'));
-        }
-      }
-
       var compositeLinkFn =
               compileNodes($compileNodes, transcludeFn, $compileNodes,
                            maxPriority, ignoreDirective, previousCompileContext);
@@ -8494,7 +8475,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
                       "Unterminated attribute, found '{0}' but no matching '{1}' found.",
                       attrStart, attrEnd);
           }
-          if (node.nodeType == NODE_TYPE_ELEMENT) {
+          if (node.nodeType === NODE_TYPE_ELEMENT) {
             if (node.hasAttribute(attrStart)) depth++;
             if (node.hasAttribute(attrEnd)) depth--;
           }
@@ -8680,7 +8661,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             nonTlbTranscludeDirective = directive;
           }
 
-          if (directiveValue == 'element') {
+          if (directiveValue === 'element') {
             hasElementTranscludeDirective = true;
             terminalPriority = directive.priority;
             $template = $compileNode;
@@ -8798,7 +8779,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             }
             compileNode = $template[0];
 
-            if ($template.length != 1 || compileNode.nodeType !== NODE_TYPE_ELEMENT) {
+            if ($template.length !== 1 || compileNode.nodeType !== NODE_TYPE_ELEMENT) {
               throw $compileMinErr('tplrt',
                   "Template for directive '{0}' must have exactly one root element. {1}",
                   directiveName, '');
@@ -9131,7 +9112,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
         };
 
         var controller = directive.controller;
-        if (controller == '@') {
+        if (controller === '@') {
           controller = attrs[directive.name];
         }
 
@@ -9183,7 +9164,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
           try {
             directive = directives[i];
             if ((isUndefined(maxPriority) || maxPriority > directive.priority) &&
-                 directive.restrict.indexOf(location) != -1) {
+                 directive.restrict.indexOf(location) !== -1) {
               if (startAttrName) {
                 directive = inherit(directive, {$$start: startAttrName, $$end: endAttrName});
               }
@@ -9240,7 +9221,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
       // reapply the old attributes to the new element
       forEach(dst, function(value, key) {
-        if (key.charAt(0) != '$') {
+        if (key.charAt(0) !== '$') {
           if (src[key] && src[key] !== value) {
             value += (key === 'style' ? ';' : ' ') + src[key];
           }
@@ -9250,16 +9231,16 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
       // copy the new attributes on the old attrs object
       forEach(src, function(value, key) {
-        if (key == 'class') {
+        if (key === 'class') {
           safeAddClass($element, value);
           dst['class'] = (dst['class'] ? dst['class'] + ' ' : '') + value;
-        } else if (key == 'style') {
+        } else if (key === 'style') {
           $element.attr('style', $element.attr('style') + ';' + value);
           dst['style'] = (dst['style'] ? dst['style'] + ';' : '') + value;
           // `dst` will never contain hasOwnProperty as DOM parser won't let it.
           // You will get an "InvalidCharacterError: DOM Exception 5" error if you
           // have an attribute like "has-own-property" or "data-has-own-property", etc.
-        } else if (key.charAt(0) != '$' && !dst.hasOwnProperty(key)) {
+        } else if (key.charAt(0) !== '$' && !dst.hasOwnProperty(key)) {
           dst[key] = value;
           dstAttr[key] = srcAttr[key];
         }
@@ -9298,7 +9279,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             }
             compileNode = $template[0];
 
-            if ($template.length != 1 || compileNode.nodeType !== NODE_TYPE_ELEMENT) {
+            if ($template.length !== 1 || compileNode.nodeType !== NODE_TYPE_ELEMENT) {
               throw $compileMinErr('tplrt',
                   "Template for directive '{0}' must have exactly one root element. {1}",
                   origAsyncDirective.name, templateUrl);
@@ -9326,7 +9307,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
               childTranscludeFn, $compileNode, origAsyncDirective, preLinkFns, postLinkFns,
               previousCompileContext);
           forEach($rootElement, function(node, i) {
-            if (node == compileNode) {
+            if (node === compileNode) {
               $rootElement[i] = $compileNode[0];
             }
           });
@@ -9451,15 +9432,15 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
 
     function getTrustedContext(node, attrNormalizedName) {
-      if (attrNormalizedName == "srcdoc") {
+      if (attrNormalizedName === "srcdoc") {
         return $sce.HTML;
       }
       var tag = nodeName_(node);
       // maction[xlink:href] can source SVG.  It's not limited to <maction>.
-      if (attrNormalizedName == "xlinkHref" ||
-          (tag == "form" && attrNormalizedName == "action") ||
-          (tag != "img" && (attrNormalizedName == "src" ||
-                            attrNormalizedName == "ngSrc"))) {
+      if (attrNormalizedName === "xlinkHref" ||
+          (tag === "form" && attrNormalizedName === "action") ||
+          (tag !== "img" && (attrNormalizedName === "src" ||
+                            attrNormalizedName === "ngSrc"))) {
         return $sce.RESOURCE_URL;
       }
     }
@@ -9522,7 +9503,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
                     //skip animations when the first digest occurs (when
                     //both the new and the old values are the same) since
                     //the CSS classes are the non-interpolated values
-                    if (name === 'class' && newValue != oldValue) {
+                    if (name === 'class' && newValue !== oldValue) {
                       attr.$updateClass(newValue, oldValue);
                     } else {
                       attr.$set(name, newValue);
@@ -9553,7 +9534,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
       if ($rootElement) {
         for (i = 0, ii = $rootElement.length; i < ii; i++) {
-          if ($rootElement[i] == firstElementToRemove) {
+          if ($rootElement[i] === firstElementToRemove) {
             $rootElement[i++] = newNode;
             for (var j = i, j2 = j + removeCount - 1,
                      jj = $rootElement.length;
@@ -9856,7 +9837,7 @@ function tokenDifference(str1, str2) {
   for (var i = 0; i < tokens1.length; i++) {
     var token = tokens1[i];
     for (var j = 0; j < tokens2.length; j++) {
-      if (token == tokens2[j]) continue outer;
+      if (token === tokens2[j]) continue outer;
     }
     values += (values.length > 0 ? ' ' : '') + token;
   }
@@ -11485,7 +11466,7 @@ function $HttpProvider() {
 
     function buildUrl(url, serializedParams) {
       if (serializedParams.length > 0) {
-        url += ((url.indexOf('?') == -1) ? '?' : '&') + serializedParams;
+        url += ((url.indexOf('?') === -1) ? '?' : '&') + serializedParams;
       }
       return url;
     }
@@ -11550,7 +11531,7 @@ function createHttpBackend($browser, createXhr, $browserDefer, callbacks, rawDoc
     $browser.$$incOutstandingRequestCount();
     url = url || $browser.url();
 
-    if (lowercase(method) == 'jsonp') {
+    if (lowercase(method) === 'jsonp') {
       var callbackId = '_' + (callbacks.counter++).toString(36);
       callbacks[callbackId] = function(data) {
         callbacks[callbackId].data = data;
@@ -11587,7 +11568,7 @@ function createHttpBackend($browser, createXhr, $browserDefer, callbacks, rawDoc
         // Occurs when accessing file resources or on Android 4.1 stock browser
         // while retrieving files from application cache.
         if (status === 0) {
-          status = response ? 200 : urlResolve(url).protocol == 'file' ? 404 : 0;
+          status = response ? 200 : urlResolve(url).protocol === 'file' ? 404 : 0;
         }
 
         completeRequest(callback,
@@ -11664,8 +11645,8 @@ function createHttpBackend($browser, createXhr, $browserDefer, callbacks, rawDoc
     script.async = true;
 
     callback = function(event) {
-      removeEventListenerFn(script, "load", callback);
-      removeEventListenerFn(script, "error", callback);
+      script.removeEventListener('load', callback);
+      script.removeEventListener('error', callback);
       rawDocument.body.removeChild(script);
       script = null;
       var status = -1;
@@ -11684,8 +11665,8 @@ function createHttpBackend($browser, createXhr, $browserDefer, callbacks, rawDoc
       }
     };
 
-    addEventListenerFn(script, "load", callback);
-    addEventListenerFn(script, "error", callback);
+    script.addEventListener('load', callback);
+    script.addEventListener('error', callback);
     rawDocument.body.appendChild(script);
     return callback;
   }
@@ -11948,8 +11929,8 @@ function $InterpolateProvider() {
           expressionPositions = [];
 
       while (index < textLength) {
-        if (((startIndex = text.indexOf(startSymbol, index)) != -1) &&
-             ((endIndex = text.indexOf(endSymbol, startIndex + startSymbolLength)) != -1)) {
+        if (((startIndex = text.indexOf(startSymbol, index)) !== -1) &&
+             ((endIndex = text.indexOf(endSymbol, startIndex + startSymbolLength)) !== -1)) {
           if (index !== startIndex) {
             concat.push(unescapeText(text.substring(index, startIndex)));
           }
@@ -12324,7 +12305,7 @@ function parseAppUrl(relativeUrl, locationObj) {
   locationObj.$$hash = decodeURIComponent(match.hash);
 
   // make sure path starts with '/';
-  if (locationObj.$$path && locationObj.$$path.charAt(0) != '/') {
+  if (locationObj.$$path && locationObj.$$path.charAt(0) !== '/') {
     locationObj.$$path = '/' + locationObj.$$path;
   }
 }
@@ -12346,7 +12327,7 @@ function beginsWith(begin, whole) {
 
 function stripHash(url) {
   var index = url.indexOf('#');
-  return index == -1 ? url : url.substr(0, index);
+  return index === -1 ? url : url.substr(0, index);
 }
 
 function trimEmptyHash(url) {
@@ -12431,7 +12412,7 @@ function LocationHtml5Url(appBase, appBaseNoFile, basePrefix) {
       }
     } else if (isDefined(appUrl = beginsWith(appBaseNoFile, url))) {
       rewrittenUrl = appBaseNoFile + appUrl;
-    } else if (appBaseNoFile == url + '/') {
+    } else if (appBaseNoFile === url + '/') {
       rewrittenUrl = appBaseNoFile;
     }
     if (rewrittenUrl) {
@@ -12545,7 +12526,7 @@ function LocationHashbangUrl(appBase, appBaseNoFile, hashPrefix) {
   };
 
   this.$$parseLinkUrl = function(url, relHref) {
-    if (stripHash(appBase) == stripHash(url)) {
+    if (stripHash(appBase) === stripHash(url)) {
       this.$$parse(url);
       return true;
     }
@@ -12579,7 +12560,7 @@ function LocationHashbangInHtml5Url(appBase, appBaseNoFile, hashPrefix) {
     var rewrittenUrl;
     var appUrl;
 
-    if (appBase == stripHash(url)) {
+    if (appBase === stripHash(url)) {
       rewrittenUrl = url;
     } else if ((appUrl = beginsWith(appBaseNoFile, url))) {
       rewrittenUrl = appBase + hashPrefix + appUrl;
@@ -12767,7 +12748,7 @@ var locationPrototype = {
    */
   path: locationGetterSetter('$$path', function(path) {
     path = path !== null ? path.toString() : '';
-    return path.charAt(0) == '/' ? path : '/' + path;
+    return path.charAt(0) === '/' ? path : '/' + path;
   }),
 
   /**
@@ -12982,7 +12963,7 @@ function locationGetterSetter(property, preprocess) {
  * Use the `$locationProvider` to configure how the application deep linking paths are stored.
  */
 function $LocationProvider() {
-  var hashPrefix = '',
+  var hashPrefix = '!',
       html5Mode = {
         enabled: false,
         requireBase: true,
@@ -12993,6 +12974,7 @@ function $LocationProvider() {
    * @ngdoc method
    * @name $locationProvider#hashPrefix
    * @description
+   * The default value for the prefix is `'!'`.
    * @param {string=} prefix Prefix for hash part (containing path and search)
    * @returns {*} current value if used as getter or itself (chaining) if used as setter
    */
@@ -13138,7 +13120,7 @@ function $LocationProvider() {
       // TODO(vojta): rewrite link when opening in new tab/window (in legacy browser)
       // currently we open nice url link and redirect then
 
-      if (!html5Mode.rewriteLinks || event.ctrlKey || event.metaKey || event.shiftKey || event.which == 2 || event.button == 2) return;
+      if (!html5Mode.rewriteLinks || event.ctrlKey || event.metaKey || event.shiftKey || event.which === 2 || event.button === 2) return;
 
       var elm = jqLite(event.target);
 
@@ -13169,7 +13151,7 @@ function $LocationProvider() {
           // getting double entries in the location history.
           event.preventDefault();
           // update location manually
-          if ($location.absUrl() != $browser.url()) {
+          if ($location.absUrl() !== $browser.url()) {
             $rootScope.$apply();
             // hack to work around FF6 bug 684208 when scenario runner clicks on links
             $window.angular['ff-684208-preventDefault'] = true;
@@ -13180,7 +13162,7 @@ function $LocationProvider() {
 
 
     // rewrite hashbang url <> html5 url
-    if (trimEmptyHash($location.absUrl()) != trimEmptyHash(initialUrl)) {
+    if (trimEmptyHash($location.absUrl()) !== trimEmptyHash(initialUrl)) {
       $browser.url($location.absUrl(), true);
     }
 
@@ -13652,19 +13634,19 @@ Lexer.prototype = {
     var start = this.index;
     while (this.index < this.text.length) {
       var ch = lowercase(this.text.charAt(this.index));
-      if (ch == '.' || this.isNumber(ch)) {
+      if (ch === '.' || this.isNumber(ch)) {
         number += ch;
       } else {
         var peekCh = this.peek();
-        if (ch == 'e' && this.isExpOperator(peekCh)) {
+        if (ch === 'e' && this.isExpOperator(peekCh)) {
           number += ch;
         } else if (this.isExpOperator(ch) &&
             peekCh && this.isNumber(peekCh) &&
-            number.charAt(number.length - 1) == 'e') {
+            number.charAt(number.length - 1) === 'e') {
           number += ch;
         } else if (this.isExpOperator(ch) &&
             (!peekCh || !this.isNumber(peekCh)) &&
-            number.charAt(number.length - 1) == 'e') {
+            number.charAt(number.length - 1) === 'e') {
           this.throwError('Invalid exponent');
         } else {
           break;
@@ -14182,7 +14164,7 @@ function findConstantAndWatchExpressions(ast, $filter) {
 }
 
 function getInputs(body) {
-  if (body.length != 1) return;
+  if (body.length !== 1) return;
   var lastExpression = body[0].expression;
   var candidate = lastExpression.toWatch;
   if (candidate.length !== 1) return candidate;
@@ -14358,7 +14340,7 @@ ASTCompiler.prototype = {
     case AST.Literal:
       expression = this.escape(ast.value);
       this.assign(intoId, expression);
-      recursionFn(expression);
+      recursionFn(intoId || expression);
       break;
     case AST.UnaryExpression:
       this.recurse(ast.argument, undefined, undefined, function(expr) { right = expr; });
@@ -14480,7 +14462,7 @@ ASTCompiler.prototype = {
           self.if_(self.notNull(right), function() {
             self.addEnsureSafeFunction(right);
             forEach(ast.arguments, function(expr) {
-              self.recurse(expr, self.nextId(), undefined, function(argument) {
+              self.recurse(expr, ast.constant ? undefined : self.nextId(), undefined, function(argument) {
                 args.push(self.ensureSafeObject(argument));
               });
             });
@@ -14521,18 +14503,18 @@ ASTCompiler.prototype = {
     case AST.ArrayExpression:
       args = [];
       forEach(ast.elements, function(expr) {
-        self.recurse(expr, self.nextId(), undefined, function(argument) {
+        self.recurse(expr, ast.constant ? undefined : self.nextId(), undefined, function(argument) {
           args.push(argument);
         });
       });
       expression = '[' + args.join(',') + ']';
       this.assign(intoId, expression);
-      recursionFn(expression);
+      recursionFn(intoId || expression);
       break;
     case AST.ObjectExpression:
       args = [];
       forEach(ast.properties, function(property) {
-        self.recurse(property.value, self.nextId(), undefined, function(expr) {
+        self.recurse(property.value, ast.constant ? undefined : self.nextId(), undefined, function(expr) {
           args.push(self.escape(
               property.key.type === AST.Identifier ? property.key.name :
                 ('' + property.key.value)) +
@@ -14541,19 +14523,19 @@ ASTCompiler.prototype = {
       });
       expression = '{' + args.join(',') + '}';
       this.assign(intoId, expression);
-      recursionFn(expression);
+      recursionFn(intoId || expression);
       break;
     case AST.ThisExpression:
       this.assign(intoId, 's');
-      recursionFn('s');
+      recursionFn(intoId || 's');
       break;
     case AST.LocalsExpression:
       this.assign(intoId, 'l');
-      recursionFn('l');
+      recursionFn(intoId || 'l');
       break;
     case AST.NGValueParameter:
       this.assign(intoId, 'v');
-      recursionFn('v');
+      recursionFn(intoId || 'v');
       break;
     }
   },
@@ -14965,12 +14947,14 @@ ASTInterpreter.prototype = {
   },
   'binary==': function(left, right, context) {
     return function(scope, locals, assign, inputs) {
+      /* jshint eqeqeq:false */
       var arg = left(scope, locals, assign, inputs) == right(scope, locals, assign, inputs);
       return context ? {value: arg} : arg;
     };
   },
   'binary!=': function(left, right, context) {
     return function(scope, locals, assign, inputs) {
+      /* jshint eqeqeq:false */
       var arg = left(scope, locals, assign, inputs) != right(scope, locals, assign, inputs);
       return context ? {value: arg} : arg;
     };
@@ -15111,7 +15095,7 @@ Parser.prototype = {
 };
 
 function isPossiblyDangerousMemberName(name) {
-  return name == 'constructor';
+  return name === 'constructor';
 }
 
 var objectValueOf = Object.prototype.valueOf;
@@ -16328,7 +16312,7 @@ function $RootScopeProvider() {
         // prototypically. In all other cases, this property needs to be set
         // when the parent scope is destroyed.
         // The listener needs to be added after the parent is set
-        if (isolate || parent != this) child.$on('$destroy', destroyChildScope);
+        if (isolate || parent !== this) child.$on('$destroy', destroyChildScope);
 
         return child;
       },
@@ -16978,8 +16962,8 @@ function $RootScopeProvider() {
 
         // sever all the references to parent scopes (after this cleanup, the current scope should
         // not be retained by any of our references and should be eligible for garbage collection)
-        if (parent && parent.$$childHead == this) parent.$$childHead = this.$$nextSibling;
-        if (parent && parent.$$childTail == this) parent.$$childTail = this.$$prevSibling;
+        if (parent && parent.$$childHead === this) parent.$$childHead = this.$$nextSibling;
+        if (parent && parent.$$childTail === this) parent.$$childTail = this.$$prevSibling;
         if (this.$$prevSibling) this.$$prevSibling.$$nextSibling = this.$$nextSibling;
         if (this.$$nextSibling) this.$$nextSibling.$$prevSibling = this.$$prevSibling;
 
@@ -18822,7 +18806,7 @@ function $$TestabilityProvider() {
                 matches.push(binding);
               }
             } else {
-              if (bindingName.indexOf(expression) != -1) {
+              if (bindingName.indexOf(expression) !== -1) {
                 matches.push(binding);
               }
             }
@@ -19783,16 +19767,16 @@ function parse(numStr) {
   }
 
   // Count the number of leading zeros.
-  for (i = 0; numStr.charAt(i) == ZERO_CHAR; i++) {/* jshint noempty: false */}
+  for (i = 0; numStr.charAt(i) === ZERO_CHAR; i++) {/* jshint noempty: false */}
 
-  if (i == (zeros = numStr.length)) {
+  if (i === (zeros = numStr.length)) {
     // The digits are all zero.
     digits = [0];
     numberOfIntegerDigits = 1;
   } else {
     // Count the number of trailing zeros
     zeros--;
-    while (numStr.charAt(zeros) == ZERO_CHAR) zeros--;
+    while (numStr.charAt(zeros) === ZERO_CHAR) zeros--;
 
     // Trailing zeros are insignificant so ignore them
     numberOfIntegerDigits -= i;
@@ -19984,7 +19968,7 @@ function dateGetter(name, size, offset, trim, negWrap) {
     if (offset > 0 || value > -offset) {
       value += offset;
     }
-    if (value === 0 && offset == -12) value = 12;
+    if (value === 0 && offset === -12) value = 12;
     return padNumber(value, size, trim, negWrap);
   };
 }
@@ -20690,8 +20674,8 @@ function orderByFilter($parse) {
       if (isFunction(predicate)) {
         get = predicate;
       } else if (isString(predicate)) {
-        if ((predicate.charAt(0) == '+' || predicate.charAt(0) == '-')) {
-          descending = predicate.charAt(0) == '-' ? -1 : 1;
+        if ((predicate.charAt(0) === '+' || predicate.charAt(0) === '-')) {
+          descending = predicate.charAt(0) === '-' ? -1 : 1;
           predicate = predicate.substring(1);
         }
         if (predicate !== '') {
@@ -21135,7 +21119,7 @@ var ngAttributeAliasDirectives = {};
 // boolean attrs are evaluated
 forEach(BOOLEAN_ATTR, function(propName, attrName) {
   // binding to multiple is not supported
-  if (propName == "multiple") return;
+  if (propName === "multiple") return;
 
   function defaultLinkFn(scope, element, attr) {
     scope.$watch(attr[normalized], function ngBooleanAttrWatchAction(value) {
@@ -21172,7 +21156,7 @@ forEach(ALIASED_ATTR, function(htmlAttr, ngAttr) {
       link: function(scope, element, attr) {
         //special case ngPattern when a literal regular expression value
         //is used as the expression (this way we don't have to watch anything).
-        if (ngAttr === "ngPattern" && attr.ngPattern.charAt(0) == "/") {
+        if (ngAttr === "ngPattern" && attr.ngPattern.charAt(0) === "/") {
           var match = attr.ngPattern.match(REGEX_STRING_REGEXP);
           if (match) {
             attr.$set("ngPattern", new RegExp(match[1], match[2]));
@@ -21723,13 +21707,13 @@ var formDirectiveFactory = function(isNgForm) {
                 event.preventDefault();
               };
 
-              addEventListenerFn(formElement[0], 'submit', handleFormSubmission);
+              formElement[0].addEventListener('submit', handleFormSubmission);
 
               // unregister the preventDefault listener so that we don't not leak memory but in a
               // way that will achieve the prevention of the default action.
               formElement.on('$destroy', function() {
                 $timeout(function() {
-                  removeEventListenerFn(formElement[0], 'submit', handleFormSubmission);
+                  formElement[0].removeEventListener('submit', handleFormSubmission);
                 }, 0, false);
               });
             }
@@ -23033,7 +23017,7 @@ function createDateParser(regexp, mapping) {
       // When a date is JSON'ified to wraps itself inside of an extra
       // set of double quotes. This makes the date parsing code unable
       // to match the date string and parse it as a date.
-      if (iso.charAt(0) == '"' && iso.charAt(iso.length - 1) == '"') {
+      if (iso.charAt(0) === '"' && iso.charAt(iso.length - 1) === '"') {
         iso = iso.substring(1, iso.length - 1);
       }
       if (ISO_DATE_REGEXP.test(iso)) {
@@ -23250,6 +23234,8 @@ function radioInputType(scope, element, attr, ctrl) {
 
   ctrl.$render = function() {
     var value = attr.value;
+    // Strict comparison would cause a BC
+    /* jshint eqeqeq:false */
     element[0].checked = (value == ctrl.$viewValue);
   };
 
@@ -23942,7 +23928,7 @@ function classDirective(name, selector) {
       for (var i = 0; i < tokens1.length; i++) {
         var token = tokens1[i];
         for (var j = 0; j < tokens2.length; j++) {
-          if (token == tokens2[j]) continue outer;
+          if (token === tokens2[j]) continue outer;
         }
         values.push(token);
       }
@@ -28838,7 +28824,7 @@ var ngRepeatDirective = ['$parse', '$animate', '$compile', function($parse, $ani
                 nextNode = nextNode.nextSibling;
               } while (nextNode && nextNode[NG_REMOVED]);
 
-              if (getBlockStart(block) != nextNode) {
+              if (getBlockStart(block) !== nextNode) {
                 // existing item which got moved
                 $animate.move(getBlockNodes(block.clone), null, previousNode);
               }
@@ -29516,7 +29502,7 @@ var ngSwitchDefaultDirective = ngDirective({
  *     <div ng-controller="ExampleController">
  *       <input ng-model="title" aria-label="title"> <br/>
  *       <textarea ng-model="text" aria-label="text"></textarea> <br/>
- *       <pane title="{{title}}">{{text}}</pane>
+ *       <pane title="{{title}}"><span>{{text}}</span></pane>
  *     </div>
  *   </file>
  *   <file name="protractor.js" type="protractor">
@@ -29698,7 +29684,7 @@ var scriptDirective = ['$templateCache', function($templateCache) {
     restrict: 'E',
     terminal: true,
     compile: function(element, attr) {
-      if (attr.type == 'text/ng-template') {
+      if (attr.type === 'text/ng-template') {
         var templateUrl = attr.id,
             text = element[0].text;
 
