@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.4-build.4705+sha.3968a8f
+ * @license AngularJS v1.5.4-build.4706+sha.0ece2d5
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.4-build.4705+sha.3968a8f/' +
+    message += '\nhttp://errors.angularjs.org/1.5.4-build.4706+sha.0ece2d5/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -1692,7 +1692,7 @@ function bootstrap(element, modules, config) {
       //Encode angle brackets to prevent input from being sanitized to empty string #8683
       throw ngMinErr(
           'btstrpd',
-          "App Already Bootstrapped with this Element '{0}'",
+          "App already bootstrapped with this element '{0}'",
           tag.replace(/</,'&lt;').replace(/>/,'&gt;'));
     }
 
@@ -2445,7 +2445,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.4-build.4705+sha.3968a8f',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.4-build.4706+sha.0ece2d5',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 4,
