@@ -1,9 +1,9 @@
 /**
- * @license AngularJS v1.5.4-build.4713+sha.fad6c7c
+ * @license AngularJS v1.5.4-build.4714+sha.ddad264
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
-(function(window, document, undefined) {'use strict';
+(function(window) {'use strict';
 
 /**
  * @description
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.4-build.4713+sha.fad6c7c/' +
+    message += '\nhttp://errors.angularjs.org/1.5.4-build.4714+sha.ddad264/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -238,7 +238,7 @@ var
  * documentMode is an IE-only property
  * http://msdn.microsoft.com/en-us/library/ie/cc196988(v=vs.85).aspx
  */
-msie = document.documentMode;
+msie = window.document.documentMode;
 
 
 /**
@@ -1096,8 +1096,8 @@ var csp = function() {
   if (!isDefined(csp.rules)) {
 
 
-    var ngCspElement = (document.querySelector('[ng-csp]') ||
-                    document.querySelector('[data-ng-csp]'));
+    var ngCspElement = (window.document.querySelector('[ng-csp]') ||
+                    window.document.querySelector('[data-ng-csp]'));
 
     if (ngCspElement) {
       var ngCspAttribute = ngCspElement.getAttribute('ng-csp') ||
@@ -1172,7 +1172,7 @@ var jq = function() {
   var i, ii = ngAttrPrefixes.length, prefix, name;
   for (i = 0; i < ii; ++i) {
     prefix = ngAttrPrefixes[i];
-    if (el = document.querySelector('[' + prefix.replace(':', '\\:') + 'jq]')) {
+    if (el = window.document.querySelector('[' + prefix.replace(':', '\\:') + 'jq]')) {
       name = el.getAttribute(prefix + 'jq');
       break;
     }
@@ -1237,7 +1237,7 @@ function toJsonReplacer(key, value) {
     val = undefined;
   } else if (isWindow(value)) {
     val = '$WINDOW';
-  } else if (value &&  document === value) {
+  } else if (value &&  window.document === value) {
     val = '$DOCUMENT';
   } else if (isScope(value)) {
     val = '$SCOPE';
@@ -1689,7 +1689,7 @@ function bootstrap(element, modules, config) {
     element = jqLite(element);
 
     if (element.injector()) {
-      var tag = (element[0] === document) ? 'document' : startingTag(element);
+      var tag = (element[0] === window.document) ? 'document' : startingTag(element);
       //Encode angle brackets to prevent input from being sanitized to empty string #8683
       throw ngMinErr(
           'btstrpd',
@@ -2446,7 +2446,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.4-build.4713+sha.fad6c7c',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.4-build.4714+sha.ddad264',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 4,
@@ -2825,7 +2825,7 @@ function jqLiteBuildFragment(html, context) {
 }
 
 function jqLiteParseHTML(html, context) {
-  context = context || document;
+  context = context || window.document;
   var parsed;
 
   if ((parsed = SINGLE_TAG_REGEXP.exec(html))) {
@@ -2851,7 +2851,7 @@ function jqLiteWrapNode(node, wrapper) {
 
 
 // IE9-11 has no method "contains" in SVG element and in Node.prototype. Bug #10259.
-var jqLiteContains = Node.prototype.contains || function(arg) {
+var jqLiteContains = window.Node.prototype.contains || function(arg) {
   // jshint bitwise: false
   return !!(this.compareDocumentPosition(arg) & 16);
   // jshint bitwise: true
@@ -3123,8 +3123,8 @@ var JQLitePrototype = JQLite.prototype = {
     }
 
     // check if document is already loaded
-    if (document.readyState === 'complete') {
-      setTimeout(trigger);
+    if (window.document.readyState === 'complete') {
+      window.setTimeout(trigger);
     } else {
       this.on('DOMContentLoaded', trigger); // works for modern browsers and IE9
       // we can not use jqLite since we are not done loading and jQuery could be loaded later.
@@ -7808,7 +7808,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
              $controller,   $rootScope,   $sce,   $animate,   $$sanitizeUri) {
 
     var SIMPLE_ATTR_NAME = /^\w/;
-    var specialAttrHolder = document.createElement('div');
+    var specialAttrHolder = window.document.createElement('div');
 
 
 
@@ -8139,7 +8139,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
       if (debugInfoEnabled) {
         content = ' ' + (directiveName || '') + ': ' + (comment || '') + ' ';
       }
-      return document.createComment(content);
+      return window.document.createComment(content);
     };
 
     return compile;
@@ -8842,7 +8842,9 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             replaceDirective = directive;
           }
 
+          /* jshint -W021 */
           nodeLinkFn = compileTemplateUrl(directives.splice(i, directives.length - i), $compileNode,
+          /* jshint +W021 */
               templateAttrs, jqCollection, hasTranscludeDirective && childTranscludeFn, preLinkFns, postLinkFns, {
                 controllerDirectives: controllerDirectives,
                 newScopeDirective: (newScopeDirective !== directive) && newScopeDirective,
@@ -9448,7 +9450,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
       switch (type) {
       case 'svg':
       case 'math':
-        var wrapper = document.createElement('div');
+        var wrapper = window.document.createElement('div');
         wrapper.innerHTML = '<' + type + '>' + template + '</' + type + '>';
         return wrapper.childNodes[0].childNodes;
       default:
@@ -9592,7 +9594,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
       // - remove them from the DOM
       // - allow them to still be traversed with .nextSibling
       // - allow a single fragment.qSA to fetch all elements being removed
-      var fragment = document.createDocumentFragment();
+      var fragment = window.document.createDocumentFragment();
       for (i = 0; i < removeCount; i++) {
         fragment.appendChild(elementsToRemove[i]);
       }
@@ -19181,7 +19183,7 @@ function $TimeoutProvider() {
 // doesn't know about mocked locations and resolves URLs to the real document - which is
 // exactly the behavior needed here.  There is little value is mocking these out for this
 // service.
-var urlParsingNode = document.createElement("a");
+var urlParsingNode = window.document.createElement("a");
 var originUrl = urlResolve(window.location.href);
 
 
@@ -25828,7 +25830,7 @@ var ngIncludeFillContentDirective = ['$compile',
           // support innerHTML, so detect this here and try to generate the contents
           // specially.
           $element.empty();
-          $compile(jqLiteBuildFragment(ctrl.template, document).childNodes)(scope,
+          $compile(jqLiteBuildFragment(ctrl.template, window.document).childNodes)(scope,
               function namespaceAdaptedClone(clone) {
             $element.append(clone);
           }, {futureParentElement: $element});
@@ -27903,8 +27905,8 @@ var ngOptionsDirective = ['$compile', '$parse', function($compile, $parse) {
 
   // we can't just jqLite('<option>') since jqLite is not smart enough
   // to create it in <select> and IE barfs otherwise.
-  var optionTemplate = document.createElement('option'),
-      optGroupTemplate = document.createElement('optgroup');
+  var optionTemplate = window.document.createElement('option'),
+      optGroupTemplate = window.document.createElement('optgroup');
 
     function ngOptionsPostLink(scope, selectElement, attr, ctrls) {
 
@@ -29924,7 +29926,7 @@ var SelectController =
   //
   // We can't just jqLite('<option>') since jqLite is not smart enough
   // to create it in <select> and IE barfs otherwise.
-  self.unknownOption = jqLite(document.createElement('option'));
+  self.unknownOption = jqLite(window.document.createElement('option'));
   self.renderUnknownOption = function(val) {
     var unknownVal = '? ' + hashKey(val) + ' ?';
     self.unknownOption.val(unknownVal);
@@ -30887,10 +30889,10 @@ $provide.value("$locale", {
 });
 }]);
 
-  jqLite(document).ready(function() {
-    angularInit(document, bootstrap);
+  jqLite(window.document).ready(function() {
+    angularInit(window.document, bootstrap);
   });
 
-})(window, document);
+})(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
