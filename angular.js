@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.4-build.4719+sha.0cbe7fb
+ * @license AngularJS v1.5.4-build.4723+sha.a479e65
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.4-build.4719+sha.0cbe7fb/' +
+    message += '\nhttp://errors.angularjs.org/1.5.4-build.4723+sha.a479e65/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2481,7 +2481,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.4-build.4719+sha.0cbe7fb',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.4-build.4723+sha.a479e65',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 4,
@@ -9530,18 +9530,18 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             startingTag(node));
       }
 
+      if (EVENT_HANDLER_ATTR_REGEXP.test(name)) {
+        throw $compileMinErr('nodomevents',
+            "Interpolations for HTML DOM event attributes are disallowed.  Please use the " +
+                "ng- versions (such as ng-click instead of onclick) instead.");
+      }
+
       directives.push({
         priority: 100,
         compile: function() {
             return {
               pre: function attrInterpolatePreLinkFn(scope, element, attr) {
                 var $$observers = (attr.$$observers || (attr.$$observers = createMap()));
-
-                if (EVENT_HANDLER_ATTR_REGEXP.test(name)) {
-                  throw $compileMinErr('nodomevents',
-                      "Interpolations for HTML DOM event attributes are disallowed.  Please use the " +
-                          "ng- versions (such as ng-click instead of onclick) instead.");
-                }
 
                 // If the attribute has changed since last $interpolate()ed
                 var newValue = attr[name];
