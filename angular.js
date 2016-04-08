@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.4-build.4726+sha.d497822
+ * @license AngularJS v1.5.4-build.4727+sha.0348347
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.4-build.4726+sha.d497822/' +
+    message += '\nhttp://errors.angularjs.org/1.5.4-build.4727+sha.0348347/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2481,7 +2481,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.4-build.4726+sha.d497822',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.4-build.4727+sha.0348347',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 4,
@@ -2739,6 +2739,9 @@ function publishExternalAPI(angular) {
  *   Requires {@link guide/production#disabling-debug-data Debug Data} to be enabled.
  * - `inheritedData()` - same as `data()`, but walks up the DOM until a value is found or the top
  *   parent element is reached.
+ *
+ * @knownIssue You cannot spy on `angular.element` if you are using Jasmine version 1.x. See
+ * https://github.com/angular/angular.js/issues/14251 for more information.
  *
  * @param {string|DOMElement} element HTML string or DOMElement to be wrapped into jQuery.
  * @returns {Object} jQuery object.
