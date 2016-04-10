@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.4-build.4732+sha.5d695e5
+ * @license AngularJS v1.5.4-build.4733+sha.4a0bd6c
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.4-build.4732+sha.5d695e5/' +
+    message += '\nhttp://errors.angularjs.org/1.5.4-build.4733+sha.4a0bd6c/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2477,7 +2477,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.4-build.4732+sha.5d695e5',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.4-build.4733+sha.4a0bd6c',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 4,
@@ -9770,10 +9770,14 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             destination[scopeName] = parentGet(scope);
             initialChanges[scopeName] = new SimpleChange(_UNINITIALIZED_VALUE, destination[scopeName]);
 
-            removeWatch = scope.$watch(parentGet, function parentValueWatchAction(newParentValue) {
-              var oldValue = destination[scopeName];
-              recordChanges(scopeName, newParentValue, oldValue);
-              destination[scopeName] = newParentValue;
+            removeWatch = scope.$watch(parentGet, function parentValueWatchAction(newValue, oldValue) {
+              if (newValue === oldValue) {
+                // If the new and old values are identical then this is the first time the watch has been triggered
+                // So instead we use the current value on the destination as the old value
+                oldValue = destination[scopeName];
+              }
+              recordChanges(scopeName, newValue, oldValue);
+              destination[scopeName] = newValue;
             }, parentGet.literal);
 
             removeWatchCollection.push(removeWatch);
@@ -9806,7 +9810,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             onChangesQueue.push(triggerOnChangesHook);
           }
           // If the has been a change on this property already then we need to reuse the previous value
-          if (changes[key]) {
+          if (isDefined(changes[key])) {
             previousValue = changes[key].previousValue;
           }
           // Store this change
