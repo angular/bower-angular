@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.4-build.4737+sha.9264cef
+ * @license AngularJS v1.5.4-build.4738+sha.83a6b15
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.4-build.4737+sha.9264cef/' +
+    message += '\nhttp://errors.angularjs.org/1.5.4-build.4738+sha.83a6b15/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2477,7 +2477,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.4-build.4737+sha.9264cef',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.4-build.4738+sha.83a6b15',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 4,
@@ -8994,12 +8994,13 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
           }
         }
 
-        // Initialize bindToController bindings
+        // Initialize controllers
         for (var name in elementControllers) {
           var controllerDirective = controllerDirectives[name];
           var controller = elementControllers[name];
           var bindings = controllerDirective.$$bindings.bindToController;
 
+          // Initialize bindToController bindings
           if (controller.identifier && bindings) {
             controller.bindingInfo =
               initializeDirectiveBindings(controllerScope, attrs, controller.instance, bindings, controllerDirective);
@@ -9012,11 +9013,14 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             // If the controller constructor has a return value, overwrite the instance
             // from setupControllers
             controller.instance = controllerResult;
-            $element.data('$' + controllerDirective.name + 'Controller', controllerResult);
             controller.bindingInfo.removeWatches && controller.bindingInfo.removeWatches();
             controller.bindingInfo =
               initializeDirectiveBindings(controllerScope, attrs, controller.instance, bindings, controllerDirective);
           }
+
+          // Store controllers on the $element data
+          // For transclude comment nodes this will be a noop and will be done at transclusion time
+          $element.data('$' + controllerDirective.name + 'Controller', controllerResult);
         }
 
         // Bind the required controllers to the controller, if `require` is an object and `bindToController` is truthy
@@ -9183,14 +9187,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
           controller = attrs[directive.name];
         }
 
-        var controllerInstance = $controller(controller, locals, true, directive.controllerAs);
-
-        // For directives with element transclusion the element is a comment.
-        // In this case .data will not attach any data.
-        // Instead, we save the controllers for the element in a local hash and attach to .data
-        // later, once we have the actual element.
-        elementControllers[directive.name] = controllerInstance;
-        $element.data('$' + directive.name + 'Controller', controllerInstance.instance);
+        elementControllers[directive.name] = $controller(controller, locals, true, directive.controllerAs);
       }
       return elementControllers;
     }
