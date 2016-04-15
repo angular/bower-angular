@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.5-build.4752+sha.ddac3b3
+ * @license AngularJS v1.5.5-build.4753+sha.5656eb3
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.5-build.4752+sha.ddac3b3/' +
+    message += '\nhttp://errors.angularjs.org/1.5.5-build.4753+sha.5656eb3/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2477,7 +2477,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.5-build.4752+sha.ddac3b3',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.5-build.4753+sha.5656eb3',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 5,
@@ -10813,7 +10813,7 @@ function $HttpProvider() {
      *
      * ### Overriding the Default Transformations Per Request
      *
-     * If you wish override the request/response transformations only for a single request then provide
+     * If you wish to override the request/response transformations only for a single request then provide
      * `transformRequest` and/or `transformResponse` properties on the configuration object passed
      * into `$http`.
      *
