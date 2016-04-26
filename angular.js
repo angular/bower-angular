@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.6-build.4778+sha.b9d76bf
+ * @license AngularJS v1.5.6-build.4779+sha.d71dc2f
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.6-build.4778+sha.b9d76bf/' +
+    message += '\nhttp://errors.angularjs.org/1.5.6-build.4779+sha.d71dc2f/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2429,6 +2429,7 @@ function toDebugString(obj) {
   $ControllerProvider,
   $DateProvider,
   $DocumentProvider,
+  $$IsDocumentHiddenProvider,
   $ExceptionHandlerProvider,
   $FilterProvider,
   $$ForceReflowProvider,
@@ -2477,7 +2478,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.6-build.4778+sha.b9d76bf',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.6-build.4779+sha.d71dc2f',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 6,
@@ -2591,6 +2592,7 @@ function publishExternalAPI(angular) {
         $cacheFactory: $CacheFactoryProvider,
         $controller: $ControllerProvider,
         $document: $DocumentProvider,
+        $$isDocumentHidden: $$IsDocumentHiddenProvider,
         $exceptionHandler: $ExceptionHandlerProvider,
         $filter: $FilterProvider,
         $$forceReflow: $$ForceReflowProvider,
@@ -5585,8 +5587,8 @@ var $$AnimateAsyncRunFactoryProvider = function() {
 };
 
 var $$AnimateRunnerFactoryProvider = function() {
-  this.$get = ['$q', '$sniffer', '$$animateAsyncRun', '$document', '$timeout',
-       function($q,   $sniffer,   $$animateAsyncRun,   $document,   $timeout) {
+  this.$get = ['$q', '$sniffer', '$$animateAsyncRun', '$$isDocumentHidden', '$timeout',
+       function($q,   $sniffer,   $$animateAsyncRun,   $$isDocumentHidden,   $timeout) {
 
     var INITIAL_STATE = 0;
     var DONE_PENDING_STATE = 1;
@@ -5638,11 +5640,7 @@ var $$AnimateRunnerFactoryProvider = function() {
 
       this._doneCallbacks = [];
       this._tick = function(fn) {
-        var doc = $document[0];
-
-        // the document may not be ready or attached
-        // to the module for some internal tests
-        if (doc && doc.hidden) {
+        if ($$isDocumentHidden()) {
           timeoutTick(fn);
         } else {
           rafTick(fn);
@@ -10156,6 +10154,32 @@ function $ControllerProvider() {
 function $DocumentProvider() {
   this.$get = ['$window', function(window) {
     return jqLite(window.document);
+  }];
+}
+
+
+/**
+ * @private
+ * Listens for document visibility change and makes the current status accessible.
+ */
+function $$IsDocumentHiddenProvider() {
+  this.$get = ['$document', '$rootScope', function($document, $rootScope) {
+    var doc = $document[0];
+    var hidden = doc && doc.hidden;
+
+    $document.on('visibilitychange', changeListener);
+
+    $rootScope.$on('$destroy', function() {
+      $document.off('visibilitychange', changeListener);
+    });
+
+    function changeListener() {
+      hidden = doc.hidden;
+    }
+
+    return function() {
+      return hidden;
+    };
   }];
 }
 
