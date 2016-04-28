@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.6-build.4782+sha.3dcc016
+ * @license AngularJS v1.5.6-build.4783+sha.afcedff
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.6-build.4782+sha.3dcc016/' +
+    message += '\nhttp://errors.angularjs.org/1.5.6-build.4783+sha.afcedff/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2488,7 +2488,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.6-build.4782+sha.3dcc016',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.6-build.4783+sha.afcedff',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 6,
@@ -3873,12 +3873,16 @@ var FN_ARG = /^\s*(_?)(\S+?)\1\s*$/;
 var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
 var $injectorMinErr = minErr('$injector');
 
-function extractArgs(fn) {
+function stringifyFn(fn) {
   // Support: Chrome 50-51 only
   // Creating a new string by adding `' '` at the end, to hack around some bug in Chrome v50/51
   // (See https://github.com/angular/angular.js/issues/14487.)
   // TODO (gkalpak): Remove workaround when Chrome v52 is released
-  var fnText = Function.prototype.toString.call(fn).replace(STRIP_COMMENTS, '') + ' ',
+  return Function.prototype.toString.call(fn) + ' ';
+}
+
+function extractArgs(fn) {
+  var fnText = stringifyFn(fn).replace(STRIP_COMMENTS, ''),
       args = fnText.match(ARROW_ARG) || fnText.match(FN_ARGS);
   return args;
 }
@@ -4652,7 +4656,7 @@ function createInjector(modulesToLoad, strictDi) {
       if (!isBoolean(result)) {
         // Workaround for MS Edge.
         // Check https://connect.microsoft.com/IE/Feedback/Details/2211653
-        result = func.$$ngIsClass = /^(?:class\s|constructor\()/.test(Function.prototype.toString.call(func));
+        result = func.$$ngIsClass = /^(?:class\s|constructor\()/.test(stringifyFn(func));
       }
       return result;
     }
