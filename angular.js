@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.6-build.4821+sha.c2033d7
+ * @license AngularJS v1.5.6-build.4823+sha.b226f30
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.6-build.4821+sha.c2033d7/' +
+    message += '\nhttp://errors.angularjs.org/1.5.6-build.4823+sha.b226f30/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2208,7 +2208,7 @@ function setupModuleLoader(window) {
            * @description
            * See {@link auto.$provide#decorator $provide.decorator()}.
            */
-          decorator: invokeLaterAndSetModuleName('$provide', 'decorator'),
+          decorator: invokeLaterAndSetModuleName('$provide', 'decorator', configBlocks),
 
           /**
            * @ngdoc method
@@ -2354,10 +2354,11 @@ function setupModuleLoader(window) {
          * @param {string} method
          * @returns {angular.Module}
          */
-        function invokeLaterAndSetModuleName(provider, method) {
+        function invokeLaterAndSetModuleName(provider, method, queue) {
+          if (!queue) queue = invokeQueue;
           return function(recipeName, factoryFunction) {
             if (factoryFunction && isFunction(factoryFunction)) factoryFunction.$$moduleName = name;
-            invokeQueue.push([provider, method, arguments]);
+            queue.push([provider, method, arguments]);
             return moduleInstance;
           };
         }
@@ -2509,7 +2510,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.6-build.4821+sha.c2033d7',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.6-build.4823+sha.b226f30',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 6,
