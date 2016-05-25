@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.6-build.4827+sha.6ce34dd
+ * @license AngularJS v1.5.6-build.4828+sha.4d5f5ff
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.6-build.4827+sha.6ce34dd/' +
+    message += '\nhttp://errors.angularjs.org/1.5.6-build.4828+sha.4d5f5ff/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -774,8 +774,8 @@ var escapeForRegexp = function(s) {
  */
 function isElement(node) {
   return !!(node &&
-    (node.nodeName  // we are a direct element
-    || (node.prop && node.attr && node.find)));  // we have an on and find method part of jQuery API
+    (node.nodeName  // We are a direct element.
+    || (node.prop && node.attr && node.find)));  // We have an on and find method part of jQuery API.
 }
 
 /**
@@ -1265,7 +1265,7 @@ function bind(self, fn) {
             : fn.call(self);
         };
   } else {
-    // in IE, native methods are not functions so they cannot be bound (note: they don't need to be)
+    // In IE, native methods are not functions so they cannot be bound (note: they don't need to be).
     return fn;
   }
 }
@@ -1413,7 +1413,7 @@ function tryDecodeURIComponent(value) {
   try {
     return decodeURIComponent(value);
   } catch (e) {
-    // Ignore any invalid uri component
+    // Ignore any invalid uri component.
   }
 }
 
@@ -1658,7 +1658,7 @@ function angularInit(element, bootstrap) {
       module,
       config = {};
 
-  // The element `element` has priority over any other element
+  // The element `element` has priority over any other element.
   forEach(ngAttrPrefixes, function(prefix) {
     var name = prefix + 'app';
 
@@ -1752,7 +1752,7 @@ function bootstrap(element, modules, config) {
 
     if (element.injector()) {
       var tag = (element[0] === window.document) ? 'document' : startingTag(element);
-      //Encode angle brackets to prevent input from being sanitized to empty string #8683
+      // Encode angle brackets to prevent input from being sanitized to empty string #8683.
       throw ngMinErr(
           'btstrpd',
           "App already bootstrapped with this element '{0}'",
@@ -2510,7 +2510,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.6-build.4827+sha.6ce34dd',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.6-build.4828+sha.4d5f5ff',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 6,
@@ -2740,8 +2740,8 @@ function publishExternalAPI(angular) {
  * - [`removeData()`](http://api.jquery.com/removeData/)
  * - [`replaceWith()`](http://api.jquery.com/replaceWith/)
  * - [`text()`](http://api.jquery.com/text/)
- * - [`toggleClass()`](http://api.jquery.com/toggleClass/)
- * - [`triggerHandler()`](http://api.jquery.com/triggerHandler/) - Passes a dummy event object to handlers.
+ * - [`toggleClass()`](http://api.jquery.com/toggleClass/) - Does not support a function as first argument
+ * - [`triggerHandler()`](http://api.jquery.com/triggerHandler/) - Passes a dummy event object to handlers
  * - [`unbind()`](http://api.jquery.com/unbind/) - Does not support namespaces or event object as parameter
  * - [`val()`](http://api.jquery.com/val/)
  * - [`wrap()`](http://api.jquery.com/wrap/)
