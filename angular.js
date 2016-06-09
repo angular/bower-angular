@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.7-build.4862+sha.78a23cc
+ * @license AngularJS v1.5.7-build.4863+sha.3ba29c4
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.7-build.4862+sha.78a23cc/' +
+    message += '\nhttp://errors.angularjs.org/1.5.7-build.4863+sha.3ba29c4/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2510,7 +2510,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.7-build.4862+sha.78a23cc',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.7-build.4863+sha.3ba29c4',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 7,
@@ -9421,18 +9421,16 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
       // copy the new attributes on the old attrs object
       forEach(src, function(value, key) {
-        if (key === 'class') {
-          safeAddClass($element, value);
-          dst['class'] = (dst['class'] ? dst['class'] + ' ' : '') + value;
-        } else if (key === 'style') {
-          $element.attr('style', $element.attr('style') + ';' + value);
-          dst['style'] = (dst['style'] ? dst['style'] + ';' : '') + value;
-          // `dst` will never contain hasOwnProperty as DOM parser won't let it.
-          // You will get an "InvalidCharacterError: DOM Exception 5" error if you
-          // have an attribute like "has-own-property" or "data-has-own-property", etc.
-        } else if (key.charAt(0) !== '$' && !dst.hasOwnProperty(key)) {
+        // Check if we already set this attribute in the loop above.
+        // `dst` will never contain hasOwnProperty as DOM parser won't let it.
+        // You will get an "InvalidCharacterError: DOM Exception 5" error if you
+        // have an attribute like "has-own-property" or "data-has-own-property", etc.
+        if (!dst.hasOwnProperty(key) && key.charAt(0) !== '$') {
           dst[key] = value;
-          dstAttr[key] = srcAttr[key];
+
+          if (key !== 'class' && key !== 'style') {
+            dstAttr[key] = srcAttr[key];
+          }
         }
       });
     }
