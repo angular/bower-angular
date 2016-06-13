@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.7-build.4869+sha.7551b89
+ * @license AngularJS v1.5.7-build.4870+sha.9f68b0e
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.7-build.4869+sha.7551b89/' +
+    message += '\nhttp://errors.angularjs.org/1.5.7-build.4870+sha.9f68b0e/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2511,7 +2511,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.7-build.4869+sha.7551b89',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.7-build.4870+sha.9f68b0e',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 7,
@@ -22012,6 +22012,11 @@ var htmlAnchorDirective = valueFn({
  *
  * A special directive is necessary because we cannot use interpolation inside the `open`
  * attribute. See the {@link guide/interpolation interpolation guide} for more info.
+ *
+ * ## A note about browser compatibility
+ *
+ * Edge, Firefox, and Internet Explorer do not support the `details` element, it is
+ * recommended to use {@link ng.ngShow} and {@link ng.ngHide} instead.
  *
  * @example
      <example>
