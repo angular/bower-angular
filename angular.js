@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.7-build.4877+sha.8cd9848
+ * @license AngularJS v1.5.7-build.4879+sha.2adaff0
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.7-build.4877+sha.8cd9848/' +
+    message += '\nhttp://errors.angularjs.org/1.5.7-build.4879+sha.2adaff0/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2511,7 +2511,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.7-build.4877+sha.8cd9848',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.7-build.4879+sha.2adaff0',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 7,
@@ -30501,37 +30501,48 @@ var ngSwitchDefaultDirective = ngDirective({
  * </example>
  */
 var ngTranscludeMinErr = minErr('ngTransclude');
-var ngTranscludeDirective = ngDirective({
-  restrict: 'EAC',
-  link: function($scope, $element, $attrs, controller, $transclude) {
-
-    if ($attrs.ngTransclude === $attrs.$attr.ngTransclude) {
-      // If the attribute is of the form: `ng-transclude="ng-transclude"`
-      // then treat it like the default
-      $attrs.ngTransclude = '';
-    }
-
-    function ngTranscludeCloneAttachFn(clone) {
-      if (clone.length) {
-        $element.empty();
-        $element.append(clone);
+var ngTranscludeDirective = ['$compile', function($compile) {
+  return {
+    restrict: 'EAC',
+    terminal: true,
+    link: function($scope, $element, $attrs, controller, $transclude) {
+      if ($attrs.ngTransclude === $attrs.$attr.ngTransclude) {
+        // If the attribute is of the form: `ng-transclude="ng-transclude"`
+        // then treat it like the default
+        $attrs.ngTransclude = '';
       }
-    }
 
-    if (!$transclude) {
-      throw ngTranscludeMinErr('orphan',
-       'Illegal use of ngTransclude directive in the template! ' +
-       'No parent directive that requires a transclusion found. ' +
-       'Element: {0}',
-       startingTag($element));
-    }
+      function ngTranscludeCloneAttachFn(clone, transcludedScope) {
+        if (clone.length) {
+          $element.empty();
+          $element.append(clone);
+        } else {
+          // Since this is the fallback content rather than the transcluded content,
+          // we compile against the scope we were linked against rather than the transcluded
+          // scope since this is the directive's own content
+          $compile($element.contents())($scope);
 
-    // If there is no slot name defined or the slot name is not optional
-    // then transclude the slot
-    var slotName = $attrs.ngTransclude || $attrs.ngTranscludeSlot;
-    $transclude(ngTranscludeCloneAttachFn, null, slotName);
-  }
-});
+          // There is nothing linked against the transcluded scope since no content was available,
+          // so it should be safe to clean up the generated scope.
+          transcludedScope.$destroy();
+        }
+      }
+
+      if (!$transclude) {
+        throw ngTranscludeMinErr('orphan',
+        'Illegal use of ngTransclude directive in the template! ' +
+        'No parent directive that requires a transclusion found. ' +
+        'Element: {0}',
+        startingTag($element));
+      }
+
+      // If there is no slot name defined or the slot name is not optional
+      // then transclude the slot
+      var slotName = $attrs.ngTransclude || $attrs.ngTranscludeSlot;
+      $transclude(ngTranscludeCloneAttachFn, null, slotName);
+    }
+  };
+}];
 
 /**
  * @ngdoc directive
