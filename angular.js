@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.8-build.4892+sha.7ab00f4
+ * @license AngularJS v1.5.8-build.4893+sha.41f3269
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.8-build.4892+sha.7ab00f4/' +
+    message += '\nhttp://errors.angularjs.org/1.5.8-build.4893+sha.41f3269/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2511,7 +2511,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.8-build.4892+sha.7ab00f4',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.8-build.4893+sha.41f3269',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 8,
@@ -16515,6 +16515,30 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
     return deferred.promise;
   }
 
+  /**
+   * @ngdoc method
+   * @name $q#race
+   * @kind function
+   *
+   * @description
+   * Returns a promise that resolves or rejects as soon as one of those promises
+   * resolves or rejects, with the value or reason from that promise.
+   *
+   * @param {Array.<Promise>|Object.<Promise>} promises An array or hash of promises.
+   * @returns {Promise} a promise that resolves or rejects as soon as one of the `promises`
+   * resolves or rejects, with the value or reason from that promise.
+   */
+
+  function race(promises) {
+    var deferred = defer();
+
+    forEach(promises, function(promise) {
+      when(promise).then(deferred.resolve, deferred.reject);
+    });
+
+    return deferred.promise;
+  }
+
   var $Q = function Q(resolver) {
     if (!isFunction(resolver)) {
       throw $qMinErr('norslvr', "Expected resolverFn, got '{0}'", resolver);
@@ -16544,6 +16568,7 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
   $Q.when = when;
   $Q.resolve = resolve;
   $Q.all = all;
+  $Q.race = race;
 
   return $Q;
 }
@@ -30512,41 +30537,56 @@ var ngTranscludeDirective = ['$compile', function($compile) {
   return {
     restrict: 'EAC',
     terminal: true,
-    link: function($scope, $element, $attrs, controller, $transclude) {
-      if ($attrs.ngTransclude === $attrs.$attr.ngTransclude) {
-        // If the attribute is of the form: `ng-transclude="ng-transclude"`
-        // then treat it like the default
-        $attrs.ngTransclude = '';
-      }
+    compile: function ngTranscludeCompile(tElement) {
 
-      function ngTranscludeCloneAttachFn(clone, transcludedScope) {
-        if (clone.length) {
-          $element.empty();
-          $element.append(clone);
-        } else {
-          // Since this is the fallback content rather than the transcluded content,
-          // we compile against the scope we were linked against rather than the transcluded
-          // scope since this is the directive's own content
-          $compile($element.contents())($scope);
+      // Remove and cache any original content to act as a fallback
+      var fallbackLinkFn = $compile(tElement.contents());
+      tElement.empty();
 
-          // There is nothing linked against the transcluded scope since no content was available,
-          // so it should be safe to clean up the generated scope.
-          transcludedScope.$destroy();
+      return function ngTranscludePostLink($scope, $element, $attrs, controller, $transclude) {
+
+        if (!$transclude) {
+          throw ngTranscludeMinErr('orphan',
+          'Illegal use of ngTransclude directive in the template! ' +
+          'No parent directive that requires a transclusion found. ' +
+          'Element: {0}',
+          startingTag($element));
         }
-      }
 
-      if (!$transclude) {
-        throw ngTranscludeMinErr('orphan',
-        'Illegal use of ngTransclude directive in the template! ' +
-        'No parent directive that requires a transclusion found. ' +
-        'Element: {0}',
-        startingTag($element));
-      }
 
-      // If there is no slot name defined or the slot name is not optional
-      // then transclude the slot
-      var slotName = $attrs.ngTransclude || $attrs.ngTranscludeSlot;
-      $transclude(ngTranscludeCloneAttachFn, null, slotName);
+        // If the attribute is of the form: `ng-transclude="ng-transclude"` then treat it like the default
+        if ($attrs.ngTransclude === $attrs.$attr.ngTransclude) {
+          $attrs.ngTransclude = '';
+        }
+        var slotName = $attrs.ngTransclude || $attrs.ngTranscludeSlot;
+
+        // If the slot is required and no transclusion content is provided then this call will throw an error
+        $transclude(ngTranscludeCloneAttachFn, null, slotName);
+
+        // If the slot is optional and no transclusion content is provided then use the fallback content
+        if (slotName && !$transclude.isSlotFilled(slotName)) {
+          useFallbackContent();
+        }
+
+        function ngTranscludeCloneAttachFn(clone, transcludedScope) {
+          if (clone.length) {
+            $element.append(clone);
+          } else {
+            useFallbackContent();
+            // There is nothing linked against the transcluded scope since no content was available,
+            // so it should be safe to clean up the generated scope.
+            transcludedScope.$destroy();
+          }
+        }
+
+        function useFallbackContent() {
+          // Since this is the fallback content rather than the transcluded content,
+          // we link against the scope of this directive rather than the transcluded scope
+          fallbackLinkFn($scope, function(clone) {
+            $element.append(clone);
+          });
+        }
+      };
     }
   };
 }];
