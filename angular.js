@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.8-build.4907+sha.c855c3f
+ * @license AngularJS v1.5.8-build.4908+sha.7a191eb
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.8-build.4907+sha.c855c3f/' +
+    message += '\nhttp://errors.angularjs.org/1.5.8-build.4908+sha.7a191eb/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2512,7 +2512,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.8-build.4907+sha.c855c3f',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.8-build.4908+sha.7a191eb',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 8,
@@ -2547,7 +2547,7 @@ function publishExternalAPI(angular) {
     'isDate': isDate,
     'lowercase': lowercase,
     'uppercase': uppercase,
-    'callbacks': {counter: 0},
+    'callbacks': {$$counter: 0},
     'getTestability': getTestability,
     '$$minErr': minErr,
     '$$csp': csp,
@@ -12675,8 +12675,7 @@ function $IntervalProvider() {
  */
 var $jsonpCallbacksProvider = function() {
   this.$get = ['$window', function($window) {
-    var counter = 0;
-    $window.angular.callbacks = {};
+    var callbacks = $window.angular.callbacks;
     var callbackMap = {};
 
     function createCallback(callbackId) {
@@ -12699,10 +12698,10 @@ var $jsonpCallbacksProvider = function() {
        * to pass to the server, which will be used to call the callback with its payload in the JSONP response.
        */
       createCallback: function(url) {
-        var callbackId = '_' + (counter++).toString(36);
+        var callbackId = '_' + (callbacks.$$counter++).toString(36);
         var callbackPath = 'angular.callbacks.' + callbackId;
         var callback = createCallback(callbackId);
-        callbackMap[callbackPath] = $window.angular.callbacks[callbackId] = callback;
+        callbackMap[callbackPath] = callbacks[callbackId] = callback;
         return callbackPath;
       },
       /**
@@ -12739,7 +12738,7 @@ var $jsonpCallbacksProvider = function() {
        */
       removeCallback: function(callbackPath) {
         var callback = callbackMap[callbackPath];
-        delete $window.angular.callbacks[callback.id];
+        delete callbacks[callback.id];
         delete callbackMap[callbackPath];
       }
     };
