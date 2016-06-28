@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.8-build.4909+sha.2456ab6
+ * @license AngularJS v1.5.8-build.4910+sha.3cda897
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.8-build.4909+sha.2456ab6/' +
+    message += '\nhttp://errors.angularjs.org/1.5.8-build.4910+sha.3cda897/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2512,7 +2512,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.8-build.4909+sha.2456ab6',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.8-build.4910+sha.3cda897',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 8,
