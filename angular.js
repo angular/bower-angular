@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.8-build.4910+sha.3cda897
+ * @license AngularJS v1.5.8-build.4911+sha.7ce7e09
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.8-build.4910+sha.3cda897/' +
+    message += '\nhttp://errors.angularjs.org/1.5.8-build.4911+sha.7ce7e09/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -155,6 +155,7 @@ function minErr(module, ErrorConstructor) {
   getBlockNodes: true,
   hasOwnProperty: true,
   createMap: true,
+  stringify: true,
 
   NODE_TYPE_ELEMENT: true,
   NODE_TYPE_ATTRIBUTE: true,
@@ -1972,6 +1973,27 @@ function createMap() {
   return Object.create(null);
 }
 
+function stringify(value) {
+  if (value == null) { // null || undefined
+    return '';
+  }
+  switch (typeof value) {
+    case 'string':
+      break;
+    case 'number':
+      value = '' + value;
+      break;
+    default:
+      if (hasCustomToString(value) && !isArray(value) && !isDate(value)) {
+        value = value.toString();
+      } else {
+        value = toJson(value);
+      }
+  }
+
+  return value;
+}
+
 var NODE_TYPE_ELEMENT = 1;
 var NODE_TYPE_ATTRIBUTE = 2;
 var NODE_TYPE_TEXT = 3;
@@ -2512,7 +2534,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.8-build.4910+sha.3cda897',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.8-build.4911+sha.7ce7e09',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 8,
@@ -2553,7 +2575,8 @@ function publishExternalAPI(angular) {
     '$$minErr': minErr,
     '$$csp': csp,
     '$$encodeUriSegment': encodeUriSegment,
-    '$$encodeUriQuery': encodeUriQuery
+    '$$encodeUriQuery': encodeUriQuery,
+    '$$stringify': stringify
   });
 
   angularModule = setupModuleLoader(window);
@@ -12170,23 +12193,6 @@ function $InterpolateProvider() {
     function unescapeText(text) {
       return text.replace(escapedStartRegexp, startSymbol).
         replace(escapedEndRegexp, endSymbol);
-    }
-
-    function stringify(value) {
-      if (value == null) { // null || undefined
-        return '';
-      }
-      switch (typeof value) {
-        case 'string':
-          break;
-        case 'number':
-          value = '' + value;
-          break;
-        default:
-          value = toJson(value);
-      }
-
-      return value;
     }
 
     //TODO: this is the same as the constantWatchDelegate in parse.js
@@ -24775,7 +24781,7 @@ var ngBindDirective = ['$compile', function($compile) {
         $compile.$$addBindingInfo(element, attr.ngBind);
         element = element[0];
         scope.$watch(attr.ngBind, function ngBindWatchAction(value) {
-          element.textContent = isUndefined(value) ? '' : value;
+          element.textContent = stringify(value);
         });
       };
     }
