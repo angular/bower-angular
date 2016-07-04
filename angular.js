@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.8-build.4921+sha.951acb1
+ * @license AngularJS v1.5.8-build.4922+sha.a2c1675
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.8-build.4921+sha.951acb1/' +
+    message += '\nhttp://errors.angularjs.org/1.5.8-build.4922+sha.a2c1675/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2541,7 +2541,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.8-build.4921+sha.951acb1',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.8-build.4922+sha.a2c1675',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 8,
@@ -25169,6 +25169,11 @@ function classDirective(name, selector) {
  * When the expression changes, the previously added classes are removed and only then are the
  * new classes added.
  *
+ * @knownIssue
+ * You should not use {@link guide/interpolation interpolation} in the value of the `class`
+ * attribute, when using the `ngClass` directive on the same element.
+ * See {@link guide/interpolation#known-issues here} for more info.
+ *
  * @animations
  * | Animation                        | Occurs                              |
  * |----------------------------------|-------------------------------------|
@@ -30328,6 +30333,11 @@ var ngHideDirective = ['$animate', function($animate) {
  *
  * @description
  * The `ngStyle` directive allows you to set CSS style on an HTML element conditionally.
+ *
+ * @knownIssue
+ * You should not use {@link guide/interpolation interpolation} in the value of the `style`
+ * attribute, when using the `ngStyle` directive on the same element.
+ * See {@link guide/interpolation#known-issues here} for more info.
  *
  * @element ANY
  * @param {expression} ngStyle
