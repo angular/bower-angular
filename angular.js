@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.8-build.4927+sha.ad41baa
+ * @license AngularJS v1.5.8-build.4928+sha.e8c2e11
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.8-build.4927+sha.ad41baa/' +
+    message += '\nhttp://errors.angularjs.org/1.5.8-build.4928+sha.e8c2e11/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2541,7 +2541,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.8-build.4927+sha.ad41baa',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.8-build.4928+sha.e8c2e11',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 8,
@@ -31375,11 +31375,16 @@ var selectDirective = function() {
 
   function selectPreLink(scope, element, attr, ctrls) {
 
-      // if ngModel is not defined, we don't need to do anything
-      var ngModelCtrl = ctrls[1];
-      if (!ngModelCtrl) return;
-
       var selectCtrl = ctrls[0];
+      var ngModelCtrl = ctrls[1];
+
+      // if ngModel is not defined, we don't need to do anything but set the registerOption
+      // function to noop, so options don't get added internally
+      if (!ngModelCtrl) {
+        selectCtrl.registerOption = noop;
+        return;
+      }
+
 
       selectCtrl.ngModelCtrl = ngModelCtrl;
 
