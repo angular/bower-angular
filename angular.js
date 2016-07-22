@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.4953+sha.228754f
+ * @license AngularJS v1.5.9-build.4954+sha.5fd42b6
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.4953+sha.228754f/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.4954+sha.5fd42b6/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2541,7 +2541,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.9-build.4953+sha.228754f',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.9-build.4954+sha.5fd42b6',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 9,
@@ -18920,12 +18920,12 @@ function $SceDelegateProvider() {
  * <file name="protractor.js" type="protractor">
  *   describe('SCE doc demo', function() {
  *     it('should sanitize untrusted values', function() {
- *       expect(element.all(by.css('.htmlComment')).first().getInnerHtml())
+ *       expect(element.all(by.css('.htmlComment')).first().getAttribute('innerHTML'))
  *           .toBe('<span>Is <i>anyone</i> reading this?</span>');
  *     });
  *
  *     it('should NOT sanitize explicitly trusted values', function() {
- *       expect(element(by.id('explicitlyTrustedHtml')).getInnerHtml()).toBe(
+ *       expect(element(by.id('explicitlyTrustedHtml')).getAttribute('innerHTML')).toBe(
  *           '<span onmouseover="this.textContent=&quot;Explicitly trusted HTML bypasses ' +
  *           'sanitization.&quot;">Hover over this text.</span>');
  *     });
@@ -22654,9 +22654,11 @@ function FormController(element, attrs, $scope, $animate, $interpolate) {
    * @description
    * Sets the form to its pristine state.
    *
-   * This method can be called to remove the 'ng-dirty' class and set the form to its pristine
-   * state (ng-pristine class). This method will also propagate to all the controls contained
-   * in this form.
+   * This method sets the form's `$pristine` state to true, the `$dirty` state to false, removes
+   * the `ng-dirty` class and adds the `ng-pristine` class. Additionally, it sets the `$submitted`
+   * state to false.
+   *
+   * This method will also propagate to all the controls contained in this form.
    *
    * Setting a form back to a pristine state is often useful when we want to 'reuse' a form after
    * saving or resetting it.
