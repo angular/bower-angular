@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.4959+sha.8ddfa2a
+ * @license AngularJS v1.5.9-build.4960+sha.4fa214c
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.4959+sha.8ddfa2a/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.4960+sha.4fa214c/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2541,7 +2541,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.9-build.4959+sha.8ddfa2a',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.9-build.4960+sha.4fa214c',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 9,
@@ -14070,10 +14070,28 @@ function ensureSafeFunction(obj, fullExpression) {
 
 function ensureSafeAssignContext(obj, fullExpression) {
   if (obj) {
-    if (obj === (0).constructor || obj === (false).constructor || obj === ''.constructor ||
-        obj === {}.constructor || obj === [].constructor || obj === Function.constructor) {
+    var booleanConstructor = (false).constructor;
+    var numberConstructor = (0).constructor;
+    var stringConstructor = ''.constructor;
+    var objectConstructor = {}.constructor;
+    var arrayConstructor = [].constructor;
+    var functionConstructor = Function.constructor;
+
+    if (obj === booleanConstructor ||
+        obj === numberConstructor ||
+        obj === stringConstructor ||
+        obj === objectConstructor ||
+        obj === arrayConstructor ||
+        obj === functionConstructor ||
+        obj === booleanConstructor.prototype ||
+        obj === numberConstructor.prototype ||
+        obj === stringConstructor.prototype ||
+        obj === objectConstructor.prototype ||
+        obj === arrayConstructor.prototype ||
+        obj === functionConstructor.prototype) {
       throw $parseMinErr('isecaf',
-        'Assigning to a constructor is disallowed! Expression: {0}', fullExpression);
+        'Assigning to a constructor or its prototype is disallowed! Expression: {0}',
+        fullExpression);
     }
   }
 }
