@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.4967+sha.4ef2169
+ * @license AngularJS v1.5.9-build.4968+sha.7bef522
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.4967+sha.4ef2169/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.4968+sha.7bef522/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2541,7 +2541,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.9-build.4967+sha.4ef2169',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.9-build.4968+sha.7bef522',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 9,
@@ -20054,13 +20054,17 @@ function $$CookieReaderProvider() {
  * @name $filter
  * @kind function
  * @description
- * Filters are used for formatting data displayed to the user. They can be used in view
- * templates, controllers or services. Angular comes with a collection of
- * [built-in filters](api/ng/filter), but it is easy to define your own as well.
+ * Filters are used for formatting data displayed to the user.
+ *
+ * They can be used in view templates, controllers or services.Angular comes
+ * with a collection of [built-in filters](api/ng/filter), but it is easy to
+ * define your own as well.
  *
  * The general syntax in templates is as follows:
  *
- *         {{ expression [| filter_name[:parameter_value] ... ] }}
+ * ```html
+ * {{ expression [| filter_name[:parameter_value] ... ] }}
+ * ```
  *
  * @param {String} name Name of the filter function to retrieve
  * @return {Function} the filter function
