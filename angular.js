@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.4978+sha.49f0777
+ * @license AngularJS v1.5.9-build.4979+sha.e8d7496
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.4978+sha.49f0777/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.4979+sha.e8d7496/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2546,7 +2546,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.9-build.4978+sha.49f0777',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.9-build.4979+sha.e8d7496',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 9,
@@ -14099,6 +14099,25 @@ function $LogProvider() {
 
 var $parseMinErr = minErr('$parse');
 
+var ARRAY_CTOR = [].constructor;
+var BOOLEAN_CTOR = (false).constructor;
+var FUNCTION_CTOR = Function.constructor;
+var NUMBER_CTOR = (0).constructor;
+var OBJECT_CTOR = {}.constructor;
+var STRING_CTOR = ''.constructor;
+var ARRAY_CTOR_PROTO = ARRAY_CTOR.prototype;
+var BOOLEAN_CTOR_PROTO = BOOLEAN_CTOR.prototype;
+var FUNCTION_CTOR_PROTO = FUNCTION_CTOR.prototype;
+var NUMBER_CTOR_PROTO = NUMBER_CTOR.prototype;
+var OBJECT_CTOR_PROTO = OBJECT_CTOR.prototype;
+var STRING_CTOR_PROTO = STRING_CTOR.prototype;
+
+var CALL = FUNCTION_CTOR_PROTO.call;
+var APPLY = FUNCTION_CTOR_PROTO.apply;
+var BIND = FUNCTION_CTOR_PROTO.bind;
+
+var objectValueOf = OBJECT_CTOR_PROTO.valueOf;
+
 // Sandboxing Angular Expressions
 // ------------------------------
 // Angular expressions are generally considered safe because these expressions only have direct
@@ -14179,10 +14198,6 @@ function ensureSafeObject(obj, fullExpression) {
   return obj;
 }
 
-var CALL = Function.prototype.call;
-var APPLY = Function.prototype.apply;
-var BIND = Function.prototype.bind;
-
 function ensureSafeFunction(obj, fullExpression) {
   if (obj) {
     if (obj.constructor === obj) {
@@ -14199,25 +14214,18 @@ function ensureSafeFunction(obj, fullExpression) {
 
 function ensureSafeAssignContext(obj, fullExpression) {
   if (obj) {
-    var booleanConstructor = (false).constructor;
-    var numberConstructor = (0).constructor;
-    var stringConstructor = ''.constructor;
-    var objectConstructor = {}.constructor;
-    var arrayConstructor = [].constructor;
-    var functionConstructor = Function.constructor;
-
-    if (obj === booleanConstructor ||
-        obj === numberConstructor ||
-        obj === stringConstructor ||
-        obj === objectConstructor ||
-        obj === arrayConstructor ||
-        obj === functionConstructor ||
-        obj === booleanConstructor.prototype ||
-        obj === numberConstructor.prototype ||
-        obj === stringConstructor.prototype ||
-        obj === objectConstructor.prototype ||
-        obj === arrayConstructor.prototype ||
-        obj === functionConstructor.prototype) {
+    if (obj === ARRAY_CTOR ||
+        obj === BOOLEAN_CTOR ||
+        obj === FUNCTION_CTOR ||
+        obj === NUMBER_CTOR ||
+        obj === OBJECT_CTOR ||
+        obj === STRING_CTOR ||
+        obj === ARRAY_CTOR_PROTO ||
+        obj === BOOLEAN_CTOR_PROTO ||
+        obj === FUNCTION_CTOR_PROTO ||
+        obj === NUMBER_CTOR_PROTO ||
+        obj === OBJECT_CTOR_PROTO ||
+        obj === STRING_CTOR_PROTO) {
       throw $parseMinErr('isecaf',
         'Assigning to a constructor or its prototype is disallowed! Expression: {0}',
         fullExpression);
@@ -15879,8 +15887,6 @@ Parser.prototype = {
 function isPossiblyDangerousMemberName(name) {
   return name === 'constructor';
 }
-
-var objectValueOf = Object.prototype.valueOf;
 
 function getValueOf(value) {
   return isFunction(value.valueOf) ? value.valueOf() : objectValueOf.call(value);
