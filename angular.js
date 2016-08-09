@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.4985+sha.c7010be
+ * @license AngularJS v1.5.9-build.4986+sha.b6340d1
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.4985+sha.c7010be/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.4986+sha.b6340d1/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2546,7 +2546,7 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.9-build.4985+sha.c7010be',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.5.9-build.4986+sha.b6340d1',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 5,
   dot: 9,
@@ -25102,19 +25102,19 @@ var CONSTANT_VALUE_REGEXP = /^(true|false|\d+)$/;
  * @name ngValue
  *
  * @description
- * Binds the given expression to the value of `<option>` or {@link input[radio] `input[radio]`},
- * so that when the element is selected, the {@link ngModel `ngModel`} of that element is set to
- * the bound value.
+ * Binds the given expression to the value of the element.
  *
- * `ngValue` is useful when dynamically generating lists of radio buttons using
- * {@link ngRepeat `ngRepeat`}, as shown below.
+ * It is mainly used on {@link input[radio] `input[radio]`} and option elements,
+ * so that when the element is selected, the {@link ngModel `ngModel`} of that element (or its
+ * {@link select `select`} parent element) is set to the bound value. It is especially useful
+ * for dynamically generated lists using {@link ngRepeat `ngRepeat`}, as shown below.
  *
- * Likewise, `ngValue` can be used to set the value of `<option>` elements for
- * the {@link select `select`} element.
+ * It can also be used to achieve one-way binding of a given expression to an input element
+ * such as an `input[text]` or a `textarea`, when that element does not use ngModel.
  *
  * @element input
  * @param {string=} ngValue angular expression, whose value will be bound to the `value` attribute
- *   of the `input` element
+ * and `value` property of the element.
  *
  * @example
     <example name="ngValue-directive" module="valueExample">
@@ -25153,18 +25153,30 @@ var CONSTANT_VALUE_REGEXP = /^(true|false|\d+)$/;
     </example>
  */
 var ngValueDirective = function() {
+  /**
+   *  inputs use the value attribute as their default value if the value property is not set.
+   *  Once the value property has been set (by adding input), it will not react to changes to
+   *  the value attribute anymore. Setting both attribute and property fixes this behavior, and
+   *  makes it possible to use ngValue as a sort of one-way bind.
+   */
+  function updateElementValue(element, attr, value) {
+    element.prop('value', value);
+    attr.$set('value', value);
+  }
+
   return {
     restrict: 'A',
     priority: 100,
     compile: function(tpl, tplAttr) {
       if (CONSTANT_VALUE_REGEXP.test(tplAttr.ngValue)) {
         return function ngValueConstantLink(scope, elm, attr) {
-          attr.$set('value', scope.$eval(attr.ngValue));
+          var value = scope.$eval(attr.ngValue);
+          updateElementValue(elm, attr, value);
         };
       } else {
         return function ngValueLink(scope, elm, attr) {
           scope.$watch(attr.ngValue, function valueWatchAction(value) {
-            attr.$set('value', value);
+            updateElementValue(elm, attr, value);
           });
         };
       }
