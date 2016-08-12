@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.4989+sha.859348c
+ * @license AngularJS v1.5.9-build.4990+sha.6304cde
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.4989+sha.859348c/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.4990+sha.6304cde/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2546,10 +2546,12 @@ function toDebugString(obj) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.5.9-build.4989+sha.859348c',    // all of these placeholder strings will be replaced by grunt's
-  major: 'NG_VERSION_MAJOR',    // package task
-  minor: 'NG_VERSION_MINOR',
-  dot: 'NG_VERSION_DOT',
+  // These placeholder strings will be replaced by grunt's `build` task.
+  // They need to be double- or single-quoted.
+  full: '1.5.9-build.4990+sha.6304cde',
+  major: 1,
+  minor: 5,
+  dot: 9,
   codeName: 'snapshot'
 };
 
