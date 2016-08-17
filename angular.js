@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.4992+sha.a272a3c
+ * @license AngularJS v1.5.9-build.4993+sha.88f3517
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.4992+sha.a272a3c/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.4993+sha.88f3517/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2548,7 +2548,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.9-build.4992+sha.a272a3c',
+  full: '1.5.9-build.4993+sha.88f3517',
   major: 1,
   minor: 5,
   dot: 9,
