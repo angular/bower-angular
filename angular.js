@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.5012+sha.cc8ea72
+ * @license AngularJS v1.5.9-build.5013+sha.a83a209
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.5012+sha.cc8ea72/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.5013+sha.a83a209/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2555,7 +2555,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.9-build.5012+sha.cc8ea72',
+  full: '1.5.9-build.5013+sha.a83a209',
   major: 1,
   minor: 5,
   dot: 9,
@@ -28826,8 +28826,8 @@ var ngModelDirective = ['$rootScope', function($rootScope) {
  *
  * ```html
  * <div ng-model-options="{ allowInvalid: true }">
- *   <form ng-model-options="{ updateOn: \'blur\' }">
- *     <input ng-model-options="{ updateOn: \'default\' }">
+ *   <form ng-model-options="{ updateOn: 'blur' }">
+ *     <input ng-model-options="{ updateOn: 'default' }" />
  *   </form>
  * </div>
  * ```
@@ -28867,14 +28867,17 @@ var ngModelDirective = ['$rootScope', function($rootScope) {
  *   <file name="index.html">
  *     <div ng-controller="ExampleController">
  *       <form name="userForm">
- *         Name:
- *         <input type="text" name="userName"
- *                ng-model="user.name"
- *                ng-model-options="{ updateOn: 'blur' }"
- *                ng-keyup="cancel($event)" /><br />
- *
- *         Other data:
- *         <input type="text" ng-model="user.data" /><br />
+ *         <label>
+   *         Name:
+ *           <input type="text" name="userName"
+ *                  ng-model="user.name"
+ *                  ng-model-options="{ updateOn: 'blur' }"
+ *                  ng-keyup="cancel($event)" />
+ *         </label><br />
+ *         <label>
+ *           Other data:
+ *           <input type="text" ng-model="user.data" />
+ *         </label><br />
  *       </form>
  *       <pre>user.name = <span ng-bind="user.name"></span></pre>
  *     </div>
@@ -28941,9 +28944,9 @@ var ngModelDirective = ['$rootScope', function($rootScope) {
  *
  * ## Model updates and validation
  *
- * The default behaviour in `ngModel` is that the model value is set to `null` when the validation
- * determines that the value is invalid. By setting the `allowInvalid` property to true, the model
- * will still be updated even if the value is invalid.
+ * The default behaviour in `ngModel` is that the model value is set to `undefined` when the
+ * validation determines that the value is invalid. By setting the `allowInvalid` property to true,
+ * the model will still be updated even if the value is invalid.
  *
  *
  * ## Connecting to the scope
@@ -28957,10 +28960,12 @@ var ngModelDirective = ['$rootScope', function($rootScope) {
  *   <file name="index.html">
  *     <div ng-controller="ExampleController">
  *       <form name="userForm">
- *         Name:
- *         <input type="text" name="userName"
- *                ng-model="user.name"
- *                ng-model-options="{ getterSetter: true }" />
+ *         <label>
+ *           Name:
+ *           <input type="text" name="userName"
+ *                  ng-model="user.name"
+ *                  ng-model-options="{ getterSetter: true }" />
+ *         </label>
  *       </form>
  *       <pre>user.name = <span ng-bind="user.name()"></span></pre>
  *     </div>
@@ -28987,7 +28992,7 @@ var ngModelDirective = ['$rootScope', function($rootScope) {
  * @param {Object} ngModelOptions options to apply to the current model. Valid keys are:
  *   - `updateOn`: string specifying which event should the input be bound to. You can set several
  *     events using an space delimited list. There is a special event called `default` that
- *     matches the default events belonging of the control.
+ *     matches the default events belonging to the control.
  *   - `debounce`: integer value which contains the debounce model update value in milliseconds. A
  *     value of 0 triggers an immediate update. If an object is supplied instead, you can specify a
  *     custom value for each event. For example:
@@ -28997,7 +29002,7 @@ var ngModelDirective = ['$rootScope', function($rootScope) {
  *   - `getterSetter`: boolean value which determines whether or not to treat functions bound to
  *     `ngModel` as getters/setters.
  *   - `timezone`: Defines the timezone to be used to read/write the `Date` instance in the model for
- *     `<input type="date">`, `<input type="time">`, ... . It understands UTC/GMT and the
+ *     `<input type="date" />`, `<input type="time" />`, ... . It understands UTC/GMT and the
  *     continental US time zone abbreviations, but for general use, use a time zone offset, for
  *     example, `'+0430'` (4 hours, 30 minutes east of the Greenwich meridian)
  *     If not specified, the timezone of the browser will be used.
