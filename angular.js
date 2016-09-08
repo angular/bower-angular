@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.5007+sha.704123a
+ * @license AngularJS v1.5.9-build.5008+sha.d882fde
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.5007+sha.704123a/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.5008+sha.d882fde/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2555,7 +2555,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.9-build.5007+sha.704123a',
+  full: '1.5.9-build.5008+sha.d882fde',
   major: 1,
   minor: 5,
   dot: 9,
@@ -3406,7 +3406,7 @@ forEach({
             result.push(option.value || option.text);
           }
         });
-        return result.length === 0 ? null : result;
+        return result;
       }
       return element.value;
     }
