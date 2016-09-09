@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.5015+sha.51a2eb7
+ * @license AngularJS v1.5.9-build.5016+sha.51c516e
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.5015+sha.51a2eb7/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.5016+sha.51c516e/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2555,7 +2555,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.9-build.5015+sha.51a2eb7',
+  full: '1.5.9-build.5016+sha.51c516e',
   major: 1,
   minor: 5,
   dot: 9,
@@ -29292,8 +29292,8 @@ var ngOptionsMinErr = minErr('ngOptions');
  * elements for the `<select>` element using the array or object obtained by evaluating the
  * `ngOptions` comprehension expression.
  *
- * In many cases, `ngRepeat` can be used on `<option>` elements instead of {@link ng.directive:ngOptions
- * ngOptions} to achieve a similar result. However, `ngOptions` provides some benefits:
+ * In many cases, {@link ng.directive:ngRepeat ngRepeat} can be used on `<option>` elements instead of
+ * `ngOptions` to achieve a similar result. However, `ngOptions` provides some benefits:
  * - more flexibility in how the `<select>`'s model is assigned via the `select` **`as`** part of the
  * comprehension expression
  * - reduced memory consumption by not creating a new scope for each repeated instance
