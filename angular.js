@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.5027+sha.32aa7e7
+ * @license AngularJS v1.5.9-build.5028+sha.a1bdffa
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.5027+sha.32aa7e7/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.5028+sha.a1bdffa/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2555,7 +2555,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.9-build.5027+sha.32aa7e7',
+  full: '1.5.9-build.5028+sha.a1bdffa',
   major: 1,
   minor: 5,
   dot: 9,
@@ -10246,18 +10246,21 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
             if (optional && !attrs[attrName]) break;
 
             parentGet = $parse(attrs[attrName]);
+            var deepWatch = parentGet.literal;
 
             var initialValue = destination[scopeName] = parentGet(scope);
             initialChanges[scopeName] = new SimpleChange(_UNINITIALIZED_VALUE, destination[scopeName]);
 
             removeWatch = scope.$watch(parentGet, function parentValueWatchAction(newValue, oldValue) {
               if (oldValue === newValue) {
-                if (oldValue === initialValue) return;
+                if (oldValue === initialValue || (deepWatch && equals(oldValue, initialValue))) {
+                  return;
+                }
                 oldValue = initialValue;
               }
               recordChanges(scopeName, newValue, oldValue);
               destination[scopeName] = newValue;
-            }, parentGet.literal);
+            }, deepWatch);
 
             removeWatchCollection.push(removeWatch);
             break;
@@ -29451,7 +29454,7 @@ var ngOptionsDirective = ['$compile', '$document', '$parse', function($compile, 
           getViewValueFromOption: function(option) {
             // If the viewValue could be an object that may be mutated by the application,
             // we need to make a copy and not return the reference to the value on the option.
-            return trackBy ? angular.copy(option.viewValue) : option.viewValue;
+            return trackBy ? copy(option.viewValue) : option.viewValue;
           }
         };
       }
