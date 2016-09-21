@@ -1,6 +1,6 @@
 {
   "name": "angular",
-  "version": "1.5.9-build.5034+sha.8d4d3d5",
+  "version": "1.5.9-build.5035+sha.cf241c4",
   "license": "MIT",
   "main": "./angular.js",
   "ignore": [],
