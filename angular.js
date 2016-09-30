@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.5043+sha.2be5ac6
+ * @license AngularJS v1.5.9-build.5044+sha.3253b55
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.5043+sha.2be5ac6/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.5044+sha.3253b55/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2555,7 +2555,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.9-build.5043+sha.2be5ac6',
+  full: '1.5.9-build.5044+sha.3253b55',
   major: 1,
   minor: 5,
   dot: 9,
@@ -26219,7 +26219,8 @@ var ngControllerDirective = [function() {
  * @ngdoc directive
  * @name ngCsp
  *
- * @element html
+ * @restrict A
+ * @element ANY
  * @description
  *
  * Angular has some features that can conflict with certain restrictions that are applied when using
@@ -26301,8 +26302,7 @@ var ngControllerDirective = [function() {
      </html>
    ```
   * @example
-      // Note: the suffix `.csp` in the example name triggers
-      // csp mode in our http server!
+      <!-- Note: the `.csp` suffix in the example name triggers CSP mode in our http server! -->
       <example name="example.csp" module="cspExample" ng-csp="true">
         <file name="index.html">
           <div ng-controller="MainController as ctrl">
@@ -26419,9 +26419,9 @@ var ngControllerDirective = [function() {
       </example>
   */
 
-// ngCsp is not implemented as a proper directive any more, because we need it be processed while we
-// bootstrap the system (before $parse is instantiated), for this reason we just have
-// the csp() fn that looks for the `ng-csp` attribute anywhere in the current doc
+// `ngCsp` is not implemented as a proper directive any more, because we need it be processed while
+// we bootstrap the app (before `$parse` is instantiated). For this reason, we just have the `csp()`
+// fn that looks for the `ng-csp` attribute anywhere in the current doc.
 
 /**
  * @ngdoc directive
