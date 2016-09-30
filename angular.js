@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.5044+sha.3253b55
+ * @license AngularJS v1.5.9-build.5045+sha.9062bae
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.5044+sha.3253b55/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.5045+sha.9062bae/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2555,7 +2555,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.9-build.5044+sha.3253b55',
+  full: '1.5.9-build.5045+sha.9062bae',
   major: 1,
   minor: 5,
   dot: 9,
@@ -5022,7 +5022,8 @@ function $AnchorScrollProvider() {
     }
 
     function scroll(hash) {
-      hash = isString(hash) ? hash : $location.hash();
+      // Allow numeric hashes
+      hash = isString(hash) ? hash : isNumber(hash) ? hash.toString() : $location.hash();
       var elm;
 
       // empty hash, scroll to the top of the page
