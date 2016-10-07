@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.5049+sha.34434cf
+ * @license AngularJS v1.5.9-build.5050+sha.b3a3ed3
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.5049+sha.34434cf/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.5050+sha.b3a3ed3/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2555,7 +2555,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.9-build.5049+sha.34434cf',
+  full: '1.5.9-build.5050+sha.b3a3ed3',
   major: 1,
   minor: 5,
   dot: 9,
@@ -11226,7 +11226,7 @@ function $HttpProvider() {
      * object, which currently contains this default configuration:
      *
      * - `$httpProvider.defaults.headers.common` (headers that are common for all requests):
-     *   - `Accept: application/json, text/plain, * / *`
+     *   - <code>Accept: application/json, text/plain, \*&#65279;/&#65279;\*</code>
      * - `$httpProvider.defaults.headers.post`: (header defaults for POST requests)
      *   - `Content-Type: application/json`
      * - `$httpProvider.defaults.headers.put` (header defaults for PUT requests)
