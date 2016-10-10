@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.5055+sha.138fbf0
+ * @license AngularJS v1.5.9-build.5056+sha.298f8c4
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.5055+sha.138fbf0/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.5056+sha.298f8c4/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2555,7 +2555,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.9-build.5055+sha.138fbf0',
+  full: '1.5.9-build.5056+sha.298f8c4',
   major: 1,
   minor: 5,
   dot: 9,
@@ -25138,13 +25138,16 @@ var inputDirective = ['$browser', '$sniffer', '$filter', '$parse',
   return {
     restrict: 'E',
     require: ['?ngModel'],
-    link: {
-      pre: function(scope, element, attr, ctrls) {
-        if (ctrls[0]) {
-          (inputType[lowercase(attr.type)] || inputType.text)(scope, element, attr, ctrls[0], $sniffer,
-                                                              $browser, $filter, $parse);
+    compile: function(tElement, tAttr) {
+      if (lowercase(tAttr.type) === 'hidden') tAttr.$set('autocomplete', 'off');
+      return {
+        pre: function(scope, element, attr, ctrls) {
+          if (ctrls[0]) {
+            (inputType[lowercase(attr.type)] || inputType.text)(scope, element, attr, ctrls[0], $sniffer,
+                                                                $browser, $filter, $parse);
+          }
         }
-      }
+      };
     }
   };
 }];
