@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.5069+sha.daa47e3
+ * @license AngularJS v1.5.9-build.5070+sha.00b60f2
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.5069+sha.daa47e3/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.5070+sha.00b60f2/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2555,7 +2555,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.9-build.5069+sha.daa47e3',
+  full: '1.5.9-build.5070+sha.00b60f2',
   major: 1,
   minor: 5,
   dot: 9,
@@ -22050,12 +22050,10 @@ function ngDirective(directive) {
  * @restrict E
  *
  * @description
- * Modifies the default behavior of the html A tag so that the default action is prevented when
+ * Modifies the default behavior of the html a tag so that the default action is prevented when
  * the href attribute is empty.
  *
- * This change permits the easy creation of action links with the `ngClick` directive
- * without changing the location or causing page reloads, e.g.:
- * `<a href="" ng-click="list.addItem()">Add Item</a>`
+ * For dynamically creating `href` attributes for a tags, see the {@link ng.ngHref `ngHref`} directive.
  */
 var htmlAnchorDirective = valueFn({
   restrict: 'E',
