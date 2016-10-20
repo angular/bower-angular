@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.5074+sha.f5f802c
+ * @license AngularJS v1.5.9-build.5075+sha.828f8a6
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.5074+sha.f5f802c/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.5075+sha.828f8a6/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2555,7 +2555,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.9-build.5074+sha.f5f802c',
+  full: '1.5.9-build.5075+sha.828f8a6',
   major: 1,
   minor: 5,
   dot: 9,
@@ -10515,6 +10515,9 @@ function $ControllerProvider() {
    * @ngdoc method
    * @name $controllerProvider#allowGlobals
    * @description If called, allows `$controller` to find controller constructors on `window`
+   *
+   * @deprecated
+   * This method of finding controllers has been deprecated. This will be removed in 1.7.
    */
   this.allowGlobals = function() {
     globals = true;
@@ -10535,7 +10538,7 @@ function $ControllerProvider() {
      *    * check if a controller with given name is registered via `$controllerProvider`
      *    * check if evaluating the string on the current scope returns a constructor
      *    * if $controllerProvider#allowGlobals, check `window[constructor]` on the global
-     *      `window` object (not recommended)
+     *      `window` object (deprecated, not recommended)
      *
      *    The string can use the `controller as property` syntax, where the controller instance is published
      *    as the specified property on the `scope`; the `scope` must be injected into `locals` param for this
@@ -26103,7 +26106,7 @@ var ngCloakDirective = ngDirective({
  *
  * If the current `$controllerProvider` is configured to use globals (via
  * {@link ng.$controllerProvider#allowGlobals `$controllerProvider.allowGlobals()` }), this may
- * also be the name of a globally accessible constructor function (not recommended).
+ * also be the name of a globally accessible constructor function (deprecated, not recommended).
  *
  * @example
  * Here is a simple form for editing user contact information. Adding, removing, clearing, and
