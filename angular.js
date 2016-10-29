@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.0-rc.0
+ * @license AngularJS v1.5.9-build.5087+sha.47ba51e
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.0-rc.0/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.5087+sha.47ba51e/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2555,11 +2555,11 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.0-rc.0',
+  full: '1.5.9-build.5087+sha.47ba51e',
   major: 1,
-  minor: 6,
-  dot: 0,
-  codeName: 'bracing-vortex'
+  minor: 5,
+  dot: 9,
+  codeName: 'snapshot'
 };
 
 
