@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.5101+sha.0ff10e1
+ * @license AngularJS v1.5.9-build.5102+sha.bcd0d4d
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.5101+sha.0ff10e1/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.5102+sha.bcd0d4d/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2580,7 +2580,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.9-build.5101+sha.0ff10e1',
+  full: '1.5.9-build.5102+sha.bcd0d4d',
   major: 1,
   minor: 5,
   dot: 9,
@@ -8163,7 +8163,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
    *
    * The default value is true in Angular 1.5.x but will switch to false in Angular 1.6.x.
    */
-  var preAssignBindingsEnabled = true;
+  var preAssignBindingsEnabled = false;
   this.preAssignBindingsEnabled = function(enabled) {
     if (isDefined(enabled)) {
       preAssignBindingsEnabled = enabled;
