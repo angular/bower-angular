@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.5105+sha.d80cdeb
+ * @license AngularJS v1.5.9-build.5132+sha.f582f9e
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.5105+sha.d80cdeb/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.5132+sha.f582f9e/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -670,7 +670,7 @@ function isDate(value) {
  * @kind function
  *
  * @description
- * Determines if a reference is an `Array`.
+ * Determines if a reference is an `Array`. Alias of Array.isArray.
  *
  * @param {*} value Reference to check.
  * @returns {boolean} True if `value` is an `Array`.
@@ -2580,7 +2580,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.9-build.5105+sha.d80cdeb',
+  full: '1.5.9-build.5132+sha.f582f9e',
   major: 1,
   minor: 5,
   dot: 9,
@@ -13128,13 +13128,18 @@ function parseAbsoluteUrl(absoluteUrl, locationObj) {
   locationObj.$$port = toInt(parsedUrl.port) || DEFAULT_PORTS[parsedUrl.protocol] || null;
 }
 
+var DOUBLE_SLASH_REGEX = /^\s*[\\/]{2,}/;
+function parseAppUrl(url, locationObj) {
 
-function parseAppUrl(relativeUrl, locationObj) {
-  var prefixed = (relativeUrl.charAt(0) !== '/');
-  if (prefixed) {
-    relativeUrl = '/' + relativeUrl;
+  if (DOUBLE_SLASH_REGEX.test(url)) {
+    throw $locationMinErr('badpath', 'Invalid url "{0}".', url);
   }
-  var match = urlResolve(relativeUrl);
+
+  var prefixed = (url.charAt(0) !== '/');
+  if (prefixed) {
+    url = '/' + url;
+  }
+  var match = urlResolve(url);
   locationObj.$$path = decodeURIComponent(prefixed && match.pathname.charAt(0) === '/' ?
       match.pathname.substring(1) : match.pathname);
   locationObj.$$search = parseKeyValue(match.search);
@@ -13242,9 +13247,10 @@ function LocationHtml5Url(appBase, appBaseNoFile, basePrefix) {
     var appUrl, prevAppUrl;
     var rewrittenUrl;
 
+
     if (isDefined(appUrl = stripBaseUrl(appBase, url))) {
       prevAppUrl = appUrl;
-      if (isDefined(appUrl = stripBaseUrl(basePrefix, appUrl))) {
+      if (basePrefix && isDefined(appUrl = stripBaseUrl(basePrefix, appUrl))) {
         rewrittenUrl = appBaseNoFile + (stripBaseUrl('/', appUrl) || appUrl);
       } else {
         rewrittenUrl = appBase + prevAppUrl;
@@ -20286,7 +20292,7 @@ function $FilterProvider($provide) {
  *
  *     The final result is an array of those elements that the predicate returned true for.
  *
- * @param {function(actual, expected)|true|undefined} comparator Comparator which is used in
+ * @param {function(actual, expected)|true|false} [comparator] Comparator which is used in
  *     determining if the expected value (from the filter expression) and actual value (from
  *     the object in the array) should be considered a match.
  *
@@ -20299,13 +20305,14 @@ function $FilterProvider($provide) {
  *   - `true`: A shorthand for `function(actual, expected) { return angular.equals(actual, expected)}`.
  *     This is essentially strict comparison of expected and actual.
  *
- *   - `false|undefined`: A short hand for a function which will look for a substring match in case
- *     insensitive way.
+ *   - `false`: A short hand for a function which will look for a substring match in a case
+ *     insensitive way. Primitive values are converted to strings. Objects are not compared against
+ *     primitives, unless they have a custom `toString` method (e.g. `Date` objects).
  *
- *     Primitive values are converted to strings. Objects are not compared against primitives,
- *     unless they have a custom `toString` method (e.g. `Date` objects).
  *
- * @param {string=} anyPropertyKey The special property name that matches against any property.
+ *   Defaults to `false`.
+ *
+ * @param {string} [anyPropertyKey] The special property name that matches against any property.
  *     By default `$`.
  *
  * @example
@@ -24994,9 +25001,7 @@ function radioInputType(scope, element, attr, ctrl) {
     if (doTrim) {
       value = trim(value);
     }
-    // Strict comparison would cause a BC
-    // eslint-disable-next-line eqeqeq
-    element[0].checked = (value == ctrl.$viewValue);
+    element[0].checked = (value === ctrl.$viewValue);
   };
 
   attr.$observe('value', ctrl.$render);
@@ -30135,7 +30140,7 @@ var ngPluralizeDirective = ['$locale', '$interpolate', '$log', function($locale,
  * <div ng-repeat="(key, value) in myObj"> ... </div>
  * ```
  *
- * However, there are a limitations compared to array iteration:
+ * However, there are a few limitations compared to array iteration:
  *
  * - The JavaScript specification does not define the order of keys
  *   returned for an object, so Angular relies on the order returned by the browser
@@ -30159,7 +30164,7 @@ var ngPluralizeDirective = ['$locale', '$interpolate', '$log', function($locale,
  * # Tracking and Duplicates
  *
  * `ngRepeat` uses {@link $rootScope.Scope#$watchCollection $watchCollection} to detect changes in
- * the collection. When a change happens, ngRepeat then makes the corresponding changes to the DOM:
+ * the collection. When a change happens, `ngRepeat` then makes the corresponding changes to the DOM:
  *
  * * When an item is added, a new instance of the template is added to the DOM.
  * * When an item is removed, its template instance is removed from the DOM.
@@ -30167,7 +30172,7 @@ var ngPluralizeDirective = ['$locale', '$interpolate', '$log', function($locale,
  *
  * To minimize creation of DOM elements, `ngRepeat` uses a function
  * to "keep track" of all items in the collection and their corresponding DOM elements.
- * For example, if an item is added to the collection, ngRepeat will know that all other items
+ * For example, if an item is added to the collection, `ngRepeat` will know that all other items
  * already have DOM elements, and will not re-render them.
  *
  * The default tracking function (which tracks items by their identity) does not allow
@@ -30194,18 +30199,28 @@ var ngPluralizeDirective = ['$locale', '$interpolate', '$log', function($locale,
  * ```
  *
  * <div class="alert alert-success">
- * If you are working with objects that have an identifier property, you should track
- * by the identifier instead of the whole object. Should you reload your data later, `ngRepeat`
+ * If you are working with objects that have a unique identifier property, you should track
+ * by this identifier instead of the object instance. Should you reload your data later, `ngRepeat`
  * will not have to rebuild the DOM elements for items it has already rendered, even if the
  * JavaScript objects in the collection have been substituted for new ones. For large collections,
  * this significantly improves rendering performance. If you don't have a unique identifier,
  * `track by $index` can also provide a performance boost.
  * </div>
+ *
  * ```html
  *    <div ng-repeat="model in collection track by model.id">
  *      {{model.name}}
  *    </div>
  * ```
+ *
+ * <br />
+ * <div class="alert alert-warning">
+ * Avoid using `track by $index` when the repeated template contains
+ * {@link guide/expression#one-time-binding one-time bindings}. In such cases, the `nth` DOM
+ * element will always be matched with the `nth` item of the array, so the bindings on that element
+ * will not be updated even when the corresponding item changes, essentially causing the view to get
+ * out-of-sync with the underlying data.
+ * </div>
  *
  * When no `track by` expression is provided, it is equivalent to tracking by the built-in
  * `$id` function, which tracks items by their identity:
@@ -30215,14 +30230,16 @@ var ngPluralizeDirective = ['$locale', '$interpolate', '$log', function($locale,
  *    </div>
  * ```
  *
+ * <br />
  * <div class="alert alert-warning">
  * **Note:** `track by` must always be the last expression:
  * </div>
  * ```
- * <div ng-repeat="model in collection | orderBy: 'id' as filtered_result track by model.id">
- *     {{model.name}}
- * </div>
+ *    <div ng-repeat="model in collection | orderBy: 'id' as filtered_result track by model.id">
+ *      {{model.name}}
+ *    </div>
  * ```
+ *
  *
  * # Special repeat start and end points
  * To repeat a series of elements instead of just one parent element, ngRepeat (as well as other ng directives) supports extending
