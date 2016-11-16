@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.5138+sha.7dd42d3
+ * @license AngularJS v1.5.9-build.5139+sha.296cfce
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.5138+sha.7dd42d3/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.5139+sha.296cfce/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2542,7 +2542,6 @@ function toDebugString(obj) {
   $jsonpCallbacksProvider,
   $LocationProvider,
   $LogProvider,
-  $ModelOptionsProvider,
   $ParseProvider,
   $RootScopeProvider,
   $QProvider,
@@ -2580,7 +2579,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.9-build.5138+sha.7dd42d3',
+  full: '1.5.9-build.5139+sha.296cfce',
   major: 1,
   minor: 5,
   dot: 9,
@@ -2710,7 +2709,6 @@ function publishExternalAPI(angular) {
         $jsonpCallbacks: $jsonpCallbacksProvider,
         $location: $LocationProvider,
         $log: $LogProvider,
-        $modelOptions: $ModelOptionsProvider,
         $parse: $ParseProvider,
         $rootScope: $RootScopeProvider,
         $q: $QProvider,
@@ -27663,10 +27661,11 @@ var ngListDirective = function() {
   UNTOUCHED_CLASS: true,
   TOUCHED_CLASS: true,
   PENDING_CLASS: true,
-  $ModelOptionsProvider: true,
   addSetValidityMethod: true,
-  setupValidity: true
+  setupValidity: true,
+  $defaultModelOptions: false
 */
+
 
 var VALID_CLASS = 'ng-valid',
     INVALID_CLASS = 'ng-invalid',
@@ -27879,8 +27878,8 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
  *
  *
  */
-NgModelController.$inject = ['$scope', '$exceptionHandler', '$attrs', '$element', '$parse', '$animate', '$timeout', '$q', '$interpolate', '$modelOptions'];
-function NgModelController($scope, $exceptionHandler, $attr, $element, $parse, $animate, $timeout, $q, $interpolate, $modelOptions) {
+NgModelController.$inject = ['$scope', '$exceptionHandler', '$attrs', '$element', '$parse', '$animate', '$timeout', '$q', '$interpolate'];
+function NgModelController($scope, $exceptionHandler, $attr, $element, $parse, $animate, $timeout, $q, $interpolate) {
   this.$viewValue = Number.NaN;
   this.$modelValue = Number.NaN;
   this.$$rawModelValue = undefined; // stores the parsed modelValue / model set from scope regardless of validity.
@@ -27900,7 +27899,7 @@ function NgModelController($scope, $exceptionHandler, $attr, $element, $parse, $
   this.$pending = undefined; // keep pending keys here
   this.$name = $interpolate($attr.name || '', false)($scope);
   this.$$parentForm = nullFormCtrl;
-  this.$options = $modelOptions;
+  this.$options = $defaultModelOptions;
 
   this.$$parsedNgModel = $parse($attr.ngModel);
   this.$$parsedNgModelAssign = this.$$parsedNgModel.assign;
@@ -28815,32 +28814,123 @@ var ngModelDirective = ['$rootScope', function($rootScope) {
   };
 }];
 
+/* exported $defaultModelOptions */
+var $defaultModelOptions;
+var DEFAULT_REGEXP = /(\s+|^)default(\s+|$)/;
+
+/**
+ * @ngdoc type
+ * @name ModelOptions
+ * @description
+ * A container for the options set by the {@link ngModelOptions} directive
+ */
+function ModelOptions(options) {
+  this.$$options = options;
+}
+
+ModelOptions.prototype = {
+
+  /**
+   * @ngdoc method
+   * @name ModelOptions#getOption
+   * @param {string} name the name of the option to retrieve
+   * @returns {*} the value of the option
+   * @description
+   * Returns the value of the given option
+   */
+  getOption: function(name) {
+    return this.$$options[name];
+  },
+
+  /**
+   * @ngdoc method
+   * @name ModelOptions#createChild
+   * @param {Object} options a hash of options for the new child that will override the parent's options
+   * @return {ModelOptions} a new `ModelOptions` object initialized with the given options.
+   */
+  createChild: function(options) {
+    var inheritAll = false;
+
+    // make a shallow copy
+    options = extend({}, options);
+
+    // Inherit options from the parent if specified by the value `"$inherit"`
+    forEach(options, /* @this */ function(option, key) {
+      if (option === '$inherit') {
+        if (key === '*') {
+          inheritAll = true;
+        } else {
+          options[key] = this.$$options[key];
+          // `updateOn` is special so we must also inherit the `updateOnDefault` option
+          if (key === 'updateOn') {
+            options.updateOnDefault = this.$$options.updateOnDefault;
+          }
+        }
+      } else {
+        if (key === 'updateOn') {
+          // If the `updateOn` property contains the `default` event then we have to remove
+          // it from the event list and set the `updateOnDefault` flag.
+          options.updateOnDefault = false;
+          options[key] = trim(option.replace(DEFAULT_REGEXP, function() {
+            options.updateOnDefault = true;
+            return ' ';
+          }));
+        }
+      }
+    }, this);
+
+    if (inheritAll) {
+      // We have a property of the form: `"*": "$inherit"`
+      delete options['*'];
+      defaults(options, this.$$options);
+    }
+
+    // Finally add in any missing defaults
+    defaults(options, $defaultModelOptions.$$options);
+
+    return new ModelOptions(options);
+  }
+};
+
+
+$defaultModelOptions = new ModelOptions({
+  updateOn: '',
+  updateOnDefault: true,
+  debounce: 0,
+  getterSetter: false,
+  allowInvalid: false,
+  timezone: null
+});
+
 
 /**
  * @ngdoc directive
  * @name ngModelOptions
  *
  * @description
- * This directive allows you to modify the behaviour of ngModel and input directives within your
- * application. You can specify an ngModelOptions directive on any element and the settings affect
- * the ngModel and input directives on all descendent elements.
+ * This directive allows you to modify the behaviour of {@link ngModel} directives within your
+ * application. You can specify an `ngModelOptions` directive on any element. All {@link ngModel}
+ * directives will use the options of their nearest `ngModelOptions` ancestor.
  *
- * The ngModelOptions settings are found by evaluating the value of the ngModelOptions attribute as
+ * The `ngModelOptions` settings are found by evaluating the value of the attribute directive as
  * an Angular expression. This expression should evaluate to an object, whose properties contain
- * the settings.
+ * the settings. For example: `<div "ng-model-options"="{ debounce: 100 }"`.
  *
- * If a setting is not specified as a property on the object for a particular ngModelOptions directive
- * then it will inherit that setting from the first ngModelOptions directive found by traversing up the
- * DOM tree. If there is no ancestor element containing an ngModelOptions directive then the settings in
- * {@link $modelOptions} will be used.
+ * ## Inheriting Options
+ *
+ * You can specify that an `ngModelOptions` setting should be inherited from a parent `ngModelOptions`
+ * directive by giving it the value of `"$inherit"`.
+ * Then it will inherit that setting from the first `ngModelOptions` directive found by traversing up the
+ * DOM tree. If there is no ancestor element containing an `ngModelOptions` directive then default settings
+ * will be used.
  *
  * For example given the following fragment of HTML
  *
  *
  * ```html
- * <div ng-model-options="{ allowInvalid: true }">
- *   <form ng-model-options="{ updateOn: 'blur' }">
- *     <input ng-model-options="{ updateOn: 'default' }" />
+ * <div ng-model-options="{ allowInvalid: true, debounce: 200 }">
+ *   <form ng-model-options="{ updateOn: 'blur', allowInvalid: '$inherit' }">
+ *     <input ng-model-options="{ updateOn: 'default', allowInvalid: '$inherit' }" />
  *   </form>
  * </div>
  * ```
@@ -28848,8 +28938,35 @@ var ngModelDirective = ['$rootScope', function($rootScope) {
  * the `input` element will have the following settings
  *
  * ```js
- * { allowInvalid: true, updateOn: 'default' }
+ * { allowInvalid: true, updateOn: 'default', debounce: 0 }
  * ```
+ *
+ * Notice that the `debounce` setting was not inherited and used the default value instead.
+ *
+ * You can specify that all undefined settings are automatically inherited from an ancestor by
+ * including a property with key of `"*"` and value of `"$inherit"`.
+ *
+ * For example given the following fragment of HTML
+ *
+ *
+ * ```html
+ * <div ng-model-options="{ allowInvalid: true, debounce: 200 }">
+ *   <form ng-model-options="{ updateOn: 'blur', "*": '$inherit' }">
+ *     <input ng-model-options="{ updateOn: 'default', "*": '$inherit' }" />
+ *   </form>
+ * </div>
+ * ```
+ *
+ * the `input` element will have the following settings
+ *
+ * ```js
+ * { allowInvalid: true, updateOn: 'default', debounce: 200 }
+ * ```
+ *
+ * Notice that the `debounce` setting now inherits the value from the outer `<div>` element.
+ *
+ * If you are creating a reusable component then you should be careful when using `"*": "$inherit"`
+ * since you may inadvertently inherit a setting in the future that changes the behavior of your component.
  *
  *
  * ## Triggering and debouncing model updates
@@ -28860,10 +28977,10 @@ var ngModelDirective = ['$rootScope', function($rootScope) {
  *
  * Given the nature of `ngModelOptions`, the value displayed inside input fields in the view might
  * be different from the value in the actual model. This means that if you update the model you
- * should also invoke {@link ngModel.NgModelController `$rollbackViewValue`} on the relevant input field in
+ * should also invoke {@link ngModel.NgModelController#$rollbackViewValue} on the relevant input field in
  * order to make sure it is synchronized with the model and that any debounced action is canceled.
  *
- * The easiest way to reference the control's {@link ngModel.NgModelController `$rollbackViewValue`}
+ * The easiest way to reference the control's {@link ngModel.NgModelController#$rollbackViewValue}
  * method is by making sure the input is placed inside a form that has a `name` attribute. This is
  * important because `form` controllers are published to the related scope under the name in their
  * `name` attribute.
@@ -28881,7 +28998,7 @@ var ngModelDirective = ['$rootScope', function($rootScope) {
  *     <div ng-controller="ExampleController">
  *       <form name="userForm">
  *         <label>
-   *         Name:
+ *           Name:
  *           <input type="text" name="userName"
  *                  ng-model="user.name"
  *                  ng-model-options="{ updateOn: 'blur' }"
@@ -29002,7 +29119,8 @@ var ngModelDirective = ['$rootScope', function($rootScope) {
  * You can specify the timezone that date/time input directives expect by providing its name in the
  * `timezone` property.
  *
- * @param {Object} ngModelOptions options to apply to the current model. Valid keys are:
+ * @param {Object} ngModelOptions options to apply to {@link ngModel} directives on this element and
+ *   and its descendents. Valid keys are:
  *   - `updateOn`: string specifying which event should the input be bound to. You can set several
  *     events using an space delimited list. There is a special event called `default` that
  *     matches the default events belonging to the control.
@@ -29021,7 +29139,7 @@ var ngModelDirective = ['$rootScope', function($rootScope) {
  *     If not specified, the timezone of the browser will be used.
  *
  */
-var ngModelOptionsDirective = ['$modelOptions', function($modelOptions) {
+var ngModelOptionsDirective = function() {
   return {
     restrict: 'A',
     // ngModelOptions needs to run before ngModel and input directives
@@ -29031,115 +29149,21 @@ var ngModelOptionsDirective = ['$modelOptions', function($modelOptions) {
     link: {
       pre: function ngModelOptionsPreLinkFn(scope, element, attrs, ctrls) {
         var optionsCtrl = ctrls[0];
-        var parentOptions = ctrls[1] ? ctrls[1].$options : $modelOptions;
+        var parentOptions = ctrls[1] ? ctrls[1].$options : $defaultModelOptions;
         optionsCtrl.$options = parentOptions.createChild(scope.$eval(attrs.ngModelOptions));
       }
     }
   };
-}];
+};
 
 
-/**
- * @ngdoc provider
- * @name $modelOptionsProvider
- * @description
- *
- * Here, you can change the default settings from which {@link ngModelOptions}
- * directives inherit.
- *
- * See the {@link ngModelOptions} directive for a list of the available options.
- */
-function $ModelOptionsProvider() {
-  return {
-    /**
-     * @ngdoc property
-     * @name $modelOptionsProvider#defaultOptions
-     * @type {Object}
-     * @description
-     * The default options to fall back on when there are no more ngModelOption
-     * directives as ancestors.
-     * Use this property to specify the defaultOptions for the application as a whole.
-     *
-     * The initial default options are:
-     *
-     * * `updateOn`: `default`
-     * * `debounce`: `0`
-     * * `allowInvalid`: `undefined`
-     * * `getterSetter`: `undefined`
-     * * `timezone`: 'undefined'
-     */
-    defaultOptions: {
-      updateOn: 'default',
-      debounce: 0
-    },
-
-    /**
-     * @ngdoc service
-     * @name $modelOptions
-     * @type ModelOptions
-     * @description
-     *
-     * This service provides the application wide default {@link ModelOptions} options that
-     * will be used by {@link ngModel} directives if no {@link ngModelOptions} directive is
-     * specified.
-     */
-    $get: function() {
-      return new ModelOptions(this.defaultOptions);
+// shallow copy over values from `src` that are not already specified on `dst`
+function defaults(dst, src) {
+  forEach(src, function(value, key) {
+    if (!isDefined(dst[key])) {
+      dst[key] = value;
     }
-  };
-}
-
-
-/**
- * @ngdoc type
- * @name ModelOptions
- * @description
- * A container for the options set by the {@link ngModelOptions} directive
- * and the {@link $modelOptions} service.
- */
-var DEFAULT_REGEXP = /(\s+|^)default(\s+|$)/;
-function ModelOptions(options, parentOptions) {
-
-  // Extend the parent's options with these new ones
-  var _options = extend({}, parentOptions, options);
-
-  // do extra processing on the options
-
-  // updateOn and updateOnDefault
-  if (isDefined(_options.updateOn) && _options.updateOn.trim()) {
-    _options.updateOnDefault = false;
-    // extract "default" pseudo-event from list of events that can trigger a model update
-    _options.updateOn = trim(_options.updateOn.replace(DEFAULT_REGEXP, function() {
-      _options.updateOnDefault = true;
-      return ' ';
-    }));
-  } else if (parentOptions) {
-    _options.updateOn = parentOptions.updateOn;
-    _options.updateOnDefault = parentOptions.updateOnDefault;
-  } else {
-    _options.updateOnDefault = true;
-  }
-
-
-  /**
-   * @ngdoc method
-   * @name ModelOptions#getOption
-   * @param {string} name the name of the option to retrieve
-   * @returns {*} the value of the option
-   * @description
-   * Returns the value of the given option
-   */
-  this.getOption = function(name) { return _options[name]; };
-
-  /**
-   * @ngdoc method
-   * @name ModelOptions#createChild
-   * @param {Object} options a hash of options for the new child that will override the parent's options
-   * @return {ModelOptions} a new `ModelOptions` object initialized with the given options.
-   */
-  this.createChild = function(options) {
-    return new ModelOptions(options, _options);
-  };
+  });
 }
 
 /**
