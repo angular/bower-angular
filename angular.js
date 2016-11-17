@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.5141+sha.7d24af1
+ * @license AngularJS v1.5.9-build.5142+sha.789790f
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.5141+sha.7d24af1/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.5142+sha.789790f/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2579,7 +2579,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.9-build.5141+sha.7d24af1',
+  full: '1.5.9-build.5142+sha.789790f',
   major: 1,
   minor: 5,
   dot: 9,
@@ -27663,7 +27663,7 @@ var ngListDirective = function() {
   PENDING_CLASS: true,
   addSetValidityMethod: true,
   setupValidity: true,
-  $defaultModelOptions: false
+  defaultModelOptions: false
 */
 
 
@@ -27899,7 +27899,7 @@ function NgModelController($scope, $exceptionHandler, $attr, $element, $parse, $
   this.$pending = undefined; // keep pending keys here
   this.$name = $interpolate($attr.name || '', false)($scope);
   this.$$parentForm = nullFormCtrl;
-  this.$options = $defaultModelOptions;
+  this.$options = defaultModelOptions;
 
   this.$$parsedNgModel = $parse($attr.ngModel);
   this.$$parsedNgModelAssign = this.$$parsedNgModel.assign;
@@ -28472,7 +28472,7 @@ NgModelController.prototype = {
 
     this.$$timeout.cancel(this.$$pendingDebounce);
     var that = this;
-    if (debounceDelay) {
+    if (debounceDelay > 0) { // this fails if debounceDelay is an object
       this.$$pendingDebounce = this.$$timeout(function() {
         that.$commitViewValue();
       }, debounceDelay);
@@ -28814,8 +28814,8 @@ var ngModelDirective = ['$rootScope', function($rootScope) {
   };
 }];
 
-/* exported $defaultModelOptions */
-var $defaultModelOptions;
+/* exported defaultModelOptions */
+var defaultModelOptions;
 var DEFAULT_REGEXP = /(\s+|^)default(\s+|$)/;
 
 /**
@@ -28886,14 +28886,14 @@ ModelOptions.prototype = {
     }
 
     // Finally add in any missing defaults
-    defaults(options, $defaultModelOptions.$$options);
+    defaults(options, defaultModelOptions.$$options);
 
     return new ModelOptions(options);
   }
 };
 
 
-$defaultModelOptions = new ModelOptions({
+defaultModelOptions = new ModelOptions({
   updateOn: '',
   updateOnDefault: true,
   debounce: 0,
@@ -29149,7 +29149,7 @@ var ngModelOptionsDirective = function() {
     link: {
       pre: function ngModelOptionsPreLinkFn(scope, element, attrs, ctrls) {
         var optionsCtrl = ctrls[0];
-        var parentOptions = ctrls[1] ? ctrls[1].$options : $defaultModelOptions;
+        var parentOptions = ctrls[1] ? ctrls[1].$options : defaultModelOptions;
         optionsCtrl.$options = parentOptions.createChild(scope.$eval(attrs.ngModelOptions));
       }
     }
