@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.5142+sha.789790f
+ * @license AngularJS v1.5.9-build.5143+sha.d79f9b3
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.5142+sha.789790f/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.5143+sha.d79f9b3/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2579,7 +2579,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.9-build.5142+sha.789790f',
+  full: '1.5.9-build.5143+sha.d79f9b3',
   major: 1,
   minor: 5,
   dot: 9,
@@ -10539,7 +10539,8 @@ function $ControllerProvider() {
    * @description If called, allows `$controller` to find controller constructors on `window`
    *
    * @deprecated
-   * This method of finding controllers has been deprecated. This will be removed in 1.7.
+   * removeVersion="v1.7"
+   * This method of finding controllers has been deprecated.
    */
   this.allowGlobals = function() {
     globals = true;
