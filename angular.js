@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.0-rc.1
+ * @license AngularJS v1.5.9-build.5149+sha.991a2b3
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.0-rc.1/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.5149+sha.991a2b3/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2579,11 +2579,11 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.0-rc.1',
+  full: '1.5.9-build.5149+sha.991a2b3',
   major: 1,
-  minor: 6,
-  dot: 0,
-  codeName: 'proximity-warning'
+  minor: 5,
+  dot: 9,
+  codeName: 'snapshot'
 };
 
 
@@ -18444,8 +18444,8 @@ function adjustMatcher(matcher) {
           'Illegal sequence *** in string matcher.  String: {0}', matcher);
     }
     matcher = escapeForRegexp(matcher).
-                  replace('\\*\\*', '.*').
-                  replace('\\*', '[^:/.?&;]*');
+                  replace(/\\\*\\\*/g, '.*').
+                  replace(/\\\*/g, '[^:/.?&;]*');
     return new RegExp('^' + matcher + '$');
   } else if (isRegExp(matcher)) {
     // The only other type of matcher allowed is a Regexp.
