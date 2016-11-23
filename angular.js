@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.5157+sha.c9bb5b9
+ * @license AngularJS v1.5.9-build.5158+sha.cc92da0
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.5157+sha.c9bb5b9/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.5158+sha.cc92da0/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -238,6 +238,7 @@ var
     angularModule,
     uid               = 0;
 
+// Support: IE 9-11 only
 /**
  * documentMode is an IE-only property
  * http://msdn.microsoft.com/en-us/library/ie/cc196988(v=vs.85).aspx
@@ -1348,6 +1349,7 @@ function fromJson(json) {
 
 var ALL_COLONS = /:/g;
 function timezoneToOffset(timezone, fallback) {
+  // Support: IE 9-11 only, Edge 13-14+
   // IE/Edge do not "understand" colon (`:`) in timezone
   timezone = timezone.replace(ALL_COLONS, '');
   var requestedTimezoneOffset = Date.parse('Jan 01, 1970 00:00:00 ' + timezone) / 60000;
@@ -2579,7 +2581,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.9-build.5157+sha.c9bb5b9',
+  full: '1.5.9-build.5158+sha.cc92da0',
   major: 1,
   minor: 5,
   dot: 9,
@@ -4764,8 +4766,9 @@ function createInjector(modulesToLoad, strictDi) {
     }
 
     function isClass(func) {
+      // Support: IE 9-11 only
       // IE 9-11 do not support classes and IE9 leaks with the code below.
-      if (msie <= 11 || typeof func !== 'function') {
+      if (msie || typeof func !== 'function') {
         return false;
       }
       var result = func.$$ngIsClass;
@@ -8741,6 +8744,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
       for (var i = 0; i < nodeList.length; i++) {
         attrs = new Attributes();
 
+        // Support: IE 11 only
         // Workaround for #11781 and #14924
         if (msie === 11) {
           mergeConsecutiveTextNodes(nodeList, i, notLiveList);
@@ -17042,6 +17046,7 @@ function $RootScopeProvider() {
 
     function cleanUpScope($scope) {
 
+      // Support: IE 9 only
       if (msie === 9) {
         // There is a memory leak in IE9 if all child scopes are not disconnected
         // completely when a scope is destroyed. So this code will recurse up through
@@ -19156,6 +19161,7 @@ function $SceProvider() {
 
   this.$get = ['$parse', '$sceDelegate', function(
                 $parse,   $sceDelegate) {
+    // Support: IE 9-11 only
     // Prereq: Ensure that we're not running in IE<11 quirks mode.  In that mode, IE < 11 allow
     // the "expression(javascript expression)" syntax which is insecure.
     if (enabled && msie < 8) {
@@ -19541,12 +19547,13 @@ function $SnifferProvider() {
       // We are purposefully using `!(android < 4)` to cover the case when `android` is undefined
       history: !!(hasHistoryPushState && !(android < 4) && !boxee),
       hasEvent: function(event) {
+        // Support: IE 9-11 only
         // IE9 implements 'input' event it's so fubared that we rather pretend that it doesn't have
         // it. In particular the event is not fired when backspace or delete key are pressed or
         // when cut operation is performed.
         // IE10+ implements 'input' event but it erroneously fires under various situations,
         // e.g. when placeholder changes, or a form is focused.
-        if (event === 'input' && msie <= 11) return false;
+        if (event === 'input' && msie) return false;
 
         if (isUndefined(eventSupport[event])) {
           var divElm = document.createElement('div');
@@ -19952,6 +19959,7 @@ var originUrl = urlResolve(window.location.href);
 function urlResolve(url) {
   var href = url;
 
+  // Support: IE 9-11 only
   if (msie) {
     // Normalize before parse.  Refer Implementation Notes on why this is
     // done in two steps on IE.
@@ -22527,10 +22535,11 @@ forEach(['src', 'srcset', 'href'], function(attrName) {
 
           attr.$set(name, value);
 
-          // on IE, if "ng:src" directive declaration is used and "src" attribute doesn't exist
+          // Support: IE 9-11 only
+          // On IE, if "ng:src" directive declaration is used and "src" attribute doesn't exist
           // then calling element.setAttribute('src', 'foo') doesn't do anything, so we need
           // to set the property as well to achieve the desired effect.
-          // we use attr[attrName] value since $set can sanitize the url.
+          // We use attr[attrName] value since $set can sanitize the url.
           if (msie && propName) element.prop(propName, attr[name]);
         });
       }
