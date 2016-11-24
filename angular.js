@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.9-build.5158+sha.cc92da0
+ * @license AngularJS v1.5.9-build.5160+sha.6e91f9c
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.9-build.5158+sha.cc92da0/' +
+    message += '\nhttp://errors.angularjs.org/1.5.9-build.5160+sha.6e91f9c/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -1524,12 +1524,20 @@ function allowAutoBootstrap(document) {
   link.href = src;
   var scriptProtocol = link.protocol;
   var docLoadProtocol = document.location.protocol;
-  if ((scriptProtocol === 'resource:' ||
-       scriptProtocol === 'chrome-extension:') &&
-      docLoadProtocol !== scriptProtocol) {
-    return false;
+  if (docLoadProtocol === scriptProtocol) {
+    return true;
   }
-  return true;
+  switch (scriptProtocol) {
+    case 'http:':
+    case 'https:':
+    case 'ftp:':
+    case 'blob:':
+    case 'file:':
+    case 'data:':
+      return true;
+    default:
+      return false;
+  }
 }
 
 // Cached as it has to run during loading so that document.currentScript is available.
@@ -2581,7 +2589,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.9-build.5158+sha.cc92da0',
+  full: '1.5.9-build.5160+sha.6e91f9c',
   major: 1,
   minor: 5,
   dot: 9,
