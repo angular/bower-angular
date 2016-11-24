@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.0-rc.2
+ * @license AngularJS v1.5.10-build.5163+sha.cdb9e08
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.0-rc.2/' +
+    message += '\nhttp://errors.angularjs.org/1.5.10-build.5163+sha.cdb9e08/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2589,11 +2589,11 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.0-rc.2',
+  full: '1.5.10-build.5163+sha.cdb9e08',
   major: 1,
-  minor: 6,
-  dot: 0,
-  codeName: 'safety-insurance'
+  minor: 5,
+  dot: 10,
+  codeName: 'snapshot'
 };
 
 
