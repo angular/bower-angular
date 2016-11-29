@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.10-build.5172+sha.b77defd
+ * @license AngularJS v1.5.10-build.5173+sha.f1db7d7
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.10-build.5172+sha.b77defd/' +
+    message += '\nhttp://errors.angularjs.org/1.5.10-build.5173+sha.f1db7d7/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2621,7 +2621,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.10-build.5172+sha.b77defd',
+  full: '1.5.10-build.5173+sha.f1db7d7',
   major: 1,
   minor: 5,
   dot: 10,
@@ -29191,7 +29191,12 @@ defaultModelOptions = new ModelOptions({
  *   - `debounce`: integer value which contains the debounce model update value in milliseconds. A
  *     value of 0 triggers an immediate update. If an object is supplied instead, you can specify a
  *     custom value for each event. For example:
- *     `ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }"`
+ *     ```
+ *     ng-model-options="{
+ *       updateOn: 'default blur',
+ *       debounce: { 'default': 500, 'blur': 0 }
+ *     }"
+ *     ```
  *   - `allowInvalid`: boolean value which indicates that the model can be set with values that did
  *     not validate correctly instead of the default behavior of setting the model to undefined.
  *   - `getterSetter`: boolean value which determines whether or not to treat functions bound to
