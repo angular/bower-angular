@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.10-build.5173+sha.f1db7d7
+ * @license AngularJS v1.5.10-build.5174+sha.465d173
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.10-build.5173+sha.f1db7d7/' +
+    message += '\nhttp://errors.angularjs.org/1.5.10-build.5174+sha.465d173/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -1554,12 +1554,14 @@ function allowAutoBootstrap(document) {
   var src = document.currentScript.getAttribute('src');
   var link = document.createElement('a');
   link.href = src;
-  var scriptProtocol = link.protocol;
-  var docLoadProtocol = document.location.protocol;
-  if (docLoadProtocol === scriptProtocol) {
+  if (document.location.origin === link.origin) {
+    // Same-origin resources are always allowed, even for non-whitelisted schemes.
     return true;
   }
-  switch (scriptProtocol) {
+  // Disabled bootstrapping unless angular.js was loaded from a known scheme used on the web.
+  // This is to prevent angular.js bundled with browser extensions from being used to bypass the
+  // content security policy in web pages and other browser extensions.
+  switch (link.protocol) {
     case 'http:':
     case 'https:':
     case 'ftp:':
@@ -2621,7 +2623,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.10-build.5173+sha.f1db7d7',
+  full: '1.5.10-build.5174+sha.465d173',
   major: 1,
   minor: 5,
   dot: 10,
