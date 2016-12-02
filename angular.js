@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.10-build.5176+sha.f5d2bf3
+ * @license AngularJS v1.5.10-build.5177+sha.245b271
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.10-build.5176+sha.f5d2bf3/' +
+    message += '\nhttp://errors.angularjs.org/1.5.10-build.5177+sha.245b271/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2623,7 +2623,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.10-build.5176+sha.f5d2bf3',
+  full: '1.5.10-build.5177+sha.245b271',
   major: 1,
   minor: 5,
   dot: 10,
@@ -29691,6 +29691,7 @@ var ngOptionsDirective = ['$compile', '$document', '$parse', function($compile, 
       // option when the viewValue does not match any of the option values.
       for (var i = 0, children = selectElement.children(), ii = children.length; i < ii; i++) {
         if (children[i].value === '') {
+          selectCtrl.hasEmptyOption = true;
           selectCtrl.emptyOption = children.eq(i);
           break;
         }
@@ -29827,9 +29828,35 @@ var ngOptionsDirective = ['$compile', '$document', '$parse', function($compile, 
         // compile the element since there might be bindings in it
         $compile(selectCtrl.emptyOption)(scope);
 
-        // remove the class, which is added automatically because we recompile the element and it
-        // becomes the compilation root
-        selectCtrl.emptyOption.removeClass('ng-scope');
+        if (selectCtrl.emptyOption[0].nodeType === NODE_TYPE_COMMENT) {
+          // This means the empty option has currently no actual DOM node, probably because
+          // it has been modified by a transclusion directive.
+          selectCtrl.hasEmptyOption = false;
+
+          // Redefine the registerOption function, which will catch
+          // options that are added by ngIf etc. (rendering of the node is async because of
+          // lazy transclusion)
+          selectCtrl.registerOption = function(optionScope, optionEl) {
+            if (optionEl.val() === '') {
+              selectCtrl.hasEmptyOption = true;
+              selectCtrl.emptyOption = optionEl;
+              selectCtrl.emptyOption.removeClass('ng-scope');
+              // This ensures the new empty option is selected if previously no option was selected
+              ngModelCtrl.$render();
+
+              optionEl.on('$destroy', function() {
+                selectCtrl.hasEmptyOption = false;
+                selectCtrl.emptyOption = undefined;
+              });
+            }
+          };
+
+        } else {
+          // remove the class, which is added automatically because we recompile the element and it
+          // becomes the compilation root
+          selectCtrl.emptyOption.removeClass('ng-scope');
+        }
+
       }
 
       selectElement.empty();
@@ -31690,6 +31717,14 @@ var SelectController =
   // to create it in <select> and IE barfs otherwise.
   self.unknownOption = jqLite(window.document.createElement('option'));
 
+  // The empty option is an option with the value '' that te application developer can
+  // provide inside the select. When the model changes to a value that doesn't match an option,
+  // it is selected - so if an empty option is provided, no unknown option is generated.
+  // However, the empty option is not removed when the model matches an option. It is always selectable
+  // and indicates that a "null" selection has been made.
+  self.hasEmptyOption = false;
+  self.emptyOption = undefined;
+
   self.renderUnknownOption = function(val) {
     var unknownVal = self.generateUnknownOptionValue(val);
     self.unknownOption.val(unknownVal);
@@ -31713,13 +31748,6 @@ var SelectController =
     if (self.unknownOption.parent()) self.unknownOption.remove();
   };
 
-  // The empty option is an option with the value '' that te application developer can
-  // provide inside the select. When the model changes to a value that doesn't match an option,
-  // it is selected - so if an empty option is provided, no unknown option is generated.
-  // However, the empty option is not removed when the model matches an option. It is always selectable
-  // and indicates that a "null" selection has been made.
-  self.emptyOption = undefined;
-
   self.selectEmptyOption = function() {
     if (self.emptyOption) {
       $element.val('');
@@ -31728,7 +31756,7 @@ var SelectController =
   };
 
   self.unselectEmptyOption = function() {
-    if (self.emptyOption) {
+    if (self.hasEmptyOption) {
       self.emptyOption.removeAttr('selected');
     }
   };
@@ -31790,6 +31818,7 @@ var SelectController =
 
     assertNotHasOwnProperty(value, '"option value"');
     if (value === '') {
+      self.hasEmptyOption = true;
       self.emptyOption = element;
     }
     var count = optionsMap.get(value) || 0;
@@ -31806,6 +31835,7 @@ var SelectController =
       if (count === 1) {
         optionsMap.remove(value);
         if (value === '') {
+          self.hasEmptyOption = false;
           self.emptyOption = undefined;
         }
       } else {
