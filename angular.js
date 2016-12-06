@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.5.10-build.5179+sha.752b1e6
+ * @license AngularJS v1.5.10-build.5180+sha.7a667c7
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.5.10-build.5179+sha.752b1e6/' +
+    message += '\nhttp://errors.angularjs.org/1.5.10-build.5180+sha.7a667c7/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2623,7 +2623,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.5.10-build.5179+sha.752b1e6',
+  full: '1.5.10-build.5180+sha.7a667c7',
   major: 1,
   minor: 5,
   dot: 10,
@@ -31867,6 +31867,8 @@ var SelectController =
     updateScheduled = true;
 
     $scope.$$postDigest(function() {
+      if ($scope.$$destroyed) return;
+
       updateScheduled = false;
       self.ngModelCtrl.$setViewValue(self.readValue());
       if (renderAfter) self.ngModelCtrl.$render();
