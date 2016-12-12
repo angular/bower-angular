@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.1-build.5200+sha.29f3bf4
+ * @license AngularJS v1.6.1-build.5201+sha.ce8abac
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.1-build.5200+sha.29f3bf4/' +
+    message += '\nhttp://errors.angularjs.org/1.6.1-build.5201+sha.ce8abac/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2623,7 +2623,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.1-build.5200+sha.29f3bf4',
+  full: '1.6.1-build.5201+sha.ce8abac',
   major: 1,
   minor: 6,
   dot: 1,
@@ -29268,19 +29268,27 @@ defaultModelOptions = new ModelOptions({
  *
  */
 var ngModelOptionsDirective = function() {
+  NgModelOptionsController.$inject = ['$attrs', '$scope'];
+  function NgModelOptionsController($attrs, $scope) {
+    this.$$attrs = $attrs;
+    this.$$scope = $scope;
+  }
+  NgModelOptionsController.prototype = {
+    $onInit: function() {
+      var parentOptions = this.parentCtrl ? this.parentCtrl.$options : defaultModelOptions;
+      var modelOptionsDefinition = this.$$scope.$eval(this.$$attrs.ngModelOptions);
+
+      this.$options = parentOptions.createChild(modelOptionsDefinition);
+    }
+  };
+
   return {
     restrict: 'A',
     // ngModelOptions needs to run before ngModel and input directives
     priority: 10,
-    require: ['ngModelOptions', '?^^ngModelOptions'],
-    controller: function NgModelOptionsController() {},
-    link: {
-      pre: function ngModelOptionsPreLinkFn(scope, element, attrs, ctrls) {
-        var optionsCtrl = ctrls[0];
-        var parentOptions = ctrls[1] ? ctrls[1].$options : defaultModelOptions;
-        optionsCtrl.$options = parentOptions.createChild(scope.$eval(attrs.ngModelOptions));
-      }
-    }
+    require: {parentCtrl: '?^^ngModelOptions'},
+    bindToController: true,
+    controller: NgModelOptionsController
   };
 };
 
