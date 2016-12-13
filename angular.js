@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.1-build.5201+sha.ce8abac
+ * @license AngularJS v1.6.1-build.5202+sha.e9a4de0
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.1-build.5201+sha.ce8abac/' +
+    message += '\nhttp://errors.angularjs.org/1.6.1-build.5202+sha.e9a4de0/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2623,7 +2623,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.1-build.5201+sha.ce8abac',
+  full: '1.6.1-build.5202+sha.e9a4de0',
   major: 1,
   minor: 6,
   dot: 1,
@@ -12896,7 +12896,8 @@ function $IntervalProvider() {
       * appropriate moment.  See the example below for more details on how and when to do this.
       * </div>
       *
-      * @param {function()} fn A function that should be called repeatedly.
+      * @param {function()} fn A function that should be called repeatedly. If no additional arguments
+      *   are passed (see below), the function is called with the current iteration count.
       * @param {number} delay Number of milliseconds between each function call.
       * @param {number=} [count=0] Number of times to repeat. If not set, or 0, will repeat
       *   indefinitely.
