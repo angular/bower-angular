@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.2-build.5220+sha.a24777a
+ * @license AngularJS v1.6.2-build.5221+sha.4082fb0
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.2-build.5220+sha.a24777a/' +
+    message += '\nhttp://errors.angularjs.org/1.6.2-build.5221+sha.4082fb0/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2623,7 +2623,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.2-build.5220+sha.a24777a',
+  full: '1.6.2-build.5221+sha.4082fb0',
   major: 1,
   minor: 6,
   dot: 2,
