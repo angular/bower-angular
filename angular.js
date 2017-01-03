@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.2-build.5223+sha.090a839
+ * @license AngularJS v1.6.2-build.5224+sha.0694af8
  * (c) 2010-2016 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.2-build.5223+sha.090a839/' +
+    message += '\nhttp://errors.angularjs.org/1.6.2-build.5224+sha.0694af8/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -1548,12 +1548,16 @@ function getNgAttribute(element, ngAttr) {
 }
 
 function allowAutoBootstrap(document) {
-  if (!document.currentScript) {
+  var script = document.currentScript;
+  var src = script && script.getAttribute('src');
+
+  if (!src) {
     return true;
   }
-  var src = document.currentScript.getAttribute('src');
+
   var link = document.createElement('a');
   link.href = src;
+
   if (document.location.origin === link.origin) {
     // Same-origin resources are always allowed, even for non-whitelisted schemes.
     return true;
@@ -2623,7 +2627,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.2-build.5223+sha.090a839',
+  full: '1.6.2-build.5224+sha.0694af8',
   major: 1,
   minor: 6,
   dot: 2,
