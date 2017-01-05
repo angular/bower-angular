@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.2-build.5228+sha.3776b2e
+ * @license AngularJS v1.6.2-build.5229+sha.c00903b
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.2-build.5228+sha.3776b2e/' +
+    message += '\nhttp://errors.angularjs.org/1.6.2-build.5229+sha.c00903b/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2627,7 +2627,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.2-build.5228+sha.3776b2e',
+  full: '1.6.2-build.5229+sha.c00903b',
   major: 1,
   minor: 6,
   dot: 2,
@@ -12552,9 +12552,8 @@ function $InterpolateProvider() {
     if (value) {
       startSymbol = value;
       return this;
-    } else {
-      return startSymbol;
     }
+    return startSymbol;
   };
 
   /**
@@ -12570,9 +12569,8 @@ function $InterpolateProvider() {
     if (value) {
       endSymbol = value;
       return this;
-    } else {
-      return endSymbol;
     }
+    return endSymbol;
   };
 
 
