@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.2-build.5230+sha.752f411
+ * @license AngularJS v1.6.2-build.5231+sha.9412962
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.2-build.5230+sha.752f411/' +
+    message += '\nhttp://errors.angularjs.org/1.6.2-build.5231+sha.9412962/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2627,7 +2627,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.2-build.5230+sha.752f411',
+  full: '1.6.2-build.5231+sha.9412962',
   major: 1,
   minor: 6,
   dot: 2,
@@ -18716,7 +18716,7 @@ function $SceDelegateProvider() {
 
     function matchUrl(matcher, parsedUrl) {
       if (matcher === 'self') {
-        return urlIsSameOrigin(parsedUrl);
+        return urlIsSameOrigin(parsedUrl) || urlIsSameOriginAsBaseUrl(parsedUrl);
       } else {
         // definitely a regex.  See adjustMatchers()
         return !!matcher.exec(parsedUrl.href);
@@ -19985,6 +19985,7 @@ function $TimeoutProvider() {
 // service.
 var urlParsingNode = window.document.createElement('a');
 var originUrl = urlResolve(window.location.href);
+var baseUrlParsingNode;
 
 
 /**
@@ -20020,16 +20021,16 @@ var originUrl = urlResolve(window.location.href);
  * @description Normalizes and parses a URL.
  * @returns {object} Returns the normalized URL as a dictionary.
  *
- *   | member name   | Description    |
- *   |---------------|----------------|
+ *   | member name   | Description                                                            |
+ *   |---------------|------------------------------------------------------------------------|
  *   | href          | A normalized version of the provided URL if it was not an absolute URL |
- *   | protocol      | The protocol including the trailing colon                              |
+ *   | protocol      | The protocol without the trailing colon                                |
  *   | host          | The host and port (if the port is non-default) of the normalizedUrl    |
  *   | search        | The search params, minus the question mark                             |
- *   | hash          | The hash string, minus the hash symbol
- *   | hostname      | The hostname
- *   | port          | The port, without ":"
- *   | pathname      | The pathname, beginning with "/"
+ *   | hash          | The hash string, minus the hash symbol                                 |
+ *   | hostname      | The hostname                                                           |
+ *   | port          | The port, without ":"                                                  |
+ *   | pathname      | The pathname, beginning with "/"                                       |
  *
  */
 function urlResolve(url) {
@@ -20045,7 +20046,6 @@ function urlResolve(url) {
 
   urlParsingNode.setAttribute('href', href);
 
-  // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
   return {
     href: urlParsingNode.href,
     protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
@@ -20068,9 +20068,59 @@ function urlResolve(url) {
  * @returns {boolean} Whether the request is for the same origin as the application document.
  */
 function urlIsSameOrigin(requestUrl) {
-  var parsed = (isString(requestUrl)) ? urlResolve(requestUrl) : requestUrl;
-  return (parsed.protocol === originUrl.protocol &&
-          parsed.host === originUrl.host);
+  return urlsAreSameOrigin(requestUrl, originUrl);
+}
+
+/**
+ * Parse a request URL and determine whether it is same-origin as the current document base URL.
+ *
+ * Note: The base URL is usually the same as the document location (`location.href`) but can
+ * be overriden by using the `<base>` tag.
+ *
+ * @param {string|object} requestUrl The url of the request as a string that will be resolved
+ * or a parsed URL object.
+ * @returns {boolean} Whether the URL is same-origin as the document base URL.
+ */
+function urlIsSameOriginAsBaseUrl(requestUrl) {
+  return urlsAreSameOrigin(requestUrl, getBaseUrl());
+}
+
+/**
+ * Determines if two URLs share the same origin.
+ *
+ * @param {string|object} url1 First URL to compare as a string or a normalized URL in the form of
+ *     a dictionary object returned by `urlResolve()`.
+ * @param {string|object} url2 Second URL to compare as a string or a normalized URL in the form of
+ *     a dictionary object returned by `urlResolve()`.
+ * @return {boolean} True if both URLs have the same origin, and false otherwise.
+ */
+function urlsAreSameOrigin(url1, url2) {
+  url1 = (isString(url1)) ? urlResolve(url1) : url1;
+  url2 = (isString(url2)) ? urlResolve(url2) : url2;
+
+  return (url1.protocol === url2.protocol &&
+          url1.host === url2.host);
+}
+
+/**
+ * Returns the current document base URL.
+ * @return {string}
+ */
+function getBaseUrl() {
+  if (window.document.baseURI) {
+    return window.document.baseURI;
+  }
+
+  // document.baseURI is available everywhere except IE
+  if (!baseUrlParsingNode) {
+    baseUrlParsingNode = window.document.createElement('a');
+    baseUrlParsingNode.href = '.';
+
+    // Work-around for IE bug described in Implementation Notes. The fix in urlResolve() is not
+    // suitable here because we need to track changes to the base URL.
+    baseUrlParsingNode = baseUrlParsingNode.cloneNode(false);
+  }
+  return baseUrlParsingNode.href;
 }
 
 /**
