@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.2-build.5243+sha.1cf728e
+ * @license AngularJS v1.6.2-build.5244+sha.d85b3f5
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.2-build.5243+sha.1cf728e/' +
+    message += '\nhttp://errors.angularjs.org/1.6.2-build.5244+sha.d85b3f5/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2627,7 +2627,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.2-build.5243+sha.1cf728e',
+  full: '1.6.2-build.5244+sha.d85b3f5',
   major: 1,
   minor: 6,
   dot: 2,
@@ -25489,7 +25489,10 @@ var ngValueDirective = function() {
    *  makes it possible to use ngValue as a sort of one-way bind.
    */
   function updateElementValue(element, attr, value) {
-    element.prop('value', value);
+    // Support: IE9 only
+    // In IE9 values are converted to string (e.g. `input.value = null` results in `input.value === 'null'`).
+    var propValue = isDefined(value) ? value : (msie === 9) ? '' : null;
+    element.prop('value', propValue);
     attr.$set('value', value);
   }
 
