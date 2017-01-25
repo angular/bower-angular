@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.2-build.5249+sha.3c259ce
+ * @license AngularJS v1.6.2-build.5250+sha.641e13a
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.2-build.5249+sha.3c259ce/' +
+    message += '\nhttp://errors.angularjs.org/1.6.2-build.5250+sha.641e13a/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2581,7 +2581,6 @@ function toDebugString(obj) {
   $$ForceReflowProvider,
   $InterpolateProvider,
   $IntervalProvider,
-  $$HashMapProvider,
   $HttpProvider,
   $HttpParamSerializerProvider,
   $HttpParamSerializerJQLikeProvider,
@@ -2590,6 +2589,7 @@ function toDebugString(obj) {
   $jsonpCallbacksProvider,
   $LocationProvider,
   $LogProvider,
+  $$MapProvider,
   $ParseProvider,
   $RootScopeProvider,
   $QProvider,
@@ -2627,7 +2627,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.2-build.5249+sha.3c259ce',
+  full: '1.6.2-build.5250+sha.641e13a',
   major: 1,
   minor: 6,
   dot: 2,
@@ -2771,7 +2771,7 @@ function publishExternalAPI(angular) {
         $window: $WindowProvider,
         $$rAF: $$RAFProvider,
         $$jqLite: $$jqLiteProvider,
-        $$HashMap: $$HashMapProvider,
+        $$Map: $$MapProvider,
         $$cookieReader: $$CookieReaderProvider
       });
     }
@@ -3919,50 +3919,70 @@ function hashKey(obj, nextUidFn) {
   return key;
 }
 
-/**
- * HashMap which can use objects as keys
- */
-function HashMap(array, isolatedUid) {
-  if (isolatedUid) {
-    var uid = 0;
-    this.nextUid = function() {
-      return ++uid;
-    };
-  }
-  forEach(array, this.put, this);
+// A minimal ES2015 Map implementation.
+// Should be bug/feature equivalent to the native implementations of supported browsers
+// (for the features required in Angular).
+// See https://kangax.github.io/compat-table/es6/#test-Map
+var nanKey = Object.create(null);
+function NgMapShim() {
+  this._keys = [];
+  this._values = [];
+  this._lastKey = NaN;
+  this._lastIndex = -1;
 }
-HashMap.prototype = {
-  /**
-   * Store key value pair
-   * @param key key to store can be any type
-   * @param value value to store can be any type
-   */
-  put: function(key, value) {
-    this[hashKey(key, this.nextUid)] = value;
+NgMapShim.prototype = {
+  _idx: function(key) {
+    if (key === this._lastKey) {
+      return this._lastIndex;
+    }
+    this._lastKey = key;
+    this._lastIndex = this._keys.indexOf(key);
+    return this._lastIndex;
   },
-
-  /**
-   * @param key
-   * @returns {Object} the value for the key
-   */
+  _transformKey: function(key) {
+    return isNumberNaN(key) ? nanKey : key;
+  },
   get: function(key) {
-    return this[hashKey(key, this.nextUid)];
+    key = this._transformKey(key);
+    var idx = this._idx(key);
+    if (idx !== -1) {
+      return this._values[idx];
+    }
   },
+  set: function(key, value) {
+    key = this._transformKey(key);
+    var idx = this._idx(key);
+    if (idx === -1) {
+      idx = this._lastIndex = this._keys.length;
+    }
+    this._keys[idx] = key;
+    this._values[idx] = value;
 
-  /**
-   * Remove the key/value pair
-   * @param key
-   */
-  remove: function(key) {
-    var value = this[key = hashKey(key, this.nextUid)];
-    delete this[key];
-    return value;
+    // Support: IE11
+    // Do not `return this` to simulate the partial IE11 implementation
+  },
+  delete: function(key) {
+    key = this._transformKey(key);
+    var idx = this._idx(key);
+    if (idx === -1) {
+      return false;
+    }
+    this._keys.splice(idx, 1);
+    this._values.splice(idx, 1);
+    this._lastKey = NaN;
+    this._lastIndex = -1;
+    return true;
   }
 };
 
-var $$HashMapProvider = [/** @this */function() {
+// For now, always use `NgMapShim`, even if `window.Map` is available. Some native implementations
+// are still buggy (often in subtle ways) and can cause hard-to-debug failures. When native `Map`
+// implementations get more stable, we can reconsider switching to `window.Map` (when available).
+var NgMap = NgMapShim;
+
+var $$MapProvider = [/** @this */function() {
   this.$get = [function() {
-    return HashMap;
+    return NgMap;
   }];
 }];
 
@@ -4615,7 +4635,7 @@ function createInjector(modulesToLoad, strictDi) {
   var INSTANTIATING = {},
       providerSuffix = 'Provider',
       path = [],
-      loadedModules = new HashMap([], true),
+      loadedModules = new NgMap(),
       providerCache = {
         $provide: {
             provider: supportObject(provider),
@@ -4723,7 +4743,7 @@ function createInjector(modulesToLoad, strictDi) {
     var runBlocks = [], moduleFn;
     forEach(modulesToLoad, function(module) {
       if (loadedModules.get(module)) return;
-      loadedModules.put(module, true);
+      loadedModules.set(module, true);
 
       function runInvokeQueue(queue) {
         var i, ii;
@@ -5209,7 +5229,7 @@ var $$CoreAnimateJsProvider = /** @this */ function() {
 // this is prefixed with Core since it conflicts with
 // the animateQueueProvider defined in ngAnimate/animateQueue.js
 var $$CoreAnimateQueueProvider = /** @this */ function() {
-  var postDigestQueue = new HashMap();
+  var postDigestQueue = new NgMap();
   var postDigestElements = [];
 
   this.$get = ['$$AnimateRunner', '$rootScope',
@@ -5288,7 +5308,7 @@ var $$CoreAnimateQueueProvider = /** @this */ function() {
               jqLiteRemoveClass(elm, toRemove);
             }
           });
-          postDigestQueue.remove(element);
+          postDigestQueue.delete(element);
         }
       });
       postDigestElements.length = 0;
@@ -5303,7 +5323,7 @@ var $$CoreAnimateQueueProvider = /** @this */ function() {
 
       if (classesAdded || classesRemoved) {
 
-        postDigestQueue.put(element, data);
+        postDigestQueue.set(element, data);
         postDigestElements.push(element);
 
         if (postDigestElements.length === 1) {
@@ -31941,7 +31961,7 @@ var SelectController =
         ['$element', '$scope', /** @this */ function($element, $scope) {
 
   var self = this,
-      optionsMap = new HashMap();
+      optionsMap = new NgMap();
 
   self.selectValueMap = {}; // Keys are the hashed values, values the original values
 
@@ -32062,7 +32082,7 @@ var SelectController =
       self.emptyOption = element;
     }
     var count = optionsMap.get(value) || 0;
-    optionsMap.put(value, count + 1);
+    optionsMap.set(value, count + 1);
     // Only render at the end of a digest. This improves render performance when many options
     // are added during a digest and ensures all relevant options are correctly marked as selected
     scheduleRender();
@@ -32073,13 +32093,13 @@ var SelectController =
     var count = optionsMap.get(value);
     if (count) {
       if (count === 1) {
-        optionsMap.remove(value);
+        optionsMap.delete(value);
         if (value === '') {
           self.hasEmptyOption = false;
           self.emptyOption = undefined;
         }
       } else {
-        optionsMap.put(value, count - 1);
+        optionsMap.set(value, count - 1);
       }
     }
   };
@@ -32531,9 +32551,9 @@ var selectDirective = function() {
 
         // Write value now needs to set the selected property of each matching option
         selectCtrl.writeValue = function writeMultipleValue(value) {
-          var items = new HashMap(value);
           forEach(element.find('option'), function(option) {
-            option.selected = isDefined(items.get(option.value)) || isDefined(items.get(selectCtrl.selectValueMap[option.value]));
+            option.selected = !!value && (includes(value, option.value) ||
+                                          includes(value, selectCtrl.selectValueMap[option.value]));
           });
         };
 
