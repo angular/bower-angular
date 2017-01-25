@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.2-build.5248+sha.0304383
+ * @license AngularJS v1.6.2-build.5249+sha.3c259ce
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.2-build.5248+sha.0304383/' +
+    message += '\nhttp://errors.angularjs.org/1.6.2-build.5249+sha.3c259ce/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2627,7 +2627,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.2-build.5248+sha.0304383',
+  full: '1.6.2-build.5249+sha.3c259ce',
   major: 1,
   minor: 6,
   dot: 2,
@@ -8223,7 +8223,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
    *
    * If disabled (false), the compiler calls the constructor first before assigning bindings.
    *
-   * The default value is true in AngularJS.5.x but will switch to false in AngularJS.6.x.
+   * The default value is true in AngularJS 1.5.x but will switch to false in AngularJS 1.6.x.
    */
   var preAssignBindingsEnabled = false;
   this.preAssignBindingsEnabled = function(enabled) {
@@ -22406,7 +22406,8 @@ var htmlAnchorDirective = valueFn({
  *
  * @description
  *
- * This directive sets the `disabled` attribute on the element if the
+ * This directive sets the `disabled` attribute on the element (typically a form control,
+ * e.g. `input`, `button`, `select` etc.) if the
  * {@link guide/expression expression} inside `ngDisabled` evaluates to truthy.
  *
  * A special directive is necessary because we cannot use interpolation inside the `disabled`
