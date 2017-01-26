@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.2-build.5250+sha.641e13a
+ * @license AngularJS v1.6.2-build.5251+sha.89f3e3b
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.2-build.5250+sha.641e13a/' +
+    message += '\nhttp://errors.angularjs.org/1.6.2-build.5251+sha.89f3e3b/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2627,7 +2627,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.2-build.5250+sha.641e13a',
+  full: '1.6.2-build.5251+sha.89f3e3b',
   major: 1,
   minor: 6,
   dot: 2,
@@ -32226,7 +32226,7 @@ var SelectController =
       var removeValue = optionAttrs.value;
 
       self.removeOption(removeValue);
-      self.ngModelCtrl.$render();
+      scheduleRender();
 
       if (self.multiple && currentValue && currentValue.indexOf(removeValue) !== -1 ||
           currentValue === removeValue
