@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.2-build.5256+sha.0ef193f
+ * @license AngularJS v1.6.2-build.5257+sha.03dbd94
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -57,7 +57,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.2-build.5256+sha.0ef193f/' +
+    message += '\nhttp://errors.angularjs.org/1.6.2-build.5257+sha.03dbd94/' +
       (module ? module + '/' : '') + code;
 
     for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2627,7 +2627,7 @@ function toDebugString(obj) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.2-build.5256+sha.0ef193f',
+  full: '1.6.2-build.5257+sha.03dbd94',
   major: 1,
   minor: 6,
   dot: 2,
@@ -10011,7 +10011,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
           if (error instanceof Error) {
             $exceptionHandler(error);
           }
-        }).catch(noop);
+        });
 
       return function delayedNodeLinkFn(ignoreChildLinkFn, scope, node, rootElement, boundTranscludeFn) {
         var childBoundTranscludeFn = boundTranscludeFn;
