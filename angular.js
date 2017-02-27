@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.3-build.5299+sha.4f69d38
+ * @license AngularJS v1.6.3-build.5300+sha.19bc521
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -56,7 +56,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.3-build.5299+sha.4f69d38/' +
+    message += '\nhttp://errors.angularjs.org/1.6.3-build.5300+sha.19bc521/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -1610,15 +1610,19 @@ function allowAutoBootstrap(document) {
     return false;
   }
 
-  var srcs = [script.getAttribute('src'), script.getAttribute('href'), script.getAttribute('xlink:href')];
+  var attributes = script.attributes;
+  var srcs = [attributes.getNamedItem('src'), attributes.getNamedItem('href'), attributes.getNamedItem('xlink:href')];
 
   return srcs.every(function(src) {
     if (!src) {
       return true;
     }
+    if (!src.value) {
+      return false;
+    }
 
     var link = document.createElement('a');
-    link.href = src;
+    link.href = src.value;
 
     if (document.location.origin === link.origin) {
       // Same-origin resources are always allowed, even for non-whitelisted schemes.
@@ -2696,7 +2700,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.3-build.5299+sha.4f69d38',
+  full: '1.6.3-build.5300+sha.19bc521',
   major: 1,
   minor: 6,
   dot: 3,
