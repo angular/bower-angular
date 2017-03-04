@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.3-build.5304+sha.3dc0096
+ * @license AngularJS v1.6.3-build.5305+sha.cc793a1
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -56,7 +56,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.3-build.5304+sha.3dc0096/' +
+    message += '\nhttp://errors.angularjs.org/1.6.3-build.5305+sha.cc793a1/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2742,7 +2742,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.3-build.5304+sha.3dc0096',
+  full: '1.6.3-build.5305+sha.cc793a1',
   major: 1,
   minor: 6,
   dot: 3,
@@ -2892,7 +2892,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.3-build.5304+sha.3dc0096' });
+  .info({ angularVersion: '1.6.3-build.5305+sha.cc793a1' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
