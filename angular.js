@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.4-build.5314+sha.11d9ad1
+ * @license AngularJS v1.6.4-build.5315+sha.c80fa1c
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -56,7 +56,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.4-build.5314+sha.11d9ad1/' +
+    message += '\nhttp://errors.angularjs.org/1.6.4-build.5315+sha.c80fa1c/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2726,7 +2726,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.4-build.5314+sha.11d9ad1',
+  full: '1.6.4-build.5315+sha.c80fa1c',
   major: 1,
   minor: 6,
   dot: 4,
@@ -2876,7 +2876,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.4-build.5314+sha.11d9ad1' });
+  .info({ angularVersion: '1.6.4-build.5315+sha.c80fa1c' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -11138,7 +11138,12 @@ function defaultHttpResponseTransform(data, headers) {
     if (tempData) {
       var contentType = headers('Content-Type');
       if ((contentType && (contentType.indexOf(APPLICATION_JSON) === 0)) || isJsonLike(tempData)) {
-        data = fromJson(tempData);
+        try {
+          data = fromJson(tempData);
+        } catch (e) {
+          throw $httpMinErr('baddata', 'Data must be a valid JSON object. Received: "{0}". ' +
+          'Parse error: "{1}"', data, e);
+        }
       }
     }
   }
