@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.4-build.5316+sha.38f8c97
+ * @license AngularJS v1.6.4-build.5317+sha.0c3620b
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -56,7 +56,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.4-build.5316+sha.38f8c97/' +
+    message += '\nhttp://errors.angularjs.org/1.6.4-build.5317+sha.0c3620b/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2726,7 +2726,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.4-build.5316+sha.38f8c97',
+  full: '1.6.4-build.5317+sha.0c3620b',
   major: 1,
   minor: 6,
   dot: 4,
@@ -2876,7 +2876,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.4-build.5316+sha.38f8c97' });
+  .info({ angularVersion: '1.6.4-build.5317+sha.0c3620b' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -12705,7 +12705,7 @@ function $InterpolateProvider() {
      * ```js
      *   var $interpolate = ...; // injected
      *   var exp = $interpolate('Hello {{name | uppercase}}!');
-     *   expect(exp({name:'AngularJS'})).toEqual('Hello ANGULAR!');
+     *   expect(exp({name:'AngularJS'})).toEqual('Hello ANGULARJS!');
      * ```
      *
      * `$interpolate` takes an optional fourth argument, `allOrNothing`. If `allOrNothing` is
