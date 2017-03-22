@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.4-build.5324+sha.ba2e0d3
+ * @license AngularJS v1.6.4-build.5326+sha.4210405
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -56,7 +56,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.4-build.5324+sha.ba2e0d3/' +
+    message += '\nhttp://errors.angularjs.org/1.6.4-build.5326+sha.4210405/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2726,7 +2726,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.4-build.5324+sha.ba2e0d3',
+  full: '1.6.4-build.5326+sha.4210405',
   major: 1,
   minor: 6,
   dot: 4,
@@ -2876,7 +2876,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.4-build.5324+sha.ba2e0d3' });
+  .info({ angularVersion: '1.6.4-build.5326+sha.4210405' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -10696,7 +10696,7 @@ function $ControllerProvider() {
     }
   };
 
-  this.$get = ['$injector', '$window', function($injector, $window) {
+  this.$get = ['$injector', function($injector) {
 
     /**
      * @ngdoc service
