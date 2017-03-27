@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.4-build.5336+sha.80077f3
+ * @license AngularJS v1.6.4-build.5338+sha.dcdd5de
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -56,7 +56,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.4-build.5336+sha.80077f3/' +
+    message += '\nhttp://errors.angularjs.org/1.6.4-build.5338+sha.dcdd5de/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2726,7 +2726,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.4-build.5336+sha.80077f3',
+  full: '1.6.4-build.5338+sha.dcdd5de',
   major: 1,
   minor: 6,
   dot: 4,
@@ -2876,7 +2876,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.4-build.5336+sha.80077f3' });
+  .info({ angularVersion: '1.6.4-build.5338+sha.dcdd5de' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -12994,7 +12994,7 @@ function $IntervalProvider() {
       * @param {boolean=} [invokeApply=true] If set to `false` skips model dirty checking, otherwise
       *   will invoke `fn` within the {@link ng.$rootScope.Scope#$apply $apply} block.
       * @param {...*=} Pass additional parameters to the executed function.
-      * @returns {promise} A promise which will be notified on each iteration.
+      * @returns {promise} A promise which will be notified on each iteration. It will resolve once all iterations of the interval complete.
       *
       * @example
       * <example module="intervalExample" name="interval-service">
