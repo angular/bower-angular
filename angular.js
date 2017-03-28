@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.4-build.5340+sha.bf5c2ee
+ * @license AngularJS v1.6.4-build.5341+sha.b0f6afc
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -56,7 +56,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.4-build.5340+sha.bf5c2ee/' +
+    message += '\nhttp://errors.angularjs.org/1.6.4-build.5341+sha.b0f6afc/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2726,7 +2726,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.4-build.5340+sha.bf5c2ee',
+  full: '1.6.4-build.5341+sha.b0f6afc',
   major: 1,
   minor: 6,
   dot: 4,
@@ -2876,7 +2876,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.4-build.5340+sha.bf5c2ee' });
+  .info({ angularVersion: '1.6.4-build.5341+sha.b0f6afc' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -28942,8 +28942,8 @@ function setupModelWatcher(ctrl) {
   //    -> scope value did not change since the last digest as
   //       ng-change executes in apply phase
   // 4. view should be changed back to 'a'
-  ctrl.$$scope.$watch(function ngModelWatch() {
-    var modelValue = ctrl.$$ngModelGet(ctrl.$$scope);
+  ctrl.$$scope.$watch(function ngModelWatch(scope) {
+    var modelValue = ctrl.$$ngModelGet(scope);
 
     // if scope model value and ngModel value are out of sync
     // TODO(perf): why not move this to the action fn?
