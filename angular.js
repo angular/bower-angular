@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.5-build.5405+sha.42299e9
+ * @license AngularJS v1.6.5-build.5406+sha.464dde8
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -106,7 +106,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.5-build.5405+sha.42299e9/' +
+    message += '\nhttp://errors.angularjs.org/1.6.5-build.5406+sha.464dde8/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -537,6 +537,20 @@ function extend(dst) {
 *
 * Unlike {@link angular.extend extend()}, `merge()` recursively descends into object properties of source
 * objects, performing a deep copy.
+*
+* @deprecated
+* sinceVersion="1.6.5"
+* This function is deprecated, but will not be removed in the 1.x lifecycle.
+* There are edge cases (see {@link angular.merge#known-issues known issues}) that are not
+* supported by this function. We suggest
+* using [lodash's merge()](https://lodash.com/docs/4.17.4#merge) instead.
+*
+* @knownIssue
+* This is a list of (known) object types that are not handled correctly by this function:
+* - [`Blob`](https://developer.mozilla.org/docs/Web/API/Blob)
+* - [`MediaStream`](https://developer.mozilla.org/docs/Web/API/MediaStream)
+* - [`CanvasGradient`](https://developer.mozilla.org/docs/Web/API/CanvasGradient)
+* - AngularJS {@link $rootScope.Scope scopes};
 *
 * @param {Object} dst Destination object.
 * @param {...Object} src Source object(s).
@@ -2754,7 +2768,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.5-build.5405+sha.42299e9',
+  full: '1.6.5-build.5406+sha.464dde8',
   major: 1,
   minor: 6,
   dot: 5,
@@ -2904,7 +2918,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.5-build.5405+sha.42299e9' });
+  .info({ angularVersion: '1.6.5-build.5406+sha.464dde8' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
