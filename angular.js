@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.5-build.5406+sha.464dde8
+ * @license AngularJS v1.6.5-build.5407+sha.b12a0b7
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -106,7 +106,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.5-build.5406+sha.464dde8/' +
+    message += '\nhttp://errors.angularjs.org/1.6.5-build.5407+sha.b12a0b7/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2768,7 +2768,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.5-build.5406+sha.464dde8',
+  full: '1.6.5-build.5407+sha.b12a0b7',
   major: 1,
   minor: 6,
   dot: 5,
@@ -2918,7 +2918,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.5-build.5406+sha.464dde8' });
+  .info({ angularVersion: '1.6.5-build.5407+sha.b12a0b7' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -15186,6 +15186,9 @@ function isStateless($filter, filterName) {
   return !fn.$stateful;
 }
 
+var PURITY_ABSOLUTE = 1;
+var PURITY_RELATIVE = 2;
+
 // Detect nodes which could depend on non-shallow state of objects
 function isPure(node, parentIsPure) {
   switch (node.type) {
@@ -15198,18 +15201,18 @@ function isPure(node, parentIsPure) {
 
     // Unary always convert to primative
     case AST.UnaryExpression:
-      return true;
+      return PURITY_ABSOLUTE;
 
     // The binary + operator can invoke a stateful toString().
     case AST.BinaryExpression:
-      return node.operator !== '+';
+      return node.operator !== '+' ? PURITY_ABSOLUTE : false;
 
     // Functions / filters probably read state from within objects
     case AST.CallExpression:
       return false;
   }
 
-  return (undefined === parentIsPure) || parentIsPure;
+  return (undefined === parentIsPure) ? PURITY_RELATIVE : parentIsPure;
 }
 
 function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
@@ -15437,7 +15440,7 @@ ASTCompiler.prototype = {
     forEach(inputs, function(input) {
       result.push('var ' + input.name + '=' + self.generateFunction(input.name, 's'));
       if (input.isPure) {
-        result.push(input.name, '.isPure=true;');
+        result.push(input.name, '.isPure=' + JSON.stringify(input.isPure) + ';');
       }
     });
     if (inputs.length) {
@@ -16524,10 +16527,16 @@ function $ParseProvider() {
         fn.$$watchDelegate = watchDelegate;
         fn.inputs = parsedExpression.inputs;
       } else if (!interceptorFn.$stateful) {
-        // If there is an interceptor, but no watchDelegate then treat the interceptor like
-        // we treat filters - it is assumed to be a pure function unless flagged with $stateful
+        // Treat interceptor like filters - assume non-stateful by default and use the inputsWatchDelegate
         fn.$$watchDelegate = inputsWatchDelegate;
-        fn.inputs = parsedExpression.inputs ? parsedExpression.inputs : [parsedExpression];
+        fn.inputs = (parsedExpression.inputs ? parsedExpression.inputs : [parsedExpression]).map(function(e) {
+              // Remove the isPure flag of inputs when it is not absolute because they are now wrapped in a
+              // potentially non-pure interceptor function.
+              if (e.isPure === PURITY_RELATIVE) {
+                return function depurifier(s) { return e(s); };
+              }
+              return e;
+            });
       }
 
       return fn;
