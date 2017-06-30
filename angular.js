@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.5-build.5413+sha.62c9d1d
+ * @license AngularJS v1.6.5-build.5414+sha.bf0af6d
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -106,7 +106,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.5-build.5413+sha.62c9d1d/' +
+    message += '\nhttp://errors.angularjs.org/1.6.5-build.5414+sha.bf0af6d/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2768,7 +2768,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.5-build.5413+sha.62c9d1d',
+  full: '1.6.5-build.5414+sha.bf0af6d',
   major: 1,
   minor: 6,
   dot: 5,
@@ -2918,7 +2918,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.5-build.5413+sha.62c9d1d' });
+  .info({ angularVersion: '1.6.5-build.5414+sha.bf0af6d' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -14411,6 +14411,14 @@ function $LocationProvider() {
  * into the browser's console (if present).
  *
  * The main purpose of this service is to simplify debugging and troubleshooting.
+ *
+ * To reveal the location of the calls to `$log` in the JavaScript console,
+ * you can "blackbox" the AngularJS source in your browser:
+ *
+ * [Mozilla description of blackboxing](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Black_box_a_source).
+ * [Chrome description of blackboxing](https://developer.chrome.com/devtools/docs/blackboxing).
+ *
+ * Note: Not all browsers support blackboxing.
  *
  * The default is to log `debug` messages. You can use
  * {@link ng.$logProvider ng.$logProvider#debugEnabled} to change this.
