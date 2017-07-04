@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.6-build.5418+sha.122d89b
+ * @license AngularJS v1.6.6-build.5419+sha.e872f0e
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -106,7 +106,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.6-build.5418+sha.122d89b/' +
+    message += '\nhttp://errors.angularjs.org/1.6.6-build.5419+sha.e872f0e/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2768,7 +2768,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.6-build.5418+sha.122d89b',
+  full: '1.6.6-build.5419+sha.e872f0e',
   major: 1,
   minor: 6,
   dot: 6,
@@ -2918,7 +2918,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.6-build.5418+sha.122d89b' });
+  .info({ angularVersion: '1.6.6-build.5419+sha.e872f0e' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -11514,6 +11514,7 @@ function $HttpProvider() {
      *   - **headers** – `{function([headerName])}` – Header getter function.
      *   - **config** – `{Object}` – The configuration object that was used to generate the request.
      *   - **statusText** – `{string}` – HTTP status text of the response.
+     *   - **xhrStatus** – `{string}` – Status of the XMLHttpRequest (`complete`, `error`, `timeout` or `abort`).
      *
      * A response status code between 200 and 299 is considered a success status and will result in
      * the success callback being called. Any response status code outside of that range is
@@ -12355,9 +12356,9 @@ function $HttpProvider() {
           } else {
             // serving from cache
             if (isArray(cachedResp)) {
-              resolvePromise(cachedResp[1], cachedResp[0], shallowCopy(cachedResp[2]), cachedResp[3]);
+              resolvePromise(cachedResp[1], cachedResp[0], shallowCopy(cachedResp[2]), cachedResp[3], cachedResp[4]);
             } else {
-              resolvePromise(cachedResp, 200, {}, 'OK');
+              resolvePromise(cachedResp, 200, {}, 'OK', 'complete');
             }
           }
         } else {
@@ -12414,10 +12415,10 @@ function $HttpProvider() {
        *  - resolves the raw $http promise
        *  - calls $apply
        */
-      function done(status, response, headersString, statusText) {
+      function done(status, response, headersString, statusText, xhrStatus) {
         if (cache) {
           if (isSuccess(status)) {
-            cache.put(url, [status, response, parseHeaders(headersString), statusText]);
+            cache.put(url, [status, response, parseHeaders(headersString), statusText, xhrStatus]);
           } else {
             // remove promise from the cache
             cache.remove(url);
@@ -12425,7 +12426,7 @@ function $HttpProvider() {
         }
 
         function resolveHttpPromise() {
-          resolvePromise(response, status, headersString, statusText);
+          resolvePromise(response, status, headersString, statusText, xhrStatus);
         }
 
         if (useApplyAsync) {
@@ -12440,7 +12441,7 @@ function $HttpProvider() {
       /**
        * Resolves the raw $http promise.
        */
-      function resolvePromise(response, status, headers, statusText) {
+      function resolvePromise(response, status, headers, statusText, xhrStatus) {
         //status: HTTP response status code, 0, -1 (aborted by timeout / promise)
         status = status >= -1 ? status : 0;
 
@@ -12449,12 +12450,13 @@ function $HttpProvider() {
           status: status,
           headers: headersGetter(headers),
           config: config,
-          statusText: statusText
+          statusText: statusText,
+          xhrStatus: xhrStatus
         });
       }
 
       function resolvePromiseWithResult(result) {
-        resolvePromise(result.data, result.status, shallowCopy(result.headers()), result.statusText);
+        resolvePromise(result.data, result.status, shallowCopy(result.headers()), result.statusText, result.xhrStatus);
       }
 
       function removePendingReq() {
@@ -12555,7 +12557,7 @@ function createHttpBackend($browser, createXhr, $browserDefer, callbacks, rawDoc
       var jsonpDone = jsonpReq(url, callbackPath, function(status, text) {
         // jsonpReq only ever sets status to 200 (OK), 404 (ERROR) or -1 (WAITING)
         var response = (status === 200) && callbacks.getResponse(callbackPath);
-        completeRequest(callback, status, response, '', text);
+        completeRequest(callback, status, response, '', text, 'complete');
         callbacks.removeCallback(callbackPath);
       });
     } else {
@@ -12590,18 +12592,29 @@ function createHttpBackend($browser, createXhr, $browserDefer, callbacks, rawDoc
             status,
             response,
             xhr.getAllResponseHeaders(),
-            statusText);
+            statusText,
+            'complete');
       };
 
       var requestError = function() {
         // The response is always empty
         // See https://xhr.spec.whatwg.org/#request-error-steps and https://fetch.spec.whatwg.org/#concept-network-error
-        completeRequest(callback, -1, null, null, '');
+        completeRequest(callback, -1, null, null, '', 'error');
+      };
+
+      var requestAborted = function() {
+        completeRequest(callback, -1, null, null, '', 'abort');
+      };
+
+      var requestTimeout = function() {
+        // The response is always empty
+        // See https://xhr.spec.whatwg.org/#request-error-steps and https://fetch.spec.whatwg.org/#concept-network-error
+        completeRequest(callback, -1, null, null, '', 'timeout');
       };
 
       xhr.onerror = requestError;
-      xhr.onabort = requestError;
-      xhr.ontimeout = requestError;
+      xhr.onabort = requestAborted;
+      xhr.ontimeout = requestTimeout;
 
       forEach(eventHandlers, function(value, key) {
           xhr.addEventListener(key, value);
@@ -12651,14 +12664,14 @@ function createHttpBackend($browser, createXhr, $browserDefer, callbacks, rawDoc
       }
     }
 
-    function completeRequest(callback, status, response, headersString, statusText) {
+    function completeRequest(callback, status, response, headersString, statusText, xhrStatus) {
       // cancel timeout and subsequent timeout promise resolution
       if (isDefined(timeoutId)) {
         $browserDefer.cancel(timeoutId);
       }
       jsonpDone = xhr = null;
 
-      callback(status, response, headersString, statusText);
+      callback(status, response, headersString, statusText, xhrStatus);
     }
   };
 
