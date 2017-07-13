@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.6-build.5426+sha.6a22c79
+ * @license AngularJS v1.6.6-build.5427+sha.7e97db9
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -106,7 +106,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.6-build.5426+sha.6a22c79/' +
+    message += '\nhttp://errors.angularjs.org/1.6.6-build.5427+sha.7e97db9/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2768,7 +2768,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.6-build.5426+sha.6a22c79',
+  full: '1.6.6-build.5427+sha.7e97db9',
   major: 1,
   minor: 6,
   dot: 6,
@@ -2918,7 +2918,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.6-build.5426+sha.6a22c79' });
+  .info({ angularVersion: '1.6.6-build.5427+sha.7e97db9' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -24218,6 +24218,10 @@ var inputType = {
     *
     * The model must always be a Date object, otherwise AngularJS will throw an error.
     * Invalid `Date` objects (dates whose `getTime()` is `NaN`) will be rendered as an empty string.
+    *
+    * The value of the resulting Date object will be set to Thursday at 00:00:00 of the requested week,
+    * due to ISO-8601 week numbering standards. Information on ISO's system for numbering the weeks of the
+    * year can be found at: https://en.wikipedia.org/wiki/ISO_8601#Week_dates
     *
     * The timezone to be used to read/write the `Date` instance in the model can be defined using
     * {@link ng.directive:ngModelOptions ngModelOptions}. By default, this is the timezone of the browser.
