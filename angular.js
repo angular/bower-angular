@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.6-build.5432+sha.341f8db
+ * @license AngularJS v1.6.6-build.5433+sha.631076a
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -106,7 +106,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.6-build.5432+sha.341f8db/' +
+    message += '\nhttp://errors.angularjs.org/1.6.6-build.5433+sha.631076a/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2768,7 +2768,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.6-build.5432+sha.341f8db',
+  full: '1.6.6-build.5433+sha.631076a',
   major: 1,
   minor: 6,
   dot: 6,
@@ -2918,7 +2918,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.6-build.5432+sha.341f8db' });
+  .info({ angularVersion: '1.6.6-build.5433+sha.631076a' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -15339,7 +15339,8 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
       allConstants = allConstants && property.value.constant;
       argsToWatch.push.apply(argsToWatch, property.value.toWatch);
       if (property.computed) {
-        findConstantAndWatchExpressions(property.key, $filter, astIsPure);
+        //`{[key]: value}` implicitly does `key.toString()` which may be non-pure
+        findConstantAndWatchExpressions(property.key, $filter, /*parentIsPure=*/false);
         allConstants = allConstants && property.key.constant;
         argsToWatch.push.apply(argsToWatch, property.key.toWatch);
       }
