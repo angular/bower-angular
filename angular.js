@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.6-build.5431+sha.8de9794
+ * @license AngularJS v1.6.6-build.5432+sha.341f8db
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -106,7 +106,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.6-build.5431+sha.8de9794/' +
+    message += '\nhttp://errors.angularjs.org/1.6.6-build.5432+sha.341f8db/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2768,7 +2768,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.6-build.5431+sha.8de9794',
+  full: '1.6.6-build.5432+sha.341f8db',
   major: 1,
   minor: 6,
   dot: 6,
@@ -2918,7 +2918,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.6-build.5431+sha.8de9794' });
+  .info({ angularVersion: '1.6.6-build.5432+sha.341f8db' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -15300,7 +15300,7 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
       findConstantAndWatchExpressions(ast.property, $filter, astIsPure);
     }
     ast.constant = ast.object.constant && (!ast.computed || ast.property.constant);
-    ast.toWatch = [ast];
+    ast.toWatch = ast.constant ? [] : [ast];
     break;
   case AST.CallExpression:
     isStatelessFilter = ast.filter ? isStateless($filter, ast.callee.name) : false;
@@ -15309,9 +15309,7 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
     forEach(ast.arguments, function(expr) {
       findConstantAndWatchExpressions(expr, $filter, astIsPure);
       allConstants = allConstants && expr.constant;
-      if (!expr.constant) {
-        argsToWatch.push.apply(argsToWatch, expr.toWatch);
-      }
+      argsToWatch.push.apply(argsToWatch, expr.toWatch);
     });
     ast.constant = allConstants;
     ast.toWatch = isStatelessFilter ? argsToWatch : [ast];
@@ -15328,9 +15326,7 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
     forEach(ast.elements, function(expr) {
       findConstantAndWatchExpressions(expr, $filter, astIsPure);
       allConstants = allConstants && expr.constant;
-      if (!expr.constant) {
-        argsToWatch.push.apply(argsToWatch, expr.toWatch);
-      }
+      argsToWatch.push.apply(argsToWatch, expr.toWatch);
     });
     ast.constant = allConstants;
     ast.toWatch = argsToWatch;
@@ -15341,17 +15337,12 @@ function findConstantAndWatchExpressions(ast, $filter, parentIsPure) {
     forEach(ast.properties, function(property) {
       findConstantAndWatchExpressions(property.value, $filter, astIsPure);
       allConstants = allConstants && property.value.constant;
-      if (!property.value.constant) {
-        argsToWatch.push.apply(argsToWatch, property.value.toWatch);
-      }
+      argsToWatch.push.apply(argsToWatch, property.value.toWatch);
       if (property.computed) {
         findConstantAndWatchExpressions(property.key, $filter, astIsPure);
         allConstants = allConstants && property.key.constant;
-        if (!property.key.constant) {
-          argsToWatch.push.apply(argsToWatch, property.key.toWatch);
-        }
+        argsToWatch.push.apply(argsToWatch, property.key.toWatch);
       }
-
     });
     ast.constant = allConstants;
     ast.toWatch = argsToWatch;
