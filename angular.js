@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.7-build.5462+sha.97b00ca
+ * @license AngularJS v1.6.7-build.5463+sha.f18dd29
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -106,7 +106,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.7-build.5462+sha.97b00ca/' +
+    message += '\nhttp://errors.angularjs.org/1.6.7-build.5463+sha.f18dd29/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2768,7 +2768,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.7-build.5462+sha.97b00ca',
+  full: '1.6.7-build.5463+sha.f18dd29',
   major: 1,
   minor: 6,
   dot: 7,
@@ -2918,7 +2918,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.7-build.5462+sha.97b00ca' });
+  .info({ angularVersion: '1.6.7-build.5463+sha.f18dd29' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -17015,6 +17015,10 @@ function qFactory(nextTick, exceptionHandler, errorOnUnhandledRejections) {
           }
         } catch (e) {
           rejectPromise(promise, e);
+          // This error is explicitly marked for being passed to the $exceptionHandler
+          if (e && e.$$passToExceptionHandler === true) {
+            exceptionHandler(e);
+          }
         }
       }
     } finally {
