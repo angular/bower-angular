@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.7-build.5461+sha.5728076
+ * @license AngularJS v1.6.7-build.5462+sha.97b00ca
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -106,7 +106,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.7-build.5461+sha.5728076/' +
+    message += '\nhttp://errors.angularjs.org/1.6.7-build.5462+sha.97b00ca/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2768,7 +2768,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.7-build.5461+sha.5728076',
+  full: '1.6.7-build.5462+sha.97b00ca',
   major: 1,
   minor: 6,
   dot: 7,
@@ -2918,7 +2918,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.7-build.5461+sha.5728076' });
+  .info({ angularVersion: '1.6.7-build.5462+sha.97b00ca' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -16596,6 +16596,7 @@ function $ParseProvider() {
         return second(first(value));
       }
       chainedInterceptor.$stateful = first.$stateful || second.$stateful;
+      chainedInterceptor.$$pure = first.$$pure && second.$$pure;
 
       return chainedInterceptor;
     }
@@ -16631,14 +16632,18 @@ function $ParseProvider() {
       // If the expression itself has no inputs then use the full expression as an input.
       if (!interceptorFn.$stateful) {
         useInputs = !parsedExpression.inputs;
-        fn.inputs = (parsedExpression.inputs ? parsedExpression.inputs : [parsedExpression]).map(function(e) {
+        fn.inputs = parsedExpression.inputs ? parsedExpression.inputs : [parsedExpression];
+
+        if (!interceptorFn.$$pure) {
+          fn.inputs = fn.inputs.map(function(e) {
               // Remove the isPure flag of inputs when it is not absolute because they are now wrapped in a
-              // potentially non-pure interceptor function.
+              // non-pure interceptor function.
               if (e.isPure === PURITY_RELATIVE) {
                 return function depurifier(s) { return e(s); };
               }
               return e;
             });
+        }
       }
 
       return addWatchDelegate(fn);
@@ -17940,7 +17945,11 @@ function $RootScopeProvider() {
        *    de-registration function is executed, the internal watch operation is terminated.
        */
       $watchCollection: function(obj, listener) {
-        $watchCollectionInterceptor.$stateful = true;
+        // Mark the interceptor as
+        // ... $$pure when literal since the instance will change when any input changes
+        $watchCollectionInterceptor.$$pure = $parse(obj).literal;
+        // ... $stateful when non-literal since we must read the state of the collection
+        $watchCollectionInterceptor.$stateful = !$watchCollectionInterceptor.$$pure;
 
         var self = this;
         // the current value, updated on each dirty-check run
