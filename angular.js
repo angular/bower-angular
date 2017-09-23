@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.7-build.5469+sha.6d997f5
+ * @license AngularJS v1.6.7-build.5470+sha.72a87ce
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -106,7 +106,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.7-build.5469+sha.6d997f5/' +
+    message += '\nhttp://errors.angularjs.org/1.6.7-build.5470+sha.72a87ce/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2768,7 +2768,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.7-build.5469+sha.6d997f5',
+  full: '1.6.7-build.5470+sha.72a87ce',
   major: 1,
   minor: 6,
   dot: 7,
@@ -2918,7 +2918,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.7-build.5469+sha.6d997f5' });
+  .info({ angularVersion: '1.6.7-build.5470+sha.72a87ce' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -12261,7 +12261,7 @@ function $HttpProvider() {
      *
      * @param {string|TrustedObject} url Absolute or relative URL of the resource that is being requested;
      *                                   or an object created by a call to `$sce.trustAsResourceUrl(url)`.
-     * @param {Object=} config Optional configuration object
+     * @param {Object=} config Optional configuration object. See https://docs.angularjs.org/api/ng/service/$http#usage
      * @returns {HttpPromise} Future object
      */
 
@@ -12274,7 +12274,7 @@ function $HttpProvider() {
      *
      * @param {string|TrustedObject} url Absolute or relative URL of the resource that is being requested;
      *                                   or an object created by a call to `$sce.trustAsResourceUrl(url)`.
-     * @param {Object=} config Optional configuration object
+     * @param {Object=} config Optional configuration object. See https://docs.angularjs.org/api/ng/service/$http#usage
      * @returns {HttpPromise} Future object
      */
 
@@ -12287,7 +12287,7 @@ function $HttpProvider() {
      *
      * @param {string|TrustedObject} url Absolute or relative URL of the resource that is being requested;
      *                                   or an object created by a call to `$sce.trustAsResourceUrl(url)`.
-     * @param {Object=} config Optional configuration object
+     * @param {Object=} config Optional configuration object. See https://docs.angularjs.org/api/ng/service/$http#usage
      * @returns {HttpPromise} Future object
      */
 
@@ -12303,6 +12303,10 @@ function $HttpProvider() {
      * You can trust a URL by adding it to the whitelist via
      * {@link $sceDelegateProvider#resourceUrlWhitelist  `$sceDelegateProvider.resourceUrlWhitelist`} or
      * by explicitly trusting the URL via {@link $sce#trustAsResourceUrl `$sce.trustAsResourceUrl(url)`}.
+     *
+     * You should avoid generating the URL for the JSONP request from user provided data.
+     * Provide additional query parameters via `params` property of the `config` parameter, rather than
+     * modifying the URL itself.
      *
      * JSONP requests must specify a callback to be used in the response from the server. This callback
      * is passed as a query parameter in the request. You must specify the name of this parameter by
@@ -12325,7 +12329,7 @@ function $HttpProvider() {
      *
      * @param {string|TrustedObject} url Absolute or relative URL of the resource that is being requested;
      *                                   or an object created by a call to `$sce.trustAsResourceUrl(url)`.
-     * @param {Object=} config Optional configuration object
+     * @param {Object=} config Optional configuration object. See https://docs.angularjs.org/api/ng/service/$http#usage
      * @returns {HttpPromise} Future object
      */
     createShortMethods('get', 'delete', 'head', 'jsonp');
@@ -12339,7 +12343,7 @@ function $HttpProvider() {
      *
      * @param {string} url Relative or absolute URL specifying the destination of the request
      * @param {*} data Request content
-     * @param {Object=} config Optional configuration object
+     * @param {Object=} config Optional configuration object. See https://docs.angularjs.org/api/ng/service/$http#usage
      * @returns {HttpPromise} Future object
      */
 
@@ -12352,7 +12356,7 @@ function $HttpProvider() {
      *
      * @param {string} url Relative or absolute URL specifying the destination of the request
      * @param {*} data Request content
-     * @param {Object=} config Optional configuration object
+     * @param {Object=} config Optional configuration object. See https://docs.angularjs.org/api/ng/service/$http#usage
      * @returns {HttpPromise} Future object
      */
 
@@ -12365,7 +12369,7 @@ function $HttpProvider() {
       *
       * @param {string} url Relative or absolute URL specifying the destination of the request
       * @param {*} data Request content
-      * @param {Object=} config Optional configuration object
+      * @param {Object=} config Optional configuration object. See https://docs.angularjs.org/api/ng/service/$http#usage
       * @returns {HttpPromise} Future object
       */
     createShortMethodsWithData('post', 'put', 'patch');
@@ -12579,20 +12583,26 @@ function $HttpProvider() {
       return url;
     }
 
-    function sanitizeJsonpCallbackParam(url, key) {
-      if (/[&?][^=]+=JSON_CALLBACK/.test(url)) {
-        // Throw if the url already contains a reference to JSON_CALLBACK
-        throw $httpMinErr('badjsonp', 'Illegal use of JSON_CALLBACK in url, "{0}"', url);
+    function sanitizeJsonpCallbackParam(url, cbKey) {
+      var parts = url.split('?');
+      if (parts.length > 2) {
+        // Throw if the url contains more than one `?` query indicator
+        throw $httpMinErr('badjsonp', 'Illegal use more than one "?", in url, "{1}"', url);
       }
-
-      var callbackParamRegex = new RegExp('[&?]' + key + '=');
-      if (callbackParamRegex.test(url)) {
-        // Throw if the callback param was already provided
-        throw $httpMinErr('badjsonp', 'Illegal use of callback param, "{0}", in url, "{1}"', key, url);
-      }
+      var params = parseKeyValue(parts[1]);
+      forEach(params, function(value, key) {
+        if (value === 'JSON_CALLBACK') {
+          // Throw if the url already contains a reference to JSON_CALLBACK
+          throw $httpMinErr('badjsonp', 'Illegal use of JSON_CALLBACK in url, "{0}"', url);
+        }
+        if (key === cbKey) {
+          // Throw if the callback param was already provided
+          throw $httpMinErr('badjsonp', 'Illegal use of callback param, "{0}", in url, "{1}"', cbKey, url);
+        }
+      });
 
       // Add in the JSON_CALLBACK callback param value
-      url += ((url.indexOf('?') === -1) ? '?' : '&') + key + '=JSON_CALLBACK';
+      url += ((url.indexOf('?') === -1) ? '?' : '&') + cbKey + '=JSON_CALLBACK';
 
       return url;
     }
