@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.7-build.5479+sha.656c8fa
+ * @license AngularJS v1.6.7-build.5480+sha.00936ad
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -106,7 +106,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.7-build.5479+sha.656c8fa/' +
+    message += '\nhttp://errors.angularjs.org/1.6.7-build.5480+sha.00936ad/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2774,7 +2774,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.7-build.5479+sha.656c8fa',
+  full: '1.6.7-build.5480+sha.00936ad',
   major: 1,
   minor: 6,
   dot: 7,
@@ -2924,7 +2924,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.7-build.5479+sha.656c8fa' });
+  .info({ angularVersion: '1.6.7-build.5480+sha.00936ad' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -32692,7 +32692,8 @@ function setOptionSelectedStatus(optionEl, value) {
  *       <option value="option-1">Option 1</option>
  *       <option value="option-2">Option 2</option>
  *     </select><br>
- *     <span ng-if="myForm.testSelect.$error.unknownValue">Error: The current model doesn't match any option</span>
+ *     <span class="error" ng-if="myForm.testSelect.$error.unknownValue">
+ *       Error: The current model doesn't match any option</span><br>
  *
  *     <button ng-click="forceUnknownOption()">Force unknown option</button><br>
  *   </form>
@@ -32741,11 +32742,11 @@ function setOptionSelectedStatus(optionEl, value) {
  * <div ng-controller="ExampleController">
  *   <form name="myForm">
  *     <label for="testSelect"> Select: </label><br>
- *     <select name="testSelect" ng-model="selected" unknown-value-required>
+ *     <select name="testSelect" ng-model="selected" required unknown-value-required>
  *       <option value="option-1">Option 1</option>
  *       <option value="option-2">Option 2</option>
  *     </select><br>
- *     <span ng-if="myForm.testSelect.$error.required">Error: Please select a value</span><br>
+ *     <span class="error" ng-if="myForm.testSelect.$error.required">Error: Please select a value</span><br>
  *
  *     <button ng-click="forceUnknownOption()">Force unknown option</button><br>
  *   </form>
@@ -32780,6 +32781,22 @@ function setOptionSelectedStatus(optionEl, value) {
  *       }
  *     };
  *   });
+ * </file>
+ * <file name="protractor.js" type="protractor">
+ *  it('should show the error message when the unknown option is selected', function() {
+
+      var error = element(by.className('error'));
+
+      expect(error.getText()).toBe('Error: Please select a value');
+
+      element(by.cssContainingText('option', 'Option 1')).click();
+
+      expect(error.isPresent()).toBe(false);
+
+      element(by.tagName('button')).click();
+
+      expect(error.getText()).toBe('Error: Please select a value');
+    });
  * </file>
  *</example>
  *
