@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.7-build.5490+sha.c15c8a1
+ * @license AngularJS v1.6.7-build.5491+sha.0864f73
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -106,7 +106,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.7-build.5490+sha.c15c8a1/' +
+    message += '\nhttp://errors.angularjs.org/1.6.7-build.5491+sha.0864f73/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2774,7 +2774,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.7-build.5490+sha.c15c8a1',
+  full: '1.6.7-build.5491+sha.0864f73',
   major: 1,
   minor: 6,
   dot: 7,
@@ -2924,7 +2924,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.7-build.5490+sha.c15c8a1' });
+  .info({ angularVersion: '1.6.7-build.5491+sha.0864f73' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -8536,16 +8536,19 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
    * @ngdoc method
    * @name  $compileProvider#strictComponentBindingsEnabled
    *
-   * @param {boolean=} enabled update the strictComponentBindingsEnabled state if provided, otherwise just return the
-   * current strictComponentBindingsEnabled state
+   * @param {boolean=} enabled update the strictComponentBindingsEnabled state if provided,
+   * otherwise return the current strictComponentBindingsEnabled state.
    * @returns {*} current value if used as getter or itself (chaining) if used as setter
    *
    * @kind function
    *
    * @description
-   * Call this method to enable/disable strict component bindings check. If enabled, the compiler will enforce that
-   * for all bindings of a component that are not set as optional with `?`, an attribute needs to be provided
-   * on the component's HTML tag.
+   * Call this method to enable / disable the strict component bindings check. If enabled, the
+   * compiler will enforce that all scope / controller bindings of a
+   * {@link $compileProvider#directive directive} / {@link $compileProvider#component component}
+   * that are not set as optional with `?`, must be provided when the directive is instantiated.
+   * If not provided, the compiler will throw the
+   * {@link error/$compile/missingattr $compile:missingattr error}.
    *
    * The default value is false.
    */
