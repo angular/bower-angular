@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.7-build.5503+sha.5838017
+ * @license AngularJS v1.6.7-build.5504+sha.07e4751
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -106,7 +106,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.7-build.5503+sha.5838017/' +
+    message += '\nhttp://errors.angularjs.org/1.6.7-build.5504+sha.07e4751/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2774,7 +2774,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.7-build.5503+sha.5838017',
+  full: '1.6.7-build.5504+sha.07e4751',
   major: 1,
   minor: 6,
   dot: 7,
@@ -2924,7 +2924,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.7-build.5503+sha.5838017' });
+  .info({ angularVersion: '1.6.7-build.5504+sha.07e4751' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
