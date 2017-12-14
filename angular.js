@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.8-build.5520+sha.f6e60c1
+ * @license AngularJS v1.6.8-build.5521+sha.7df2952
  * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -106,7 +106,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.8-build.5520+sha.f6e60c1/' +
+    message += '\nhttp://errors.angularjs.org/1.6.8-build.5521+sha.7df2952/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2774,7 +2774,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.8-build.5520+sha.f6e60c1',
+  full: '1.6.8-build.5521+sha.7df2952',
   major: 1,
   minor: 6,
   dot: 8,
@@ -2924,7 +2924,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.8-build.5520+sha.f6e60c1' });
+  .info({ angularVersion: '1.6.8-build.5521+sha.7df2952' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -6420,7 +6420,6 @@ function Browser(window, document, $log, $sniffer) {
 
   /**
    * @private
-   * Note: this method is used only by scenario runner
    * TODO(vojta): prefix this method with $$ ?
    * @param {function()} callback Function that will be called when no outstanding request
    */
@@ -14460,8 +14459,6 @@ function $LocationProvider() {
           // update location manually
           if ($location.absUrl() !== $browser.url()) {
             $rootScope.$apply();
-            // hack to work around FF6 bug 684208 when scenario runner clicks on links
-            $window.angular['ff-684208-preventDefault'] = true;
           }
         }
       }
