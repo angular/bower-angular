@@ -1,6 +1,6 @@
 /**
- * @license AngularJS v1.6.9-build.5529+sha.88cb9af
- * (c) 2010-2017 Google, Inc. http://angularjs.org
+ * @license AngularJS v1.6.9-build.5530+sha.07d84dd
+ * (c) 2010-2018 Google, Inc. http://angularjs.org
  * License: MIT
  */
 (function(window) {'use strict';
@@ -106,7 +106,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.9-build.5529+sha.88cb9af/' +
+    message += '\nhttp://errors.angularjs.org/1.6.9-build.5530+sha.07d84dd/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2774,7 +2774,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.9-build.5529+sha.88cb9af',
+  full: '1.6.9-build.5530+sha.07d84dd',
   major: 1,
   minor: 6,
   dot: 9,
@@ -2924,7 +2924,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.9-build.5529+sha.88cb9af' });
+  .info({ angularVersion: '1.6.9-build.5530+sha.07d84dd' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
