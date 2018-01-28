@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.9-build.5548+sha.4c97df5
+ * @license AngularJS v1.6.9-build.5549+sha.a8830d2
  * (c) 2010-2018 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -106,7 +106,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.9-build.5548+sha.4c97df5/' +
+    message += '\nhttp://errors.angularjs.org/1.6.9-build.5549+sha.a8830d2/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -2780,7 +2780,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.9-build.5548+sha.4c97df5',
+  full: '1.6.9-build.5549+sha.a8830d2',
   major: 1,
   minor: 6,
   dot: 9,
@@ -2930,7 +2930,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.9-build.5548+sha.4c97df5' });
+  .info({ angularVersion: '1.6.9-build.5549+sha.a8830d2' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -22225,6 +22225,7 @@ function sliceFn(input, begin, end) {
  *      index: ...
  *    }
  *    ```
+ *    **Note:** `null` values use `'null'` as their type.
  * 2. The comparator function is used to sort the items, based on the derived values, types and
  *    indices.
  *
@@ -22259,11 +22260,15 @@ function sliceFn(input, begin, end) {
  *
  * The default, built-in comparator should be sufficient for most usecases. In short, it compares
  * numbers numerically, strings alphabetically (and case-insensitively), for objects falls back to
- * using their index in the original collection, and sorts values of different types by type.
+ * using their index in the original collection, sorts values of different types by type and puts
+ * `undefined` and `null` values at the end of the sorted list.
  *
  * More specifically, it follows these steps to determine the relative order of items:
  *
- * 1. If the compared values are of different types, compare the types themselves alphabetically.
+ * 1. If the compared values are of different types:
+ *    - If one of the values is undefined, consider it "greater than" the other.
+ *    - Else if one of the values is null, consider it "greater than" the other.
+ *    - Else compare the types themselves alphabetically.
  * 2. If both values are of type `string`, compare them alphabetically in a case- and
  *    locale-insensitive way.
  * 3. If both values are objects, compare their indices instead.
@@ -22274,9 +22279,10 @@ function sliceFn(input, begin, end) {
  *
  * **Note:** If you notice numbers not being sorted as expected, make sure they are actually being
  *           saved as numbers and not strings.
- * **Note:** For the purpose of sorting, `null` values are treated as the string `'null'` (i.e.
- *           `type: 'string'`, `value: 'null'`). This may cause unexpected sort order relative to
- *           other values.
+ * **Note:** For the purpose of sorting, `null` and `undefined` are considered "greater than"
+ *           any other value (with undefined "greater than" null). This effectively means that `null`
+ *           and `undefined` values end up at the end of a list sorted in ascending order.
+ * **Note:** `null` values use `'null'` as their type to be able to distinguish them from objects.
  *
  * @param {Array|ArrayLike} collection - The collection (array or array-like object) to sort.
  * @param {(Function|string|Array.<Function|string>)=} expression - A predicate (or list of
@@ -22843,8 +22849,7 @@ function orderByFilter($parse) {
   function getPredicateValue(value, index) {
     var type = typeof value;
     if (value === null) {
-      type = 'string';
-      value = 'null';
+      type = 'null';
     } else if (type === 'object') {
       value = objectValue(value);
     }
@@ -22875,7 +22880,11 @@ function orderByFilter($parse) {
         result = value1 < value2 ? -1 : 1;
       }
     } else {
-      result = type1 < type2 ? -1 : 1;
+      result = (type1 === 'undefined') ? 1 :
+        (type2 === 'undefined') ? -1 :
+        (type1 === 'null') ? 1 :
+        (type2 === 'null') ? -1 :
+        (type1 < type2) ? -1 : 1;
     }
 
     return result;
@@ -25376,9 +25385,9 @@ function baseInputType(scope, element, attr, ctrl, $sniffer, $browser) {
       deferListener(event, this, this.value);
     });
 
-    // if user modifies input value using context menu in IE, we need "paste" and "cut" events to catch it
+    // if user modifies input value using context menu in IE, we need "paste", "cut" and "drop" events to catch it
     if ($sniffer.hasEvent('paste')) {
-      element.on('paste cut', deferListener);
+      element.on('paste cut drop', deferListener);
     }
   }
 
