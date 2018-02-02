@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.9-build.5549+sha.a8830d2
+ * @license AngularJS v1.6.9-build.5550+sha.16b82c6
  * (c) 2010-2018 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -106,7 +106,7 @@ function minErr(module, ErrorConstructor) {
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.6.9-build.5549+sha.a8830d2/' +
+    message += '\nhttp://errors.angularjs.org/1.6.9-build.5550+sha.16b82c6/' +
       (module ? module + '/' : '') + code;
 
     for (i = 0, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
@@ -336,8 +336,7 @@ function isArrayLike(obj) {
 
   // NodeList objects (with `item` method) and
   // other objects with suitable length characteristics are array-like
-  return isNumber(length) &&
-    (length >= 0 && ((length - 1) in obj || obj instanceof Array) || typeof obj.item === 'function');
+  return isNumber(length) && (length >= 0 && (length - 1) in obj || typeof obj.item === 'function');
 
 }
 
@@ -752,12 +751,14 @@ function isDate(value) {
  * @kind function
  *
  * @description
- * Determines if a reference is an `Array`. Alias of Array.isArray.
+ * Determines if a reference is an `Array`.
  *
  * @param {*} value Reference to check.
  * @returns {boolean} True if `value` is an `Array`.
  */
-var isArray = Array.isArray;
+function isArray(arr) {
+  return Array.isArray(arr) || arr instanceof Array;
+}
 
 /**
  * @description
@@ -2780,7 +2781,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.9-build.5549+sha.a8830d2',
+  full: '1.6.9-build.5550+sha.16b82c6',
   major: 1,
   minor: 6,
   dot: 9,
@@ -2930,7 +2931,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.9-build.5549+sha.a8830d2' });
+  .info({ angularVersion: '1.6.9-build.5550+sha.16b82c6' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -5855,13 +5856,77 @@ var $AnimateProvider = ['$provide', /** @this */ function($provide) {
        * @ngdoc method
        * @name $animate#cancel
        * @kind function
-       * @description Cancels the provided animation.
+       * @description Cancels the provided animation and applies the end state of the animation.
+       * Note that this does not cancel the underlying operation, e.g. the setting of classes or
+       * adding the element to the DOM.
        *
-       * @param {Promise} animationPromise The animation promise that is returned when an animation is started.
+       * @param {animationRunner} animationRunner An animation runner returned by an $animate function.
+       *
+       * @example
+        <example module="animationExample" deps="angular-animate.js" animations="true" name="animate-cancel">
+          <file name="app.js">
+            angular.module('animationExample', ['ngAnimate']).component('cancelExample', {
+              templateUrl: 'template.html',
+              controller: function($element, $animate) {
+                this.runner = null;
+
+                this.addClass = function() {
+                  this.runner = $animate.addClass($element.find('div'), 'red');
+                  var ctrl = this;
+                  this.runner.finally(function() {
+                    ctrl.runner = null;
+                  });
+                };
+
+                this.removeClass = function() {
+                  this.runner = $animate.removeClass($element.find('div'), 'red');
+                  var ctrl = this;
+                  this.runner.finally(function() {
+                    ctrl.runner = null;
+                  });
+                };
+
+                this.cancel = function() {
+                  $animate.cancel(this.runner);
+                };
+              }
+            });
+          </file>
+          <file name="template.html">
+            <p>
+              <button id="add" ng-click="$ctrl.addClass()">Add</button>
+              <button ng-click="$ctrl.removeClass()">Remove</button>
+              <br>
+              <button id="cancel" ng-click="$ctrl.cancel()" ng-disabled="!$ctrl.runner">Cancel</button>
+              <br>
+              <div id="target">CSS-Animated Text</div>
+            </p>
+          </file>
+          <file name="index.html">
+            <cancel-example></cancel-example>
+          </file>
+          <file name="style.css">
+            .red-add, .red-remove {
+              transition: all 4s cubic-bezier(0.250, 0.460, 0.450, 0.940);
+            }
+
+            .red,
+            .red-add.red-add-active {
+              color: #FF0000;
+              font-size: 40px;
+            }
+
+            .red-remove.red-remove-active {
+              font-size: 10px;
+              color: black;
+            }
+
+          </file>
+        </example>
        */
       cancel: function(runner) {
-        if (runner.end) {
-          runner.end();
+        if (runner.cancel) {
+          runner.cancel();
         }
       },
 
@@ -5887,7 +5952,7 @@ var $AnimateProvider = ['$provide', /** @this */ function($provide) {
        *   - **removeClass** - `{string}` - space-separated CSS classes to remove from element
        *   - **to** - `{Object}` - CSS properties & values at end of animation. Must have matching `from`
        *
-       * @return {Promise} the animation callback promise
+       * @return {Runner} the animation runner
        */
       enter: function(element, parent, after, options) {
         parent = parent && jqLite(parent);
@@ -5919,7 +5984,7 @@ var $AnimateProvider = ['$provide', /** @this */ function($provide) {
        *   - **removeClass** - `{string}` - space-separated CSS classes to remove from element
        *   - **to** - `{Object}` - CSS properties & values at end of animation. Must have matching `from`
        *
-       * @return {Promise} the animation callback promise
+       * @return {Runner} the animation runner
        */
       move: function(element, parent, after, options) {
         parent = parent && jqLite(parent);
@@ -5946,7 +6011,7 @@ var $AnimateProvider = ['$provide', /** @this */ function($provide) {
        *   - **removeClass** - `{string}` - space-separated CSS classes to remove from element
        *   - **to** - `{Object}` - CSS properties & values at end of animation. Must have matching `from`
        *
-       * @return {Promise} the animation callback promise
+       * @return {Runner} the animation runner
        */
       leave: function(element, options) {
         return $$animateQueue.push(element, 'leave', prepareAnimateOptions(options), function() {
@@ -5976,7 +6041,7 @@ var $AnimateProvider = ['$provide', /** @this */ function($provide) {
        *   - **removeClass** - `{string}` - space-separated CSS classes to remove from element
        *   - **to** - `{Object}` - CSS properties & values at end of animation. Must have matching `from`
        *
-       * @return {Promise} the animation callback promise
+       * @return {Runner} animationRunner the animation runner
        */
       addClass: function(element, className, options) {
         options = prepareAnimateOptions(options);
@@ -6006,7 +6071,7 @@ var $AnimateProvider = ['$provide', /** @this */ function($provide) {
        *   - **removeClass** - `{string}` - space-separated CSS classes to remove from element
        *   - **to** - `{Object}` - CSS properties & values at end of animation. Must have matching `from`
        *
-       * @return {Promise} the animation callback promise
+       * @return {Runner} the animation runner
        */
       removeClass: function(element, className, options) {
         options = prepareAnimateOptions(options);
@@ -6037,7 +6102,7 @@ var $AnimateProvider = ['$provide', /** @this */ function($provide) {
        *   - **removeClass** - `{string}` - space-separated CSS classes to remove from element
        *   - **to** - `{Object}` - CSS properties & values at end of animation. Must have matching `from`
        *
-       * @return {Promise} the animation callback promise
+       * @return {Runner} the animation runner
        */
       setClass: function(element, add, remove, options) {
         options = prepareAnimateOptions(options);
@@ -6084,7 +6149,7 @@ var $AnimateProvider = ['$provide', /** @this */ function($provide) {
        *   - **removeClass** - `{string}` - space-separated CSS classes to remove from element
        *   - **to** - `{Object}` - CSS properties & values at end of animation. Must have matching `from`
        *
-       * @return {Promise} the animation callback promise
+       * @return {Runner} the animation runner
        */
       animate: function(element, from, to, className, options) {
         options = prepareAnimateOptions(options);
@@ -8657,9 +8722,9 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
   this.$get = [
             '$injector', '$interpolate', '$exceptionHandler', '$templateRequest', '$parse',
-            '$controller', '$rootScope', '$sce', '$animate', '$$sanitizeUri',
+            '$controller', '$rootScope', '$sce', '$animate',
     function($injector,   $interpolate,   $exceptionHandler,   $templateRequest,   $parse,
-             $controller,   $rootScope,   $sce,   $animate,   $$sanitizeUri) {
+             $controller,   $rootScope,   $sce,   $animate) {
 
     var SIMPLE_ATTR_NAME = /^\w/;
     var specialAttrHolder = window.document.createElement('div');
@@ -8808,8 +8873,8 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
        */
       $set: function(key, value, writeAttr, attrName) {
         // TODO: decide whether or not to throw an error if "class"
-        //is set through this function since it may cause $updateClass to
-        //become unstable.
+        // is set through this function since it may cause $updateClass to
+        // become unstable.
 
         var node = this.$$element[0],
             booleanKey = getBooleanAttrName(node, key),
@@ -8839,13 +8904,20 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
 
         nodeName = nodeName_(this.$$element);
 
-        if ((nodeName === 'a' && (key === 'href' || key === 'xlinkHref')) ||
-            (nodeName === 'img' && key === 'src') ||
-            (nodeName === 'image' && key === 'xlinkHref')) {
-          // sanitize a[href] and img[src] values
-          this[key] = value = $$sanitizeUri(value, nodeName === 'img' || nodeName === 'image');
-        } else if (nodeName === 'img' && key === 'srcset' && isDefined(value)) {
-          // sanitize img[srcset] values
+        // Sanitize img[srcset] values.
+        if (nodeName === 'img' && key === 'srcset' && value) {
+          if (!isString(value)) {
+            throw $compileMinErr('srcset', 'Can\'t pass trusted values to `$set(\'srcset\', value)`: "{0}"', value.toString());
+          }
+
+          // Such values are a bit too complex to handle automatically inside $sce.
+          // Instead, we sanitize each of the URIs individually, which works, even dynamically.
+
+          // It's not possible to work around this using `$sce.trustAsMediaUrl`.
+          // If you want to programmatically set explicitly trusted unsafe URLs, you should use
+          // `$sce.trustAsHtml` on the whole `img` tag and inject it into the DOM using the
+          // `ng-bind-html` directive.
+
           var result = '';
 
           // first check if there are spaces because it's not the same pattern
@@ -8862,16 +8934,16 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
           for (var i = 0; i < nbrUrisWith2parts; i++) {
             var innerIdx = i * 2;
             // sanitize the uri
-            result += $$sanitizeUri(trim(rawUris[innerIdx]), true);
+            result += $sce.getTrustedMediaUrl(trim(rawUris[innerIdx]));
             // add the descriptor
-            result += (' ' + trim(rawUris[innerIdx + 1]));
+            result += ' ' + trim(rawUris[innerIdx + 1]);
           }
 
           // split the last item into uri and descriptor
           var lastTuple = trim(rawUris[i * 2]).split(/\s/);
 
           // sanitize the last uri
-          result += $$sanitizeUri(trim(lastTuple[0]), true);
+          result += $sce.getTrustedMediaUrl(trim(lastTuple[0]));
 
           // and add the last descriptor if any
           if (lastTuple.length === 2) {
@@ -10397,14 +10469,18 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
       }
       var tag = nodeName_(node);
       // All tags with src attributes require a RESOURCE_URL value, except for
-      // img and various html5 media tags.
+      // img and various html5 media tags, which require the MEDIA_URL context.
       if (attrNormalizedName === 'src' || attrNormalizedName === 'ngSrc') {
         if (['img', 'video', 'audio', 'source', 'track'].indexOf(tag) === -1) {
           return $sce.RESOURCE_URL;
         }
+        return $sce.MEDIA_URL;
+      } else if (attrNormalizedName === 'xlinkHref') {
+        // Some xlink:href are okay, most aren't
+        if (tag === 'image') return $sce.MEDIA_URL;
+        if (tag === 'a') return $sce.URL;
+        return $sce.RESOURCE_URL;
       } else if (
-          // Some xlink:href are okay, most aren't
-          (attrNormalizedName === 'xlinkHref' && (tag !== 'image' && tag !== 'a')) ||
           // Formaction
           (tag === 'form' && attrNormalizedName === 'action') ||
           // If relative URLs can go where they are not expected to, then
@@ -10414,6 +10490,9 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
           (tag === 'link' && attrNormalizedName === 'href')
       ) {
         return $sce.RESOURCE_URL;
+      } else if (tag === 'a' && (attrNormalizedName === 'href' ||
+                                 attrNormalizedName === 'ngHref')) {
+        return $sce.URL;
       }
     }
 
@@ -13089,16 +13168,21 @@ function $InterpolateProvider() {
      * - `context`: evaluation context for all expressions embedded in the interpolated text
      */
     function $interpolate(text, mustHaveExpression, trustedContext, allOrNothing) {
+      var contextAllowsConcatenation = trustedContext === $sce.URL || trustedContext === $sce.MEDIA_URL;
+
       // Provide a quick exit and simplified result function for text with no interpolation
       if (!text.length || text.indexOf(startSymbol) === -1) {
-        var constantInterp;
-        if (!mustHaveExpression) {
-          var unescapedText = unescapeText(text);
-          constantInterp = valueFn(unescapedText);
-          constantInterp.exp = text;
-          constantInterp.expressions = [];
-          constantInterp.$$watchDelegate = constantWatchDelegate;
+        if (mustHaveExpression && !contextAllowsConcatenation) return;
+
+        var unescapedText = unescapeText(text);
+        if (contextAllowsConcatenation) {
+          unescapedText = $sce.getTrusted(trustedContext, unescapedText);
         }
+        var constantInterp = valueFn(unescapedText);
+        constantInterp.exp = text;
+        constantInterp.expressions = [];
+        constantInterp.$$watchDelegate = constantWatchDelegate;
+
         return constantInterp;
       }
 
@@ -13107,11 +13191,13 @@ function $InterpolateProvider() {
           endIndex,
           index = 0,
           expressions = [],
-          parseFns = [],
+          parseFns,
           textLength = text.length,
           exp,
           concat = [],
-          expressionPositions = [];
+          expressionPositions = [],
+          singleExpression;
+
 
       while (index < textLength) {
         if (((startIndex = text.indexOf(startSymbol, index)) !== -1) &&
@@ -13121,10 +13207,9 @@ function $InterpolateProvider() {
           }
           exp = text.substring(startIndex + startSymbolLength, endIndex);
           expressions.push(exp);
-          parseFns.push($parse(exp, parseStringifyInterceptor));
           index = endIndex + endSymbolLength;
           expressionPositions.push(concat.length);
-          concat.push('');
+          concat.push(''); // Placeholder that will get replaced with the evaluated expression.
         } else {
           // we did not find an interpolation, so we have to add the remainder to the separators array
           if (index !== textLength) {
@@ -13134,15 +13219,25 @@ function $InterpolateProvider() {
         }
       }
 
+      singleExpression = concat.length === 1 && expressionPositions.length === 1;
+      // Intercept expression if we need to stringify concatenated inputs, which may be SCE trusted
+      // objects rather than simple strings
+      // (we don't modify the expression if the input consists of only a single trusted input)
+      var interceptor = contextAllowsConcatenation && singleExpression ? undefined : parseStringifyInterceptor;
+      parseFns = expressions.map(function(exp) { return $parse(exp, interceptor); });
+
       // Concatenating expressions makes it hard to reason about whether some combination of
       // concatenated values are unsafe to use and could easily lead to XSS.  By requiring that a
-      // single expression be used for iframe[src], object[src], etc., we ensure that the value
-      // that's used is assigned or constructed by some JS code somewhere that is more testable or
-      // make it obvious that you bound the value to some user controlled value.  This helps reduce
-      // the load when auditing for XSS issues.
-      if (trustedContext && concat.length > 1) {
-          $interpolateMinErr.throwNoconcat(text);
-      }
+      // single expression be used for some $sce-managed secure contexts (RESOURCE_URLs mostly),
+      // we ensure that the value that's used is assigned or constructed by some JS code somewhere
+      // that is more testable or make it obvious that you bound the value to some user controlled
+      // value.  This helps reduce the load when auditing for XSS issues.
+
+      // Note that URL and MEDIA_URL $sce contexts do not need this, since `$sce` can sanitize the values
+      // passed to it. In that case, `$sce.getTrusted` will be called on either the single expression
+      // or on the overall concatenated string (losing trusted types used in the mix, by design).
+      // Both these methods will sanitize plain strings. Also, HTML could be included, but since it's
+      // only used in srcdoc attributes, this would not be very useful.
 
       if (!mustHaveExpression || expressions.length) {
         var compute = function(values) {
@@ -13150,13 +13245,16 @@ function $InterpolateProvider() {
             if (allOrNothing && isUndefined(values[i])) return;
             concat[expressionPositions[i]] = values[i];
           }
-          return concat.join('');
-        };
 
-        var getValue = function(value) {
-          return trustedContext ?
-            $sce.getTrusted(trustedContext, value) :
-            $sce.valueOf(value);
+          if (contextAllowsConcatenation) {
+            // If `singleExpression` then `concat[0]` might be a "trusted" value or `null`, rather than a string
+            return $sce.getTrusted(trustedContext, singleExpression ? concat[0] : concat.join(''));
+          } else if (trustedContext && concat.length > 1) {
+            // This context does not allow more than one part, e.g. expr + string or exp + exp.
+            $interpolateMinErr.throwNoconcat(text);
+          }
+          // In an unprivileged context or only one part: just concatenate and return.
+          return concat.join('');
         };
 
         return extend(function interpolationFn(context) {
@@ -13191,7 +13289,13 @@ function $InterpolateProvider() {
 
       function parseStringifyInterceptor(value) {
         try {
-          value = getValue(value);
+          // In concatenable contexts, getTrusted comes at the end, to avoid sanitizing individual
+          // parts of a full URL. We don't care about losing the trustedness here.
+          // In non-concatenable contexts, where there is only one expression, this interceptor is
+          // not applied to the expression.
+          value = (trustedContext && !contextAllowsConcatenation) ?
+                    $sce.getTrusted(trustedContext, value) :
+                    $sce.valueOf(value);
           return allOrNothing && !isDefined(value) ? value : stringify(value);
         } catch (err) {
           $exceptionHandler($interpolateMinErr.interr(text, err));
@@ -18993,6 +19097,7 @@ function $RootScopeProvider() {
  * Private service to sanitize uris for links and images. Used by $compile and $sanitize.
  */
 function $$SanitizeUriProvider() {
+
   var aHrefSanitizationWhitelist = /^\s*(https?|s?ftp|mailto|tel|file):/,
     imgSrcSanitizationWhitelist = /^\s*((https?|ftp|file|blob):|data:image\/)/;
 
@@ -19001,12 +19106,16 @@ function $$SanitizeUriProvider() {
    * Retrieves or overrides the default regular expression that is used for whitelisting of safe
    * urls during a[href] sanitization.
    *
-   * The sanitization is a security measure aimed at prevent XSS attacks via html links.
+   * The sanitization is a security measure aimed at prevent XSS attacks via HTML anchor links.
    *
-   * Any url about to be assigned to a[href] via data-binding is first normalized and turned into
-   * an absolute url. Afterwards, the url is matched against the `aHrefSanitizationWhitelist`
-   * regular expression. If a match is found, the original url is written into the dom. Otherwise,
-   * the absolute url is prefixed with `'unsafe:'` string and only then is it written into the DOM.
+   * Any url due to be assigned to an `a[href]` attribute via interpolation is marked as requiring
+   * the $sce.URL security context. When interpolation occurs a call is made to `$sce.trustAsUrl(url)`
+   * which in turn may call `$$sanitizeUri(url, isMedia)` to sanitize the potentially malicious URL.
+   *
+   * If the URL matches the `aHrefSanitizationWhitelist` regular expression, it is returned unchanged.
+   *
+   * If there is no match the URL is returned prefixed with `'unsafe:'` to ensure that when it is written
+   * to the DOM it is inactive and potentially malicious code will not be executed.
    *
    * @param {RegExp=} regexp New regexp to whitelist urls with.
    * @returns {RegExp|ng.$compileProvider} Current RegExp if called without value or self for
@@ -19026,12 +19135,17 @@ function $$SanitizeUriProvider() {
    * Retrieves or overrides the default regular expression that is used for whitelisting of safe
    * urls during img[src] sanitization.
    *
-   * The sanitization is a security measure aimed at prevent XSS attacks via html links.
+   * The sanitization is a security measure aimed at prevent XSS attacks via HTML image src links.
    *
-   * Any url about to be assigned to img[src] via data-binding is first normalized and turned into
-   * an absolute url. Afterwards, the url is matched against the `imgSrcSanitizationWhitelist`
-   * regular expression. If a match is found, the original url is written into the dom. Otherwise,
-   * the absolute url is prefixed with `'unsafe:'` string and only then is it written into the DOM.
+   * Any URL due to be assigned to an `img[src]` attribute via interpolation is marked as requiring
+   * the $sce.MEDIA_URL security context. When interpolation occurs a call is made to
+   * `$sce.trustAsMediaUrl(url)` which in turn may call `$$sanitizeUri(url, isMedia)` to sanitize
+   * the potentially malicious URL.
+   *
+   * If the URL matches the `aImgSanitizationWhitelist` regular expression, it is returned unchanged.
+   *
+   * If there is no match the URL is returned prefixed with `'unsafe:'` to ensure that when it is written
+   * to the DOM it is inactive and potentially malicious code will not be executed.
    *
    * @param {RegExp=} regexp New regexp to whitelist urls with.
    * @returns {RegExp|ng.$compileProvider} Current RegExp if called without value or self for
@@ -19046,10 +19160,10 @@ function $$SanitizeUriProvider() {
   };
 
   this.$get = function() {
-    return function sanitizeUri(uri, isImage) {
-      var regex = isImage ? imgSrcSanitizationWhitelist : aHrefSanitizationWhitelist;
-      var normalizedVal;
-      normalizedVal = urlResolve(uri && uri.trim()).href;
+    return function sanitizeUri(uri, isMediaUrl) {
+      // if (!uri) return uri;
+      var regex = isMediaUrl ? imgSrcSanitizationWhitelist : aHrefSanitizationWhitelist;
+      var normalizedVal = urlResolve(uri && uri.trim()).href;
       if (normalizedVal !== '' && !normalizedVal.match(regex)) {
         return 'unsafe:' + normalizedVal;
       }
@@ -19080,12 +19194,17 @@ var SCE_CONTEXTS = {
   // Style statements or stylesheets. Currently unused in AngularJS.
   CSS: 'css',
 
-  // An URL used in a context where it does not refer to a resource that loads code. Currently
-  // unused in AngularJS.
+  // An URL used in a context where it refers to the source of media, which are not expected to be run
+  // as scripts, such as an image, audio, video, etc.
+  MEDIA_URL: 'mediaUrl',
+
+  // An URL used in a context where it does not refer to a resource that loads code.
+  // A value that can be trusted as a URL can also trusted as a MEDIA_URL.
   URL: 'url',
 
   // RESOURCE_URL is a subtype of URL used where the referred-to resource could be interpreted as
   // code. (e.g. ng-include, script src binding, templateUrl)
+  // A value that can be trusted as a RESOURCE_URL, can also trusted as a URL and a MEDIA_URL.
   RESOURCE_URL: 'resourceUrl',
 
   // Script. Currently unused in AngularJS.
@@ -19300,7 +19419,7 @@ function $SceDelegateProvider() {
     return resourceUrlBlacklist;
   };
 
-  this.$get = ['$injector', function($injector) {
+  this.$get = ['$injector', '$$sanitizeUri', function($injector, $$sanitizeUri) {
 
     var htmlSanitizer = function htmlSanitizer(html) {
       throw $sceMinErr('unsafe', 'Attempting to use an unsafe value in a safe context.');
@@ -19365,7 +19484,8 @@ function $SceDelegateProvider() {
 
     byType[SCE_CONTEXTS.HTML] = generateHolderType(trustedValueHolderBase);
     byType[SCE_CONTEXTS.CSS] = generateHolderType(trustedValueHolderBase);
-    byType[SCE_CONTEXTS.URL] = generateHolderType(trustedValueHolderBase);
+    byType[SCE_CONTEXTS.MEDIA_URL] = generateHolderType(trustedValueHolderBase);
+    byType[SCE_CONTEXTS.URL] = generateHolderType(byType[SCE_CONTEXTS.MEDIA_URL]);
     byType[SCE_CONTEXTS.JS] = generateHolderType(trustedValueHolderBase);
     byType[SCE_CONTEXTS.RESOURCE_URL] = generateHolderType(byType[SCE_CONTEXTS.URL]);
 
@@ -19444,15 +19564,27 @@ function $SceDelegateProvider() {
      * @name $sceDelegate#getTrusted
      *
      * @description
-     * Takes any input, and either returns a value that's safe to use in the specified context, or
-     * throws an exception.
+     * Given an object and a security context in which to assign it, returns a value that's safe to
+     * use in this context, which was represented by the parameter. To do so, this function either
+     * unwraps the safe type it has been given (for instance, a {@link ng.$sceDelegate#trustAs
+     * `$sceDelegate.trustAs`} result), or it might try to sanitize the value given, depending on
+     * the context and sanitizer availablility.
      *
-     * In practice, there are several cases. When given a string, this function runs checks
-     * and sanitization to make it safe without prior assumptions. When given the result of a {@link
-     * ng.$sceDelegate#trustAs `$sceDelegate.trustAs`} call, it returns the originally supplied
-     * value if that value's context is valid for this call's context. Finally, this function can
-     * also throw when there is no way to turn `maybeTrusted` in a safe value (e.g., no sanitization
-     * is available or possible.)
+     * The contexts that can be sanitized are $sce.MEDIA_URL, $sce.URL and $sce.HTML. The first two are available
+     * by default, and the third one relies on the `$sanitize` service (which may be loaded through
+     * the `ngSanitize` module). Furthermore, for $sce.RESOURCE_URL context, a plain string may be
+     * accepted if the resource url policy defined by {@link ng.$sceDelegateProvider#resourceUrlWhitelist
+     * `$sceDelegateProvider.resourceUrlWhitelist`} and {@link ng.$sceDelegateProvider#resourceUrlBlacklist
+     * `$sceDelegateProvider.resourceUrlBlacklist`} accepts that resource.
+     *
+     * This function will throw if the safe type isn't appropriate for this context, or if the
+     * value given cannot be accepted in the context (which might be caused by sanitization not
+     * being available, or the value not being recognized as safe).
+     *
+     * <div class="alert alert-danger">
+     * Disabling auto-escaping is extremely dangerous, it usually creates a Cross Site Scripting
+     * (XSS) vulnerability in your application.
+     * </div>
      *
      * @param {string} type The context in which this value is to be used (such as `$sce.HTML`).
      * @param {*} maybeTrusted The result of a prior {@link ng.$sceDelegate#trustAs
@@ -19470,12 +19602,18 @@ function $SceDelegateProvider() {
       if (constructor && maybeTrusted instanceof constructor) {
         return maybeTrusted.$$unwrapTrustedValue();
       }
-      // Otherwise, if we get here, then we may either make it safe, or throw an exception. This
-      // depends on the context: some are sanitizatible (HTML), some use whitelists (RESOURCE_URL),
-      // some are impossible to do (JS). This step isn't implemented for CSS and URL, as AngularJS
-      // has no corresponding sinks.
-      if (type === SCE_CONTEXTS.RESOURCE_URL) {
-        // RESOURCE_URL uses a whitelist.
+
+      // If maybeTrusted is a trusted class instance but not of the correct trusted type
+      // then unwrap it and allow it to pass through to the rest of the checks
+      if (isFunction(maybeTrusted.$$unwrapTrustedValue)) {
+        maybeTrusted = maybeTrusted.$$unwrapTrustedValue();
+      }
+
+      // If we get here, then we will either sanitize the value or throw an exception.
+      if (type === SCE_CONTEXTS.MEDIA_URL || type === SCE_CONTEXTS.URL) {
+        // we attempt to sanitize non-resource URLs
+        return $$sanitizeUri(maybeTrusted, type === SCE_CONTEXTS.MEDIA_URL);
+      } else if (type === SCE_CONTEXTS.RESOURCE_URL) {
         if (isResourceUrlAllowedByPolicy(maybeTrusted)) {
           return maybeTrusted;
         } else {
@@ -19630,9 +19768,10 @@ function $SceDelegateProvider() {
  *
  * If your expressions are constant literals, they're automatically trusted and you don't need to
  * call `$sce.trustAs` on them (e.g.
- * `<div ng-bind-html="'<b>implicitly trusted</b>'"></div>`) just works. The `$sceDelegate` will
- * also use the `$sanitize` service if it is available when binding untrusted values to
- * `$sce.HTML` context. AngularJS provides an implementation in `angular-sanitize.js`, and if you
+ * `<div ng-bind-html="'<b>implicitly trusted</b>'"></div>`) just works (remember to include the
+ * `ngSanitize` module). The `$sceDelegate` will also use the `$sanitize` service if it is available
+ * when binding untrusted values to `$sce.HTML` context.
+ * AngularJS provides an implementation in `angular-sanitize.js`, and if you
  * wish to use it, you will also need to depend on the {@link ngSanitize `ngSanitize`} module in
  * your application.
  *
@@ -19652,17 +19791,27 @@ function $SceDelegateProvider() {
  *
  * | Context             | Notes          |
  * |---------------------|----------------|
- * | `$sce.HTML`         | For HTML that's safe to source into the application.  The {@link ng.directive:ngBindHtml ngBindHtml} directive uses this context for bindings. If an unsafe value is encountered, and the {@link ngSanitize.$sanitize $sanitize} service is available (implemented by the {@link ngSanitize ngSanitize} module) this will sanitize the value instead of throwing an error. |
- * | `$sce.CSS`          | For CSS that's safe to source into the application.  Currently, no bindings require this context. Feel free to use it in your own directives. |
- * | `$sce.URL`          | For URLs that are safe to follow as links.  Currently unused (`<a href=`, `<img src=`, and some others sanitize their urls and don't constitute an SCE context.) |
- * | `$sce.RESOURCE_URL` | For URLs that are not only safe to follow as links, but whose contents are also safe to include in your application.  Examples include `ng-include`, `src` / `ngSrc` bindings for tags other than `IMG`, `VIDEO`, `AUDIO`, `SOURCE`, and `TRACK` (e.g. `IFRAME`, `OBJECT`, etc.)  <br><br>Note that `$sce.RESOURCE_URL` makes a stronger statement about the URL than `$sce.URL` does (it's not just the URL that matters, but also what is at the end of it), and therefore contexts requiring values trusted for `$sce.RESOURCE_URL` can be used anywhere that values trusted for `$sce.URL` are required. |
- * | `$sce.JS`           | For JavaScript that is safe to execute in your application's context.  Currently, no bindings require this context.  Feel free to use it in your own directives. |
+ * | `$sce.HTML`         | For HTML that's safe to source into the application.  The {@link ng.directive:ngBindHtml ngBindHtml} directive uses this context for bindings. If an unsafe value is encountered and the {@link ngSanitize $sanitize} module is present this will sanitize the value instead of throwing an error. |
+ * | `$sce.CSS`          | For CSS that's safe to source into the application.  Currently unused.  Feel free to use it in your own directives. |
+ * | `$sce.MEDIA_URL`    | For URLs that are safe to render as media. Is automatically converted from string by sanitizing when needed. |
+ * | `$sce.URL`          | For URLs that are safe to follow as links. Is automatically converted from string by sanitizing when needed. Note that `$sce.URL` makes a stronger statement about the URL than `$sce.MEDIA_URL` does and therefore contexts requiring values trusted for `$sce.URL` can be used anywhere that values trusted for `$sce.MEDIA_URL` are required.|
+ * | `$sce.RESOURCE_URL` | For URLs that are not only safe to follow as links, but whose contents are also safe to include in your application.  Examples include `ng-include`, `src` / `ngSrc` bindings for tags other than `IMG` (e.g. `IFRAME`, `OBJECT`, etc.)  <br><br>Note that `$sce.RESOURCE_URL` makes a stronger statement about the URL than `$sce.URL` or `$sce.MEDIA_URL` do and therefore contexts requiring values trusted for `$sce.RESOURCE_URL` can be used anywhere that values trusted for `$sce.URL` or `$sce.MEDIA_URL` are required. |
+ * | `$sce.JS`           | For JavaScript that is safe to execute in your application's context.  Currently unused.  Feel free to use it in your own directives. |
  *
  *
- * Be aware that `a[href]` and `img[src]` automatically sanitize their URLs and do not pass them
- * through {@link ng.$sce#getTrusted $sce.getTrusted}. There's no CSS-, URL-, or JS-context bindings
- * in AngularJS currently, so their corresponding `$sce.trustAs` functions aren't useful yet. This
- * might evolve.
+ * <div class="alert alert-warning">
+ * Be aware that, before AngularJS 1.7.0, `a[href]` and `img[src]` used to sanitize their
+ * interpolated values directly rather than rely upon {@link ng.$sce#getTrusted `$sce.getTrusted`}.
+ *
+ * **As of 1.7.0, this is no longer the case.**
+ *
+ * Now such interpolations are marked as requiring `$sce.URL` (for `a[href]`) or `$sce.MEDIA_URL`
+ * (for `img[src]`), so that the sanitization happens (via `$sce.getTrusted...`) when the `$interpolate`
+ * service evaluates the expressions.
+ * </div>
+ *
+ * There are no CSS or JS context bindings in AngularJS currently, so their corresponding `$sce.trustAs`
+ * functions aren't useful yet. This might evolve.
  *
  * ### Format of items in {@link ng.$sceDelegateProvider#resourceUrlWhitelist resourceUrlWhitelist}/{@link ng.$sceDelegateProvider#resourceUrlBlacklist Blacklist} <a name="resourceUrlPatternItem"></a>
  *
@@ -19836,7 +19985,7 @@ function $SceProvider() {
    *     such a value.
    *
    * - getTrusted(contextEnum, value)
-   *     This function should return the a value that is safe to use in the context specified by
+   *     This function should return the value that is safe to use in the context specified by
    *     contextEnum or throw and exception otherwise.
    *
    * NOTE: This contract deliberately does NOT state that values returned by trustAs() must be
@@ -23370,7 +23519,7 @@ forEach(['src', 'srcset', 'href'], function(attrName) {
           // On IE, if "ng:src" directive declaration is used and "src" attribute doesn't exist
           // then calling element.setAttribute('src', 'foo') doesn't do anything, so we need
           // to set the property as well to achieve the desired effect.
-          // We use attr[attrName] value since $set can sanitize the url.
+          // We use attr[attrName] value since $set might have sanitized the url.
           if (msie && propName) element.prop(propName, attr[name]);
         });
       }
