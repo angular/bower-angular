@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.11-build.5555+sha.45879a8
+ * @license AngularJS v1.7.0
  * (c) 2010-2018 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -88,7 +88,7 @@ function isValidObjectMaxDepth(maxDepth) {
 function minErr(module, ErrorConstructor) {
   ErrorConstructor = ErrorConstructor || Error;
 
-  var url = 'https://errors.angularjs.org/1.6.11-build.5555+sha.45879a8/';
+  var url = 'https://errors.angularjs.org/1.7.0/';
   var regex = url.replace('.', '\\.') + '[\\s\\S]*';
   var errRegExp = new RegExp(regex, 'g');
 
@@ -2765,11 +2765,11 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.11-build.5555+sha.45879a8',
+  full: '1.7.0',
   major: 1,
-  minor: 6,
-  dot: 11,
-  codeName: 'snapshot'
+  minor: 7,
+  dot: 0,
+  codeName: 'nonexistent-physiology'
 };
 
 
@@ -2915,7 +2915,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.11-build.5555+sha.45879a8' });
+  .info({ angularVersion: '1.7.0' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
