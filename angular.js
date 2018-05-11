@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.6.11-build.5554+sha.841feb0
+ * @license AngularJS v1.6.11-build.5555+sha.45879a8
  * (c) 2010-2018 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -88,7 +88,7 @@ function isValidObjectMaxDepth(maxDepth) {
 function minErr(module, ErrorConstructor) {
   ErrorConstructor = ErrorConstructor || Error;
 
-  var url = 'https://errors.angularjs.org/1.6.11-build.5554+sha.841feb0/';
+  var url = 'https://errors.angularjs.org/1.6.11-build.5555+sha.45879a8/';
   var regex = url.replace('.', '\\.') + '[\\s\\S]*';
   var errRegExp = new RegExp(regex, 'g');
 
@@ -2502,7 +2502,8 @@ function setupModuleLoader(window) {
            * @ngdoc method
            * @name angular.Module#component
            * @module ng
-           * @param {string} name Name of the component in camel-case (i.e. myComp which will match as my-comp)
+           * @param {string|Object} name Name of the component in camelCase (i.e. `myComp` which will match `<my-comp>`),
+           *    or an object map of components where the keys are the names and the values are the component definition objects.
            * @param {Object} options Component definition object (a simplified
            *    {@link ng.$compile#directive-definition-object directive definition object})
            *
@@ -2764,7 +2765,7 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.6.11-build.5554+sha.841feb0',
+  full: '1.6.11-build.5555+sha.45879a8',
   major: 1,
   minor: 6,
   dot: 11,
@@ -2914,7 +2915,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.6.11-build.5554+sha.841feb0' });
+  .info({ angularVersion: '1.6.11-build.5555+sha.45879a8' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -9745,17 +9746,6 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
                 jqLite(compile.$$createComment(directiveName, templateAttrs[directiveName]));
             compileNode = $compileNode[0];
             replaceWith(jqCollection, sliceArgs($template), compileNode);
-
-            // Support: Chrome < 50
-            // https://github.com/angular/angular.js/issues/14041
-
-            // In the versions of V8 prior to Chrome 50, the document fragment that is created
-            // in the `replaceWith` function is improperly garbage collected despite still
-            // being referenced by the `parentNode` property of all of the child nodes.  By adding
-            // a reference to the fragment via a different property, we can avoid that incorrect
-            // behavior.
-            // TODO: remove this line after Chrome 50 has been released
-            $template[0].$$parentNode = $template[0].parentNode;
 
             childTranscludeFn = compilationGenerator(mightHaveMultipleTransclusionError, $template, transcludeFn, terminalPriority,
                                         replaceDirective && replaceDirective.name, {
@@ -18514,7 +18504,7 @@ function $RootScopeProvider() {
         var watch, value, last, fn, get,
             watchers,
             dirty, ttl = TTL,
-            next, current, target = this,
+            next, current, target = asyncQueue.length ? $rootScope : this,
             watchLog = [],
             logIdx, asyncTask;
 
@@ -25852,7 +25842,7 @@ function weekParser(isoWeek, existingDate) {
 }
 
 function createDateParser(regexp, mapping) {
-  return function(iso, date) {
+  return function(iso, previousDate) {
     var parts, map;
 
     if (isDate(iso)) {
@@ -25874,15 +25864,15 @@ function createDateParser(regexp, mapping) {
 
       if (parts) {
         parts.shift();
-        if (date) {
+        if (previousDate) {
           map = {
-            yyyy: date.getFullYear(),
-            MM: date.getMonth() + 1,
-            dd: date.getDate(),
-            HH: date.getHours(),
-            mm: date.getMinutes(),
-            ss: date.getSeconds(),
-            sss: date.getMilliseconds() / 1000
+            yyyy: previousDate.getFullYear(),
+            MM: previousDate.getMonth() + 1,
+            dd: previousDate.getDate(),
+            HH: previousDate.getHours(),
+            mm: previousDate.getMinutes(),
+            ss: previousDate.getSeconds(),
+            sss: previousDate.getMilliseconds() / 1000
           };
         } else {
           map = { yyyy: 1970, MM: 1, dd: 1, HH: 0, mm: 0, ss: 0, sss: 0 };
@@ -25893,7 +25883,15 @@ function createDateParser(regexp, mapping) {
             map[mapping[index]] = +part;
           }
         });
-        return new Date(map.yyyy, map.MM - 1, map.dd, map.HH, map.mm, map.ss || 0, map.sss * 1000 || 0);
+
+        var date = new Date(map.yyyy, map.MM - 1, map.dd, map.HH, map.mm, map.ss || 0, map.sss * 1000 || 0);
+        if (map.yyyy < 100) {
+          // In the constructor, 2-digit years map to 1900-1999.
+          // Use `setFullYear()` to set the correct year.
+          date.setFullYear(map.yyyy);
+        }
+
+        return date;
       }
     }
 
