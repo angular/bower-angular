@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.7.2-build.5558+sha.c9a92fc
+ * @license AngularJS v1.7.2
  * (c) 2010-2018 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -99,7 +99,7 @@ function isValidObjectMaxDepth(maxDepth) {
 function minErr(module, ErrorConstructor) {
   ErrorConstructor = ErrorConstructor || Error;
 
-  var url = 'https://errors.angularjs.org/1.7.2-build.5558+sha.c9a92fc/';
+  var url = 'https://errors.angularjs.org/1.7.2/';
   var regex = url.replace('.', '\\.') + '[\\s\\S]*';
   var errRegExp = new RegExp(regex, 'g');
 
@@ -2779,11 +2779,11 @@ function toDebugString(obj, maxDepth) {
 var version = {
   // These placeholder strings will be replaced by grunt's `build` task.
   // They need to be double- or single-quoted.
-  full: '1.7.2-build.5558+sha.c9a92fc',
+  full: '1.7.2',
   major: 1,
   minor: 7,
   dot: 2,
-  codeName: 'snapshot'
+  codeName: 'extreme-compatiplication'
 };
 
 
@@ -2930,7 +2930,7 @@ function publishExternalAPI(angular) {
       });
     }
   ])
-  .info({ angularVersion: '1.7.2-build.5558+sha.c9a92fc' });
+  .info({ angularVersion: '1.7.2' });
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
