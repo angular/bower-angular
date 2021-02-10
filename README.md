@@ -1,5 +1,7 @@
 # packaged angular
 
+**This package contains AngularJS (version 1.x), if you are looking for the latest Angular, please visit [@angular/core](https://npmjs.com/@angular/core).**
+
 This repo is for distribution on `npm` and `bower`. The source for this module is in the
 [main AngularJS repo](https://github.com/angular/angular.js).
 Please file issues and pull requests against that repo.
